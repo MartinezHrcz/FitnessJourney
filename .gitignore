@@ -1,0 +1,11 @@
+backend/fit-journey-api/.idea/
+backend/fit-journey-api/.mvn/
+backend/fit-journey-api/*.iws/
+backend/fit-journey-api/*.iml/
+backend/fit-journey-api/*.ipr
+backend/fit-journey-api/target
+!backend/fit-journey-api/src/main/**/target/
+!backend/fit-journey-api/src/test/**/target/
+backend/fit-journey-api/build/
+backend/fit-journey-api/!**/src/main/**/build/
+backend/fit-journey-api/!**/src/test/**/build/
