@@ -1,5 +1,7 @@
 package hu.hm.fitjourneyapi.model;
 
+import hu.hm.fitjourneyapi.model.fitness.Workout;
+import hu.hm.fitjourneyapi.model.social.Post;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -21,4 +23,5 @@ public class User {
     private String height;
     private String role;
     private ArrayList<Workout> workouts = new ArrayList<>();
+    private ArrayList<Post> posts = new ArrayList<>();
 }

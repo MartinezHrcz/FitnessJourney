@@ -1,4 +1,4 @@
-package hu.hm.fitjourneyapi.model;
+package hu.hm.fitjourneyapi.model.fitness;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
