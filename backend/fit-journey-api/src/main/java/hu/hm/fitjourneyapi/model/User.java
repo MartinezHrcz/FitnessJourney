@@ -33,8 +33,8 @@ public class User {
     private Date birthday;
     @Column(nullable = false, length = 50)
     private String password;
-    private String weight;
-    private String height;
+    private float weightInKg;
+    private float heightInCm;
 
     @Enumerated(EnumType.STRING)
     private Roles role;
