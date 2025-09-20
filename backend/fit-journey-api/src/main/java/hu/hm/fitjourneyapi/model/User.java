@@ -2,6 +2,7 @@ package hu.hm.fitjourneyapi.model;
 
 import hu.hm.fitjourneyapi.model.enums.Roles;
 import hu.hm.fitjourneyapi.model.fitness.Workout;
+import hu.hm.fitjourneyapi.model.social.Friend;
 import hu.hm.fitjourneyapi.model.social.Post;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -34,11 +35,21 @@ public class User {
     private String password;
     private String weight;
     private String height;
+
+    @Enumerated(EnumType.STRING)
     private Roles role;
 
     private LocalDateTime creation_date = LocalDateTime.now();
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Workout> workouts = new ArrayList<>();
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Post> posts = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Friend> friends = new ArrayList<>();
+
+    @OneToMany(mappedBy = "friend", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Friend> friendOf = new ArrayList<>();
 }
