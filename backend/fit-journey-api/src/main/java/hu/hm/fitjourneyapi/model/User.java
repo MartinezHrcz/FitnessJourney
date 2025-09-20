@@ -10,9 +10,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -29,8 +29,7 @@ public class User {
     private String name;
     @Column(nullable = false, length = 100)
     private String email;
-    @Temporal(TemporalType.DATE)
-    private Date birthday;
+    private LocalDate birthday;
     @Column(nullable = false, length = 50)
     private String password;
     private float weightInKg;
