@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedDate;
 
 import java.time.LocalDateTime;
 
@@ -28,5 +29,8 @@ public class Message {
     private User recipient;
 
     private String content;
-    private LocalDateTime sentTime = LocalDateTime.now();
+
+    @CreatedDate
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime sentTime;
 }

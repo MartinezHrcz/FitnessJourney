@@ -1,42 +1,42 @@
 package hu.hm.fitjourneyapi.repository;
 
 import hu.hm.fitjourneyapi.model.User;
-import org.junit.jupiter.api.AfterEach;
+import hu.hm.fitjourneyapi.repository.testutil.TestDataFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.FilterType;
+import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
 @DataJpaTest
+@ComponentScan(value = "hu.hm.fitjourneyapi.repository.testutil",
+        includeFilters = @ComponentScan.Filter(type = FilterType.ANNOTATION, value = Component.class))
 public class UserRepositoryTest {
+
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private TestDataFactory factory;
+
+    private User user;
+
     @BeforeEach
     void setup(){
-        User user = User.builder()
-                .name("Placeholder")
-                .email("Placeholder@email.com")
-                .birthday(LocalDate.of(2000, 1,1))
-                .password("PlaceholderPassword")
-                .weightInKg(100)
-                .heightInCm(180)
-                .build();
-        userRepository.save(user);
-        userRepository.findAll().stream().forEach(System.out::println);
+        user = factory.createUser();
     }
-
-
 
     @Test
     void testSaveUser(){
-        assertFalse(userRepository.findAll().isEmpty());
+        assertFalse(userRepository.findAll().isEmpty(), "List shouldn't be empty");
         assertEquals("Placeholder",userRepository.findAll().getFirst().getName());
     }
 
