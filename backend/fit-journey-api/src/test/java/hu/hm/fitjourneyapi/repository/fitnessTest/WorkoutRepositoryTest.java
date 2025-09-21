@@ -3,9 +3,8 @@ package hu.hm.fitjourneyapi.repository.fitnessTest;
 import hu.hm.fitjourneyapi.model.User;
 import hu.hm.fitjourneyapi.model.fitness.Excercise;
 import hu.hm.fitjourneyapi.model.fitness.Workout;
-import hu.hm.fitjourneyapi.repository.UserRepository;
 import hu.hm.fitjourneyapi.repository.fitness.WorkoutRepository;
-import hu.hm.fitjourneyapi.repository.testutil.TestDataFactory;
+import hu.hm.fitjourneyapi.repository.testutil.TestFitnessDataFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
@@ -24,7 +23,7 @@ import java.util.Optional;
 public class WorkoutRepositoryTest {
 
     @Autowired
-    private TestDataFactory factory;
+    private TestFitnessDataFactory factory;
 
     @Autowired
     private WorkoutRepository workoutRepository;
@@ -41,7 +40,7 @@ public class WorkoutRepositoryTest {
 
     @Test
     void testSaveWorkout(){
-        assertEquals("Placeholder workout",workoutRepository.findById(workout.getId()).get().getName());
+        assertEquals(workout,workoutRepository.findById(workout.getId()).get());
     }
 
     @Test
@@ -61,8 +60,7 @@ public class WorkoutRepositoryTest {
 
         Workout updatedWorkout = workoutRepository.findById(workout.getId()).get();
 
-        assertEquals("New Name",updatedWorkout.getName());
-        assertEquals("Placeholder excercise",updatedWorkout.getExcercises().getFirst().getName());
+        assertEquals(workout, updatedWorkout);
     }
 
     @Test

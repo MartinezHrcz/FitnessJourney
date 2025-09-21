@@ -1,7 +1,7 @@
 package hu.hm.fitjourneyapi.repository;
 
 import hu.hm.fitjourneyapi.model.User;
-import hu.hm.fitjourneyapi.repository.testutil.TestDataFactory;
+import hu.hm.fitjourneyapi.repository.testutil.TestFitnessDataFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
@@ -13,7 +13,6 @@ import org.springframework.context.annotation.FilterType;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
-import java.util.List;
 import java.util.Optional;
 
 @DataJpaTest
@@ -25,7 +24,7 @@ public class UserRepositoryTest {
     private UserRepository userRepository;
 
     @Autowired
-    private TestDataFactory factory;
+    private TestFitnessDataFactory factory;
 
     private User user;
 
@@ -49,9 +48,6 @@ public class UserRepositoryTest {
 
     @Test
     void testUpdateUser(){
-        List<User> users= userRepository.findAll();
-        assertFalse(users.isEmpty(), "List should not be empty");
-        User user = users.getFirst();
         user.setName("TestNameUpdated");
         user.setEmail("TestEmailUpdated");
         user.setBirthday(LocalDate.of(2001, 3,2));
@@ -59,15 +55,14 @@ public class UserRepositoryTest {
         user.setWeightInKg(110);
         user.setHeightInCm(110);
         userRepository.save(user);
-        assertEquals("TestNameUpdated", user.getName());
+        assertEquals(user, userRepository.getUserById(user.getId()));
     }
 
     @Test
     void testDeleteUser(){
-        int id = userRepository.findAll().getFirst().getId();
-        assertTrue(userRepository.findById(id).isPresent());
-        userRepository.deleteById(userRepository.findById(id).get().getId());
-        assertFalse(userRepository.findById(id).isPresent());
+        assertTrue(userRepository.findById(user.getId()).isPresent());
+        userRepository.deleteById(user.getId());
+        assertFalse(userRepository.findById(user.getId()).isPresent());
     }
 
 
