@@ -34,6 +34,6 @@ public class Friend {
     private FriendStatus status = FriendStatus.IN_PROGRESS;
 
     @CreatedDate
-    @Column(nullable = false, updatable = false)
+    @Column(updatable = false)
     private LocalDateTime requestedTime = LocalDateTime.now();
 }

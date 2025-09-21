@@ -31,6 +31,6 @@ public class Message {
     private String content;
 
     @CreatedDate
-    @Column(nullable = false, updatable = false)
+    @Column(updatable = false)
     private LocalDateTime sentTime;
 }
