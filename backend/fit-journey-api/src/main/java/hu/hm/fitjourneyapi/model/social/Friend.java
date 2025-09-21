@@ -4,10 +4,8 @@ package hu.hm.fitjourneyapi.model.social;
 import hu.hm.fitjourneyapi.model.User;
 import hu.hm.fitjourneyapi.model.enums.FriendStatus;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
 
 import java.time.LocalDateTime;
 
@@ -22,15 +20,20 @@ public class Friend {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    @ToString.Exclude
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
+    @ToString.Exclude
     @ManyToOne
     @JoinColumn(name = "friend_id", nullable = false)
     private User friend;
 
+    @Builder.Default
     @Enumerated(EnumType.STRING)
-    private FriendStatus status;
+    private FriendStatus status = FriendStatus.IN_PROGRESS;
 
+    @CreatedDate
+    @Column(updatable = false)
     private LocalDateTime requestedTime = LocalDateTime.now();
 }

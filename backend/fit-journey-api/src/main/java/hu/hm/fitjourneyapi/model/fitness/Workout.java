@@ -2,14 +2,14 @@ package hu.hm.fitjourneyapi.model.fitness;
 
 import hu.hm.fitjourneyapi.model.User;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "WORKOUTS")
@@ -17,17 +17,24 @@ import java.util.Date;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@EntityListeners(AuditingEntityListener.class)
 public class Workout {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     @Column(nullable = false, length = 50)
     private String name;
-    private LocalDate startDate = LocalDate.now();
+
+    @CreatedDate
+    @Column(nullable = false, updatable = false)
+    private LocalDate startDate;
     private int lengthInMins;
+    @ToString.Exclude
     @ManyToOne
     @JoinColumn(nullable = false, name="user_id")
     private User user;
+
+    @Builder.Default
     @OneToMany(mappedBy = "workout", cascade = CascadeType.ALL, orphanRemoval = true)
-    private ArrayList<Excercise> excercises = new ArrayList<>();
+    private List<Excercise> excercises = new ArrayList<>();
 }

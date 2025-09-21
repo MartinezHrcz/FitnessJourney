@@ -2,10 +2,9 @@ package hu.hm.fitjourneyapi.model.social;
 
 import hu.hm.fitjourneyapi.model.User;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 
@@ -15,14 +14,19 @@ import java.time.LocalDateTime;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@EntityListeners(AuditingEntityListener.class)
 public class Post {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    @ToString.Exclude
     @ManyToOne
     @JoinColumn(nullable = false, name="user_id")
     private User user;
     private String title;
     private String content;
-    private LocalDateTime sentTime = LocalDateTime.now();
+
+    @CreatedDate
+    @Column(nullable = false)
+    private LocalDateTime sentTime;
 }
