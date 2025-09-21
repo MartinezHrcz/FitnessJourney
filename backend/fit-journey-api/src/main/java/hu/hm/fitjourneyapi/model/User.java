@@ -39,8 +39,9 @@ public class User {
     private float weightInKg;
     private float heightInCm;
 
+    @Builder.Default
     @Enumerated(EnumType.STRING)
-    private Roles role;
+    private Roles role = Roles.USER;
 
     @CreatedDate
     @Column(nullable = false, updatable = false)

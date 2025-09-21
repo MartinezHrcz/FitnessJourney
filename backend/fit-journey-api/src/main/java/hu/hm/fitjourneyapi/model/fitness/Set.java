@@ -6,19 +6,20 @@ import lombok.*;
 
 @Entity
 @Table(name = "SETS")
+@Inheritance(strategy = InheritanceType.JOINED)
 @Data
-@Builder
-@AllArgsConstructor
 @NoArgsConstructor
-public class Set {
+@AllArgsConstructor
+@EqualsAndHashCode
+public abstract class Set {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    private int reps;
-    private double weight;
 
     @ToString.Exclude
     @ManyToOne
-    @JoinColumn(name = "excercise_id")
-    private Excercise excercise;
+    @JoinColumn(name = "exercise_id")
+    private Exercise exercise;
+
+
 }

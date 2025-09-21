@@ -1,8 +1,10 @@
 package hu.hm.fitjourneyapi.repository.fitnessTest;
 
 import hu.hm.fitjourneyapi.model.User;
-import hu.hm.fitjourneyapi.model.fitness.Excercise;
+import hu.hm.fitjourneyapi.model.enums.ExcerciseTypes;
+import hu.hm.fitjourneyapi.model.fitness.Exercise;
 import hu.hm.fitjourneyapi.model.fitness.Set;
+import hu.hm.fitjourneyapi.model.fitness.StrengthSet;
 import hu.hm.fitjourneyapi.model.fitness.Workout;
 import hu.hm.fitjourneyapi.repository.fitness.SetRepository;
 import hu.hm.fitjourneyapi.repository.testutil.TestFitnessDataFactory;
@@ -30,15 +32,16 @@ public class SetRepositoryTest {
 
     private User user;
     private Workout workout;
-    private Excercise excercise;
+    private Exercise exercise;
     private Set set;
 
     @BeforeEach
     void setup() {
         user = factory.createUser();
         workout = factory.createWorkout(user);
-        excercise = factory.createExcercise(workout);
-        set = factory.createSet(workout);
+        exercise = factory.createExercise(workout, ExcerciseTypes.RESISTANCE);
+        set = factory.createSet(exercise);
+
     }
 
     @Test
@@ -53,8 +56,6 @@ public class SetRepositoryTest {
 
     @Test
     void testUpdateSet(){
-        set.setReps(11);
-        set.setWeight(50);
         setRepository.save(set);
         assertEquals(set, setRepository.getReferenceById(set.getId()));
     }

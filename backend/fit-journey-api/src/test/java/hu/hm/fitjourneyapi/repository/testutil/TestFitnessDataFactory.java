@@ -1,11 +1,11 @@
 package hu.hm.fitjourneyapi.repository.testutil;
 
+import hu.hm.fitjourneyapi.exception.fitness.setExceptions.InvalidSetType;
 import hu.hm.fitjourneyapi.model.User;
-import hu.hm.fitjourneyapi.model.fitness.Excercise;
-import hu.hm.fitjourneyapi.model.fitness.Set;
-import hu.hm.fitjourneyapi.model.fitness.Workout;
+import hu.hm.fitjourneyapi.model.enums.ExcerciseTypes;
+import hu.hm.fitjourneyapi.model.fitness.*;
 import hu.hm.fitjourneyapi.repository.UserRepository;
-import hu.hm.fitjourneyapi.repository.fitness.ExcerciseRepository;
+import hu.hm.fitjourneyapi.repository.fitness.ExerciseRepository;
 import hu.hm.fitjourneyapi.repository.fitness.SetRepository;
 import hu.hm.fitjourneyapi.repository.fitness.WorkoutRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,8 +15,6 @@ import java.time.LocalDate;
 
 @Component
 public class TestFitnessDataFactory {
-
-
     @Autowired
     UserRepository userRepository;
 
@@ -24,7 +22,7 @@ public class TestFitnessDataFactory {
     WorkoutRepository workoutRepository;
 
     @Autowired(required = false)
-    ExcerciseRepository excerciseRepository;
+    ExerciseRepository exerciseRepository;
 
     @Autowired(required = false)
     SetRepository setRepository;
@@ -55,26 +53,33 @@ public class TestFitnessDataFactory {
         return workout;
     }
 
-    public Excercise createExcercise(Workout workout){
-        if(excerciseRepository == null){
+    public Exercise createExercise(Workout workout, ExcerciseTypes type){
+        if(exerciseRepository == null){
             throw new RuntimeException("excerciseRepository is null");
         }
-        Excercise excercise = Excercise.builder()
+        Exercise excercise = Exercise.builder()
                 .name("Placeholder excercise")
                 .description("Placeholder desc")
-                .workout(workout).build();
-        excerciseRepository.save(excercise);
+                .workout(workout)
+                .type(type).build();
+        exerciseRepository.save(excercise);
         return excercise;
     }
 
-    public Set createSet(Workout excercise){
+    public Set createSet(Exercise excercise){
         if(setRepository == null){
             throw new RuntimeException("setRepository is null");
         }
-        Set set = Set.builder()
-                .reps(10)
-                .weight(100)
-                .build();
+        Set set = null;
+        switch (excercise.getType()){
+            case RESISTANCE -> set =  StrengthSet.builder().reps(10).weight(100).build();
+            case NOT_GIVEN -> set = StrengthSet.builder().reps(10).weight(100).build();
+            case BODYWEIGHT -> set = StrengthSet.builder().reps(10).weight(100).build();
+            case CARDIO -> set =  CardioSet.builder().durationInSeconds(100).distanceInKm(0.5).build();
+            case FLEXIBILITY -> set =  FlexibilitySet.builder().reps(10).build();
+            default -> throw new InvalidSetType("Unkonwn type");
+        }
+        set.setExercise(excercise);
         setRepository.save(set);
         return set;
     }
