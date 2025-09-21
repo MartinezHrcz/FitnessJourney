@@ -20,8 +20,6 @@ import org.springframework.stereotype.Component;
 import java.util.Optional;
 
 @DataJpaTest
-//@ComponentScan(value = "hu.hm.fitjourneyapi.repository.testutil",
-//        includeFilters = @ComponentScan.Filter(type = FilterType.ANNOTATION, value = Component.class))
 @Import({TestFitnessDataFactory.class})
 public class WorkoutRepositoryTest {
 

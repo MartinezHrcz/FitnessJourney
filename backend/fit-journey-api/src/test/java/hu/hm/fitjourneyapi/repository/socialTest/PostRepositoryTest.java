@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
+import org.springframework.context.annotation.Import;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -18,8 +19,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
-@ComponentScan(value = "hu.hm.fitjourneyapi.repository.testutil",
-        includeFilters = @ComponentScan.Filter(type = FilterType.ANNOTATION, value = Component.class))
+@Import({TestSocialDataFactory.class})
 public class PostRepositoryTest {
 
     @Autowired

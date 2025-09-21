@@ -14,13 +14,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
+import org.springframework.context.annotation.Import;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 
 @DataJpaTest
-@ComponentScan(value = "hu.hm.fitjourneyapi.repository.testutil",
-        includeFilters = @ComponentScan.Filter(type = FilterType.ANNOTATION, value = Component.class))
+@Import({TestFitnessDataFactory.class})
 public class ExcerciseRepositoryTest {
 
     @Autowired
