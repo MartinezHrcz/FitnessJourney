@@ -1,10 +1,7 @@
 package hu.hm.fitjourneyapi.model.fitness;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +24,7 @@ public class Excercise {
     private String description;
     private String type;
 
+    @ToString.Exclude
     @ManyToOne
     @JoinColumn(name="workout_id")
     private Workout workout;

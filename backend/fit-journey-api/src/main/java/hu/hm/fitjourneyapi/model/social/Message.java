@@ -2,10 +2,7 @@ package hu.hm.fitjourneyapi.model.social;
 
 import hu.hm.fitjourneyapi.model.User;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 
 import java.time.LocalDateTime;
@@ -21,9 +18,12 @@ public class Message {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    @ToString.Exclude
     @ManyToOne
     @JoinColumn(name="sender_id", nullable = false)
     private User sender;
+
+    @ToString.Exclude
     @ManyToOne
     @JoinColumn(name="recipient_id", nullable = false)
     private User recipient;

@@ -2,10 +2,7 @@ package hu.hm.fitjourneyapi.model.fitness;
 
 import hu.hm.fitjourneyapi.model.User;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -32,6 +29,7 @@ public class Workout {
     @Column(nullable = false, updatable = false)
     private LocalDate startDate;
     private int lengthInMins;
+    @ToString.Exclude
     @ManyToOne
     @JoinColumn(nullable = false, name="user_id")
     private User user;

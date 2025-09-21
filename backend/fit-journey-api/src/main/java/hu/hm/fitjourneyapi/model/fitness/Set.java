@@ -1,10 +1,7 @@
 package hu.hm.fitjourneyapi.model.fitness;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 
 @Entity
@@ -20,6 +17,7 @@ public class Set {
     private int reps;
     private double weight;
 
+    @ToString.Exclude
     @ManyToOne
     @JoinColumn(name = "excercise_id")
     private Excercise excercise;
