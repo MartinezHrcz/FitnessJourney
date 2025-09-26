@@ -18,7 +18,7 @@ import java.time.LocalDateTime;
 public class Post {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private long id;
     @ToString.Exclude
     @ManyToOne
     @JoinColumn(nullable = false, name="user_id")

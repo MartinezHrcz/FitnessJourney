@@ -18,7 +18,7 @@ import java.time.LocalDateTime;
 public class Friend {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private long id;
 
     @ToString.Exclude
     @ManyToOne

@@ -16,7 +16,7 @@ import java.util.Objects;
 @NoArgsConstructor
 @Builder
 public class FlexibilitySet extends Set {
-    private int reps;
+    private long reps;
 
     @Override
     public boolean equals(Object o) {

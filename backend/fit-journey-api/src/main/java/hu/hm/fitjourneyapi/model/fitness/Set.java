@@ -14,7 +14,7 @@ import lombok.*;
 public abstract class Set {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private long id;
 
     @ToString.Exclude
     @ManyToOne
