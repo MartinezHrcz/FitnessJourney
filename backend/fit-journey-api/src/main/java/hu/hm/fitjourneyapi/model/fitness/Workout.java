@@ -8,7 +8,6 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -24,6 +23,9 @@ public class Workout {
     private long id;
     @Column(nullable = false, length = 50)
     private String name;
+
+    @Column(nullable = true, length = 200)
+    private String description;
 
     @CreatedDate
     @Column(nullable = false, updatable = false)

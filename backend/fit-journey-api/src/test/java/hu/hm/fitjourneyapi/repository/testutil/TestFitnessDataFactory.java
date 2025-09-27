@@ -2,7 +2,7 @@ package hu.hm.fitjourneyapi.repository.testutil;
 
 import hu.hm.fitjourneyapi.exception.fitness.setExceptions.InvalidSetType;
 import hu.hm.fitjourneyapi.model.User;
-import hu.hm.fitjourneyapi.model.enums.ExcerciseTypes;
+import hu.hm.fitjourneyapi.model.enums.ExerciseTypes;
 import hu.hm.fitjourneyapi.model.fitness.*;
 import hu.hm.fitjourneyapi.repository.UserRepository;
 import hu.hm.fitjourneyapi.repository.fitness.ExerciseRepository;
@@ -53,7 +53,7 @@ public class TestFitnessDataFactory {
         return workout;
     }
 
-    public Exercise createExercise(Workout workout, ExcerciseTypes type){
+    public Exercise createExercise(Workout workout, ExerciseTypes type){
         if(exerciseRepository == null){
             throw new RuntimeException("excerciseRepository is null");
         }

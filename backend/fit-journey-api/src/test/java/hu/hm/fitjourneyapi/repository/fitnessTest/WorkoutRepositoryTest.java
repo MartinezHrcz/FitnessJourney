@@ -1,7 +1,7 @@
 package hu.hm.fitjourneyapi.repository.fitnessTest;
 
 import hu.hm.fitjourneyapi.model.User;
-import hu.hm.fitjourneyapi.model.enums.ExcerciseTypes;
+import hu.hm.fitjourneyapi.model.enums.ExerciseTypes;
 import hu.hm.fitjourneyapi.model.fitness.Exercise;
 import hu.hm.fitjourneyapi.model.fitness.Workout;
 import hu.hm.fitjourneyapi.repository.fitness.WorkoutRepository;
@@ -12,10 +12,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.FilterType;
 import org.springframework.context.annotation.Import;
-import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 
@@ -53,7 +50,7 @@ public class WorkoutRepositoryTest {
     @Test
     void testUpdateWorkout(){
         workout.setName("New Name");
-        Exercise excercise = factory.createExercise(workout, ExcerciseTypes.RESISTANCE);
+        Exercise excercise = factory.createExercise(workout, ExerciseTypes.RESISTANCE);
 
         workout.getExercises().add(excercise);
 

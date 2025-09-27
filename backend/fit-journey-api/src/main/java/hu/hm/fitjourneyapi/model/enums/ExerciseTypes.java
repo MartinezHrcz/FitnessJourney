@@ -1,6 +1,6 @@
 package hu.hm.fitjourneyapi.model.enums;
 
-public enum ExcerciseTypes {
+public enum ExerciseTypes {
     NOT_GIVEN,
     RESISTANCE,
     BODYWEIGHT,
