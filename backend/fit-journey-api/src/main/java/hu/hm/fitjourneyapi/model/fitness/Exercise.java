@@ -2,6 +2,7 @@ package hu.hm.fitjourneyapi.model.fitness;
 
 import hu.hm.fitjourneyapi.exception.fitness.setExceptions.InvalidSetType;
 import hu.hm.fitjourneyapi.model.enums.ExcerciseTypes;
+import hu.hm.fitjourneyapi.model.enums.WeightType;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -18,6 +19,10 @@ public class Exercise {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+
+    @Builder.Default
+    @Enumerated(EnumType.STRING)
+    private WeightType weightType = WeightType.NOT_GIVEN;
 
     @Column(unique = true, nullable = false, length = 50)
     private String name;
