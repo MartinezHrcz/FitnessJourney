@@ -1,5 +1,6 @@
 package hu.hm.fitjourneyapi.dto.user.social;
 
+import hu.hm.fitjourneyapi.dto.social.friend.FriendDTO;
 import hu.hm.fitjourneyapi.dto.user.AbstractUserDTO;
 import hu.hm.fitjourneyapi.model.social.Friend;
 import lombok.*;
@@ -11,5 +12,5 @@ import java.util.List;
 @NoArgsConstructor
 public class UserWithFriendsDTO extends AbstractUserDTO {
     private long id;
-    private List<Friend> friends;
+    private List<FriendDTO> friends;
 }
