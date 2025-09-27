@@ -7,10 +7,8 @@ import lombok.*;
 import java.util.List;
 
 @Getter
-@Setter
 @Builder
 @NoArgsConstructor
-@AllArgsConstructor
 public class UserWithFriendsDTO extends AbstractUserDTO {
     private long id;
     private List<Friend> friends;

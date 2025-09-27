@@ -8,10 +8,8 @@ import lombok.*;
 import java.util.List;
 
 @Getter
-@Setter
 @Builder
 @NoArgsConstructor
-@AllArgsConstructor
 public class UserWithWorkoutsDTO extends AbstractUserDTO {
     private long id;
     private List<Workout> workouts;

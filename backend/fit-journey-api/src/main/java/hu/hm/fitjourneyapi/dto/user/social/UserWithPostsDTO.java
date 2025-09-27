@@ -7,9 +7,7 @@ import lombok.*;
 import java.util.List;
 
 @Getter
-@Setter
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
 public class UserWithPostsDTO extends AbstractUserDTO {
     private long id;

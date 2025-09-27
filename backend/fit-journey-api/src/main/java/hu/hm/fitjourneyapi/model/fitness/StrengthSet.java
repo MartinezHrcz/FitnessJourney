@@ -8,7 +8,8 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "STRENGTH_SETS")
-@Data
+@Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor

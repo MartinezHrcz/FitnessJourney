@@ -2,21 +2,19 @@ package hu.hm.fitjourneyapi.model.fitness;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.Objects;
 
 @Entity
 @Table(name="FLEXIBILITY_SETS")
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 public class FlexibilitySet extends Set {
-    private long reps;
+    private int reps;
 
     @Override
     public boolean equals(Object o) {

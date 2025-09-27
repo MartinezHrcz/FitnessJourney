@@ -6,10 +6,8 @@ import lombok.*;
 import java.util.List;
 
 @Getter
-@Setter
 @Builder
 @NoArgsConstructor
-@AllArgsConstructor
 public class WorkoutDTO extends AbstractWorkoutDTO {
     private long id;
     private int lengthInMins;
