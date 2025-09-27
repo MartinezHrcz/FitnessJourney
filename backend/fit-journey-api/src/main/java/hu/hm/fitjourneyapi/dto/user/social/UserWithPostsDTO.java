@@ -2,14 +2,12 @@ package hu.hm.fitjourneyapi.dto.user.social;
 
 import hu.hm.fitjourneyapi.dto.user.AbstractUserDTO;
 import hu.hm.fitjourneyapi.model.social.Post;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.List;
 
-@Data
+@Getter
+@Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
