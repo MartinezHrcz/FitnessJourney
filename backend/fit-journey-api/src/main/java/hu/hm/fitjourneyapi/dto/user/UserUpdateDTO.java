@@ -1,5 +1,4 @@
-package hu.hm.fitjourneyapi.dto.User;
-
+package hu.hm.fitjourneyapi.dto.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,8 +9,6 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserPasswordUpdateDTO {
+public class UserUpdateDTO extends AbstractUserDTO {
     private long id;
-    private String passwordOld;
-    private String passwordNew;
 }

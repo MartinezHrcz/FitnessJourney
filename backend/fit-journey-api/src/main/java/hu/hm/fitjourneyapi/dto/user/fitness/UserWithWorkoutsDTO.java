@@ -1,7 +1,7 @@
-package hu.hm.fitjourneyapi.dto.User.Fitness;
+package hu.hm.fitjourneyapi.dto.user.fitness;
 
 
-import hu.hm.fitjourneyapi.dto.User.AbstractUserDTO;
+import hu.hm.fitjourneyapi.dto.user.AbstractUserDTO;
 import hu.hm.fitjourneyapi.model.fitness.Workout;
 
 import java.util.List;

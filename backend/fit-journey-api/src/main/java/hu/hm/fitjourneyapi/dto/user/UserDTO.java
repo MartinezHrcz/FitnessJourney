@@ -1,4 +1,4 @@
-package hu.hm.fitjourneyapi.dto.User;
+package hu.hm.fitjourneyapi.dto.user;
 
 import hu.hm.fitjourneyapi.model.enums.Roles;
 import lombok.AllArgsConstructor;
