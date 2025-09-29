@@ -7,7 +7,8 @@ import lombok.experimental.SuperBuilder;
 import java.time.LocalDate;
 
 @Getter
-@Builder
+@SuperBuilder
+@NoArgsConstructor
 public class UserDTO extends AbstractUserDTO {
     private long id;
     private LocalDate birthday;

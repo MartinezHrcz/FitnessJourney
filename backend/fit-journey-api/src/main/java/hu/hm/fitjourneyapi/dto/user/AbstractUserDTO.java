@@ -5,6 +5,7 @@ import lombok.experimental.SuperBuilder;
 
 @Getter
 @SuperBuilder
+@NoArgsConstructor
 public abstract class AbstractUserDTO {
     private String name;
     private String email;
