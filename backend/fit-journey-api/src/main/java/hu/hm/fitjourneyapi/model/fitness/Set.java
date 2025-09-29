@@ -2,6 +2,7 @@ package hu.hm.fitjourneyapi.model.fitness;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 
 @Entity
@@ -10,6 +11,7 @@ import lombok.*;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@SuperBuilder
 @EqualsAndHashCode
 public abstract class Set {
     @Id

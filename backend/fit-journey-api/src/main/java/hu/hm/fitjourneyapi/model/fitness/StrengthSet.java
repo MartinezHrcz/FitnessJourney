@@ -3,6 +3,7 @@ package hu.hm.fitjourneyapi.model.fitness;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.util.Objects;
 
@@ -10,7 +11,7 @@ import java.util.Objects;
 @Table(name = "STRENGTH_SETS")
 @Getter
 @Setter
-@Builder
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
 public class StrengthSet extends Set{
