@@ -2,13 +2,12 @@ package hu.hm.fitjourneyapi.mapper.fitness;
 
 import hu.hm.fitjourneyapi.dto.fitness.excercise.AbstractExerciseDTO;
 import hu.hm.fitjourneyapi.dto.fitness.excercise.ExerciseCardioSetDTO;
+import hu.hm.fitjourneyapi.dto.fitness.excercise.ExerciseFlexibilitySetDTO;
 import hu.hm.fitjourneyapi.dto.fitness.excercise.ExerciseStrengthSetDTO;
 import hu.hm.fitjourneyapi.dto.fitness.set.CardioSetDTO;
+import hu.hm.fitjourneyapi.dto.fitness.set.FlexibilitySetDTO;
 import hu.hm.fitjourneyapi.dto.fitness.set.StrengthSetDTO;
-import hu.hm.fitjourneyapi.model.fitness.CardioSet;
-import hu.hm.fitjourneyapi.model.fitness.Exercise;
-import hu.hm.fitjourneyapi.model.fitness.StrengthSet;
-import hu.hm.fitjourneyapi.model.fitness.Workout;
+import hu.hm.fitjourneyapi.model.fitness.*;
 
 import java.util.stream.Collectors;
 
@@ -33,7 +32,7 @@ public class ExerciseMapper {
                 ).collect(Collectors.toList())).build();
     }
 
-    public static ExerciseCardioSetDTO exerciseCardioSetDTO(Exercise exercise) {
+    public static ExerciseCardioSetDTO toExerciseCardioSetDTO(Exercise exercise) {
         if (exercise == null && exercise.getSets() == null) return null;
         return ExerciseCardioSetDTO.builder()
                 .id(exercise.getId())
@@ -52,6 +51,26 @@ public class ExerciseMapper {
                         }
                 ).collect(Collectors.toList())).build();
     }
+
+    public static ExerciseFlexibilitySetDTO toExerciseFlexibilitySetDTO(Exercise exercise) {
+        if (exercise == null && exercise.getSets() == null) return null;
+        return ExerciseFlexibilitySetDTO.builder()
+                .id(exercise.getId())
+                .name(exercise.getName())
+                .sets(exercise.getSets().stream().map(
+                        set ->
+                        {
+                            FlexibilitySet flexibilitySet = (FlexibilitySet) set;
+
+                            return FlexibilitySetDTO.builder()
+                                    .id(flexibilitySet.getId())
+                                    .reps(flexibilitySet.getReps())
+                                    .exerciseId(set.getId())
+                                    .build();
+                        }
+                ).collect(Collectors.toList())).build();
+    }
+
 
 
 
