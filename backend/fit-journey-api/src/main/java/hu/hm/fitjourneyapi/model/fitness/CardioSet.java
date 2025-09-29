@@ -3,12 +3,13 @@ package hu.hm.fitjourneyapi.model.fitness;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.util.Objects;
 
 @Entity
 @Table(name = "CARDIO_SETS")
-@Builder
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter

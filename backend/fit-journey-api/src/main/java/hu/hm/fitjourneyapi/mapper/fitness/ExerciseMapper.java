@@ -7,7 +7,6 @@ import hu.hm.fitjourneyapi.dto.fitness.excercise.ExerciseStrengthSetDTO;
 import hu.hm.fitjourneyapi.dto.fitness.set.CardioSetDTO;
 import hu.hm.fitjourneyapi.dto.fitness.set.FlexibilitySetDTO;
 import hu.hm.fitjourneyapi.dto.fitness.set.StrengthSetDTO;
-import hu.hm.fitjourneyapi.model.enums.ExerciseTypes;
 import hu.hm.fitjourneyapi.model.fitness.*;
 
 import java.util.stream.Collectors;
