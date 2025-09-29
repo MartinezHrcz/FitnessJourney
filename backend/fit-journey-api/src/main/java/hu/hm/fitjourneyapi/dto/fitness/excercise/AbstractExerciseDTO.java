@@ -1,9 +1,10 @@
 package hu.hm.fitjourneyapi.dto.fitness.excercise;
 
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 @Getter
-@Builder
+@SuperBuilder
 @NoArgsConstructor
 public abstract class AbstractExerciseDTO {
     private long id;

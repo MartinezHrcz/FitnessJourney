@@ -1,12 +1,12 @@
 package hu.hm.fitjourneyapi.dto.fitness.excercise;
 
 import hu.hm.fitjourneyapi.dto.fitness.set.FlexibilitySetDTO;
-import hu.hm.fitjourneyapi.model.fitness.FlexibilitySet;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.util.List;
 
-@Builder
+@SuperBuilder
 @Getter
 @NoArgsConstructor
 public class ExerciseFlexibilitySetDTO extends AbstractExerciseDTO {
