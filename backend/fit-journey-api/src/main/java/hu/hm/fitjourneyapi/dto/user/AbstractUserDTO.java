@@ -1,10 +1,10 @@
 package hu.hm.fitjourneyapi.dto.user;
 
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 @Getter
-@Builder
-@NoArgsConstructor
+@SuperBuilder
 public abstract class AbstractUserDTO {
     private String name;
     private String email;
