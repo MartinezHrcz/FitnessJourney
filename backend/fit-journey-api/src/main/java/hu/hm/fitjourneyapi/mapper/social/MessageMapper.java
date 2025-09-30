@@ -3,35 +3,28 @@ package hu.hm.fitjourneyapi.mapper.social;
 import hu.hm.fitjourneyapi.dto.social.message.MessageDTO;
 import hu.hm.fitjourneyapi.model.User;
 import hu.hm.fitjourneyapi.model.social.Message;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.Named;
+import org.mapstruct.ReportingPolicy;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class MessageMapper {
+@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
+public interface MessageMapper {
+    @Mapping(source = "sender", target = "senderId", qualifiedByName = "userToId")
+    @Mapping(source = "recipient", target = "recipientId", qualifiedByName = "userToId")
+    MessageDTO toDTO(Message message);
 
-    public static MessageDTO toDTO(Message message) {
-        if (message == null) return null;
-        return MessageDTO
-                .builder()
-                .recipientId(message.getRecipient().getId())
-                .senderId(message.getSender().getId())
-                .content(message.getContent())
-                .sentTime(message.getId())
-                .build();
-    }
+    @Mapping(target = "sender", expression = "java(sender)")
+    @Mapping(target = "recipient", expression = "java(recipient)")
+    Message toMessage(MessageDTO messageDTO,User sender, User recipient);
 
-    public static Message toMessage(MessageDTO messageDTO,User sender, User recipient) {
-        if (messageDTO == null) return null;
-        return Message
-                .builder()
-                .sender(sender)
-                .recipient(recipient)
-                .content(messageDTO.getContent())
-                .build();
-    }
+    List<MessageDTO> toDTO(List<Message> messages);
 
-    public static List<MessageDTO> toDTO(List<Message> messages) {
-        if (messages == null) return null;
-        return messages.stream().map(MessageMapper::toDTO).collect(Collectors.toList());
+    @Named("userToId")
+    static Long userToId(User user) {
+        return user != null ? user.getId() : null;
     }
 }
