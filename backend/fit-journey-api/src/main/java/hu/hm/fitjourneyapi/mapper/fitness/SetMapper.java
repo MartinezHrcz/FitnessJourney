@@ -11,6 +11,8 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
 
+import java.util.List;
+
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface SetMapper {
     @Mapping(target = "exercise", expression = "java(exercise)")
@@ -29,8 +31,10 @@ public interface SetMapper {
     @Mapping(source = "exercise.id", target = "exerciseId")
     CardioSetDTO toCardioSetDTO(CardioSet set);
 
-
     @Mapping(source = "exercise.id", target = "exerciseId")
     FlexibilitySetDTO toFlexibilitySetDTO(FlexibilitySet set);
 
+    List<StrengthSetDTO> toStrengthSetDTOList(List<StrengthSet> sets);
+    List<CardioSetDTO> toCardioSetDTOList(List<CardioSet> sets);
+    List<FlexibilitySetDTO> toFlexibilitySetDTOList(List<FlexibilitySet> sets);
 }
