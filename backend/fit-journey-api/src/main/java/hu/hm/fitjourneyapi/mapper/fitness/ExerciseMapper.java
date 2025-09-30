@@ -8,12 +8,17 @@ import hu.hm.fitjourneyapi.dto.fitness.set.CardioSetDTO;
 import hu.hm.fitjourneyapi.dto.fitness.set.FlexibilitySetDTO;
 import hu.hm.fitjourneyapi.dto.fitness.set.StrengthSetDTO;
 import hu.hm.fitjourneyapi.model.fitness.*;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.ReportingPolicy;
 
 import java.util.stream.Collectors;
 
-public class ExerciseMapper {
-    //ToDO: clean this up
-    public static ExerciseStrengthSetDTO toExerciseStrengthSetDTO(Exercise exercise) {
+
+@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
+public interface ExerciseMapper {
+
+    default ExerciseStrengthSetDTO toExerciseStrengthSetDTO(Exercise exercise) {
         if (exercise == null || exercise.getSets() == null) return null;
         return ExerciseStrengthSetDTO.builder()
                 .id(exercise.getId())
@@ -33,7 +38,7 @@ public class ExerciseMapper {
                 ).collect(Collectors.toList())).build();
     }
 
-    public static ExerciseCardioSetDTO toExerciseCardioSetDTO(Exercise exercise) {
+    default ExerciseCardioSetDTO toExerciseCardioSetDTO(Exercise exercise) {
         if (exercise == null || exercise.getSets() == null) return null;
         return ExerciseCardioSetDTO.builder()
                 .id(exercise.getId())
@@ -54,7 +59,7 @@ public class ExerciseMapper {
                 ).collect(Collectors.toList())).build();
     }
 
-    public static ExerciseFlexibilitySetDTO toExerciseFlexibilitySetDTO(Exercise exercise) {
+    default ExerciseFlexibilitySetDTO toExerciseFlexibilitySetDTO(Exercise exercise) {
         if (exercise == null || exercise.getSets() == null) return null;
         return ExerciseFlexibilitySetDTO.builder()
                 .id(exercise.getId())
@@ -75,17 +80,8 @@ public class ExerciseMapper {
     }
 
 
-    public static Exercise toExercise(AbstractExerciseDTO dto, Workout workout) {
-        if (dto == null) return null;
-        return Exercise.builder()
-                .type(dto.getType())
-                .name(dto.getName())
-                .workout(workout)
-                .name(dto.getName())
-                .description(dto.getDescription())
-                .weightType(dto.getWeightType())
-                .build();
-    }
+    @Mapping(target="workout", expression="java(workout)")
+    Exercise toExercise(AbstractExerciseDTO dto, Workout workout);
 
 
 
