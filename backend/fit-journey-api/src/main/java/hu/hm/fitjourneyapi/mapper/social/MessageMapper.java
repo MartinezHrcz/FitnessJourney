@@ -13,13 +13,15 @@ import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface MessageMapper {
+
     @Mapping(source = "sender", target = "senderId", qualifiedByName = "userToId")
     @Mapping(source = "recipient", target = "recipientId", qualifiedByName = "userToId")
     MessageDTO toDTO(Message message);
 
+    @Mapping(target = "id", ignore = true)
     @Mapping(target = "sender", expression = "java(sender)")
     @Mapping(target = "recipient", expression = "java(recipient)")
-    Message toMessage(MessageDTO messageDTO,User sender, User recipient);
+    Message toMessage(MessageDTO dto,User sender, User recipient);
 
     List<MessageDTO> toDTO(List<Message> messages);
 

@@ -15,22 +15,27 @@ import java.util.List;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface SetMapper {
+    @Mapping(source="dto.id", target = "id")
     @Mapping(target = "exercise", expression = "java(exercise)")
     StrengthSet toStrengthSet(StrengthSetDTO dto, Exercise exercise);
 
+    @Mapping(source="dto.id", target = "id")
     @Mapping(target = "exercise", expression = "java(exercise)")
     CardioSet toCardioSet(CardioSetDTO dto, Exercise exercise);
 
+    @Mapping(source="dto.id", target = "id")
     @Mapping(target = "exercise", expression = "java(exercise)")
     FlexibilitySet toFlexibilitySet(FlexibilitySetDTO dto, Exercise exercise);
 
+    @Mapping(source="set.id", target = "id")
     @Mapping(source = "exercise.id", target = "exerciseId")
     StrengthSetDTO toStrengthSetDTO(StrengthSet set);
 
-
+    @Mapping(source="set.id", target = "id")
     @Mapping(source = "exercise.id", target = "exerciseId")
     CardioSetDTO toCardioSetDTO(CardioSet set);
 
+    @Mapping(source="set.id", target = "id")
     @Mapping(source = "exercise.id", target = "exerciseId")
     FlexibilitySetDTO toFlexibilitySetDTO(FlexibilitySet set);
 

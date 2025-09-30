@@ -20,8 +20,9 @@ public interface PostMapper {
 
     List<PostDTO> toListPostDTO(List<Post> posts);
 
+    @Mapping(source = "dto.id", target = "id")
     @Mapping(target = "user", expression = "java(user)")
-    Post toPost(PostDTO postDTO, User user);
+    Post toPost(PostDTO dto, User user);
 
     @Named("userToId")
     static Long userToId(User user) {

@@ -12,15 +12,17 @@ import java.util.List;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface FriendMapper {
+    @Mapping(source="id", target = "id")
     @Mapping(source="user", target= "userId", qualifiedByName = "userToId")
     @Mapping(source="friend", target= "friendId", qualifiedByName = "userToId")
     FriendDTO toFriendDTO(Friend friend);
 
     List<FriendDTO> toListFriendDTO(List<Friend> friends);
 
+    @Mapping(target="id", ignore = true)
     @Mapping(target = "user", expression = "java(user)")
     @Mapping(target = "friend", expression = "java(friend)")
-    Friend toFriend(FriendDTO friendDTO, User user, User friend  );
+    Friend toFriend(FriendDTO dto, User user, User friend  );
 
     @Named("userToId")
     static Long userToId(User user) {

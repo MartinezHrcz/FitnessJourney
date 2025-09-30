@@ -80,6 +80,9 @@ public interface ExerciseMapper {
     }
 
 
+    @Mapping(source ="dto.id", target = "id")
+    @Mapping(source="dto.name", target = "name")
+    @Mapping(source = "dto.description", target = "description")
     @Mapping(target="workout", expression="java(workout)")
     Exercise toExercise(AbstractExerciseDTO dto, Workout workout);
 
