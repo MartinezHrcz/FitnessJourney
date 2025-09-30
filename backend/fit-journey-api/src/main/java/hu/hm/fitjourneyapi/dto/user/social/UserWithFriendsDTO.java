@@ -10,6 +10,7 @@ import java.util.List;
 @Getter
 @Builder
 @NoArgsConstructor
+@AllArgsConstructor
 public class UserWithFriendsDTO extends AbstractUserDTO {
     private long id;
     private List<FriendDTO> friends;

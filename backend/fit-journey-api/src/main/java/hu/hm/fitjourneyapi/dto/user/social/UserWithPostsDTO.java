@@ -9,6 +9,7 @@ import java.util.List;
 @Getter
 @Builder
 @NoArgsConstructor
+@AllArgsConstructor
 public class UserWithPostsDTO extends AbstractUserDTO {
     private long id;
     private List<Post> posts;

@@ -6,6 +6,7 @@ import lombok.*;
 @Getter
 @Builder
 @NoArgsConstructor
+@AllArgsConstructor
 public class UserPasswordUpdateDTO {
     private long id;
     private String passwordOld;

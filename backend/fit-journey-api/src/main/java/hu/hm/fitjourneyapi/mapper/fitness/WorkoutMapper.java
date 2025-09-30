@@ -4,24 +4,23 @@ import hu.hm.fitjourneyapi.dto.fitness.workout.WorkoutCreateDTO;
 import hu.hm.fitjourneyapi.dto.fitness.workout.WorkoutDTO;
 import hu.hm.fitjourneyapi.model.User;
 import hu.hm.fitjourneyapi.model.fitness.Workout;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.Named;
+import org.mapstruct.ReportingPolicy;
 
-public class WorkoutMapper {
-    public static WorkoutDTO toDTO(Workout workout) {
-        if(workout == null) return null;
-        return WorkoutDTO.builder()
-                .name(workout.getName())
-                .description(workout.getDescription())
-                .exercises(workout.getExercises())
-                .lengthInMins(workout.getLengthInMins())
-                .userId(workout.getUser().getId())
-                .build();
-    }
-    public static Workout toWorkout(WorkoutCreateDTO dto, User user) {
-        if(dto == null) return null;
-        return Workout.builder()
-                .user(user)
-                .name(dto.getName())
-                .description(dto.getDescription()).build();
+@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
+public interface WorkoutMapper {
+    @Mapping(source = "user", target = "userId", qualifiedByName = "userToId")
+    WorkoutDTO toDTO(Workout workout);
 
+    @Mapping(source = "dto.name", target = "name")
+    @Mapping(source = "dto.description", target = "description")
+    @Mapping(target = "user", expression = "java(user)")
+    Workout toWorkout(WorkoutCreateDTO dto, User user);
+
+    @Named("userToId")
+    static Long userToId(User user) {
+        return user != null ? user.getId() : null;
     }
 }
