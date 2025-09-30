@@ -7,56 +7,30 @@ import hu.hm.fitjourneyapi.model.fitness.CardioSet;
 import hu.hm.fitjourneyapi.model.fitness.Exercise;
 import hu.hm.fitjourneyapi.model.fitness.FlexibilitySet;
 import hu.hm.fitjourneyapi.model.fitness.StrengthSet;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.ReportingPolicy;
 
-public class SetMapper {
-    public StrengthSet toStrengthSet(StrengthSetDTO dto, Exercise exercise) {
-        return StrengthSet.builder()
-                .exercise(exercise)
-                .reps(dto.getReps())
-                .weight(dto.getWeight())
-                .build();
-    }
-    public CardioSet toCardioSet(CardioSetDTO dto, Exercise exercise) {
-        return CardioSet.builder()
-                .exercise(exercise)
-                .durationInSeconds(dto.getDurationInSeconds())
-                .distanceInKm(dto.getDistanceInKilometers())
-                .build();
-    }
-    public FlexibilitySet toFlexibilitySet(FlexibilitySetDTO dto, Exercise exercise) {
-        return FlexibilitySet.builder()
-                .exercise(exercise)
-                .reps(dto.getReps())
-                .build();
-    }
+@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
+public interface SetMapper {
+    @Mapping(target = "exercise", expression = "java(exercise)")
+    StrengthSet toStrengthSet(StrengthSetDTO dto, Exercise exercise);
 
-    public StrengthSetDTO toStrengthSetDTO(StrengthSet set) {
-        return StrengthSetDTO
-                .builder()
-                .id(set.getId())
-                .exerciseId(set.getExercise().getId())
-                .reps(set.getReps())
-                .weight(set.getWeight())
-                .build();
-    }
+    @Mapping(target = "exercise", expression = "java(exercise)")
+    CardioSet toCardioSet(CardioSetDTO dto, Exercise exercise);
 
-    public CardioSetDTO toCardioSetDTO(CardioSet set) {
-        return CardioSetDTO
-                .builder()
-                .id(set.getId())
-                .exerciseId(set.getId())
-                .distanceInKilometers(set.getDistanceInKm())
-                .durationInSeconds(set.getDurationInSeconds())
-                .build();
-    }
+    @Mapping(target = "exercise", expression = "java(exercise)")
+    FlexibilitySet toFlexibilitySet(FlexibilitySetDTO dto, Exercise exercise);
 
-    public FlexibilitySetDTO toFlexibilitySetDTO(FlexibilitySet set) {
-        return FlexibilitySetDTO
-                .builder()
-                .id(set.getId())
-                .reps(set.getReps())
-                .exerciseId(set.getExercise().getId())
-                .build();
-    }
+    @Mapping(source = "exercise.id", target = "exerciseId")
+    StrengthSetDTO toStrengthSetDTO(StrengthSet set);
+
+
+    @Mapping(source = "exercise.id", target = "exerciseId")
+    CardioSetDTO toCardioSetDTO(CardioSet set);
+
+
+    @Mapping(source = "exercise.id", target = "exerciseId")
+    FlexibilitySetDTO toFlexibilitySetDTO(FlexibilitySet set);
 
 }
