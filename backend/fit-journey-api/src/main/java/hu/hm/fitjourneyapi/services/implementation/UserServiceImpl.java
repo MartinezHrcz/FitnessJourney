@@ -56,12 +56,17 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDTO getUserById(long id) {
-        return null;
+        User user = userRepository.findUserById(id).orElseThrow(
+                () -> new UserNotFound("User not found with id: " + id));
+        return userMapper.toUserDTO(user);
     }
 
     @Override
     public UserDTO getUserByEmail(String email) {
-        return null;
+        User user = userRepository.findUserByEmail(email).orElseThrow(
+                () -> new UserNotFound("User not found with email: " + email)
+        );
+        return userMapper.toUserDTO(user);
     }
 
     @Override
