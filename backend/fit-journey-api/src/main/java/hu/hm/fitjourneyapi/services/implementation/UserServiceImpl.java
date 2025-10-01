@@ -7,11 +7,13 @@ import hu.hm.fitjourneyapi.dto.user.UserUpdateDTO;
 import hu.hm.fitjourneyapi.dto.user.fitness.UserWithWorkoutsDTO;
 import hu.hm.fitjourneyapi.dto.user.social.UserWithFriendsDTO;
 import hu.hm.fitjourneyapi.dto.user.social.UserWithPostsDTO;
+import hu.hm.fitjourneyapi.exception.fitness.userExceptions.IncorrectPassword;
 import hu.hm.fitjourneyapi.exception.fitness.userExceptions.UserNotFound;
 import hu.hm.fitjourneyapi.mapper.UserMapper;
 import hu.hm.fitjourneyapi.model.User;
 import hu.hm.fitjourneyapi.repository.UserRepository;
 import hu.hm.fitjourneyapi.services.interfaces.UserService;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,15 +23,20 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserServiceImpl(UserRepository userRepository, UserMapper userMapper) {
+    public UserServiceImpl(UserRepository userRepository,
+                           UserMapper userMapper,
+                           PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.userMapper = userMapper;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
     public UserDTO createUser(UserCreateDTO userCreateDTO) {
         User user = userMapper.toUser(userCreateDTO);
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         user = userRepository.save(user);
         return userMapper.toUserDTO(user);
     }
@@ -51,7 +58,17 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDTO updatePassword(UserPasswordUpdateDTO userPasswordUpdateDTO) {
-        return null;
+        User userToUpdate = userRepository.findById(userPasswordUpdateDTO.getId()).orElseThrow(
+                () -> new UserNotFound("User not found with id:" + userPasswordUpdateDTO.getId())
+        );
+
+        if (!passwordEncoder.matches(userToUpdate.getPassword(), userPasswordUpdateDTO.getPasswordOld())){
+            throw new IncorrectPassword("Old password doesn't match");
+        }
+
+        userToUpdate.setPassword(passwordEncoder.encode(userPasswordUpdateDTO.getPasswordNew()));
+        userToUpdate = userRepository.save(userToUpdate);
+        return userMapper.toUserDTO(userToUpdate);
     }
 
     @Override
