@@ -15,6 +15,7 @@ import hu.hm.fitjourneyapi.repository.UserRepository;
 import hu.hm.fitjourneyapi.services.interfaces.UserService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -33,6 +34,7 @@ public class UserServiceImpl implements UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
+    @Transactional
     @Override
     public UserDTO createUser(UserCreateDTO userCreateDTO) {
         User user = userMapper.toUser(userCreateDTO);
@@ -41,6 +43,7 @@ public class UserServiceImpl implements UserService {
         return userMapper.toUserDTO(user);
     }
 
+    @Transactional
     @Override
     public UserDTO updateUser(UserUpdateDTO userUpdateDTO) {
         User userToUpdate = userRepository.findById(userUpdateDTO.getId()).orElseThrow(
@@ -56,6 +59,7 @@ public class UserServiceImpl implements UserService {
         return userMapper.toUserDTO(userToUpdate);
     }
 
+    @Transactional
     @Override
     public UserDTO updatePassword(UserPasswordUpdateDTO userPasswordUpdateDTO) {
         User userToUpdate = userRepository.findById(userPasswordUpdateDTO.getId()).orElseThrow(
@@ -71,6 +75,7 @@ public class UserServiceImpl implements UserService {
         return userMapper.toUserDTO(userToUpdate);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public UserDTO getUserById(long id) {
         User user = userRepository.findUserById(id).orElseThrow(
@@ -78,6 +83,7 @@ public class UserServiceImpl implements UserService {
         return userMapper.toUserDTO(user);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public UserDTO getUserByEmail(String email) {
         User user = userRepository.findUserByEmail(email).orElseThrow(
@@ -86,18 +92,21 @@ public class UserServiceImpl implements UserService {
         return userMapper.toUserDTO(user);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<UserDTO> getAllUsers() {
         List<User> users = userRepository.findAll();
         return userMapper.toUserDTOList(users);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<UserDTO> getUsersByName(String name) {
         List<User> users = userRepository.findUsersByName(name);
         return userMapper.toUserDTOList(users);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public UserWithWorkoutsDTO getUserWithWorkoutsById(long id) {
         User user = userRepository.findUserById(id).orElseThrow(
@@ -106,6 +115,7 @@ public class UserServiceImpl implements UserService {
         return userMapper.toUserWithWorkoutsDTO(user);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public UserWithFriendsDTO getUserWithFriendsById(long id) {
         User user = userRepository.findUserById(id).orElseThrow(
@@ -114,6 +124,7 @@ public class UserServiceImpl implements UserService {
         return userMapper.toUserWithFriendsDTO(user);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public UserWithPostsDTO getUserWithPostsById(long id) {
         User user = userRepository.findUserById(id).orElseThrow(
@@ -122,6 +133,7 @@ public class UserServiceImpl implements UserService {
         return userMapper.toUserWithPostsDTO(user);
     }
 
+    @Transactional
     @Override
     public void deleteUser(long id) {
         User user = userRepository.findUserById(id).orElseThrow(
