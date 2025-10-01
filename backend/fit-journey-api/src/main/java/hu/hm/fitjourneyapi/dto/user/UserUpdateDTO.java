@@ -8,4 +8,5 @@ import lombok.*;
 @AllArgsConstructor
 public class UserUpdateDTO extends AbstractUserDTO {
     private long id;
+
 }
