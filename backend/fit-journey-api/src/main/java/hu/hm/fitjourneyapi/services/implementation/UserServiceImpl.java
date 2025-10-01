@@ -7,6 +7,10 @@ import hu.hm.fitjourneyapi.dto.user.UserUpdateDTO;
 import hu.hm.fitjourneyapi.dto.user.fitness.UserWithWorkoutsDTO;
 import hu.hm.fitjourneyapi.dto.user.social.UserWithFriendsDTO;
 import hu.hm.fitjourneyapi.dto.user.social.UserWithPostsDTO;
+import hu.hm.fitjourneyapi.exception.fitness.userExceptions.UserNotFound;
+import hu.hm.fitjourneyapi.mapper.UserMapper;
+import hu.hm.fitjourneyapi.model.User;
+import hu.hm.fitjourneyapi.repository.UserRepository;
 import hu.hm.fitjourneyapi.services.interfaces.UserService;
 import org.springframework.stereotype.Service;
 
@@ -15,14 +19,34 @@ import java.util.List;
 @Service
 public class UserServiceImpl implements UserService {
 
+    private final UserRepository userRepository;
+    private final UserMapper userMapper;
+
+    public UserServiceImpl(UserRepository userRepository, UserMapper userMapper) {
+        this.userRepository = userRepository;
+        this.userMapper = userMapper;
+    }
+
     @Override
     public UserDTO createUser(UserCreateDTO userCreateDTO) {
-        return null;
+        User user = userMapper.toUser(userCreateDTO);
+        user = userRepository.save(user);
+        return userMapper.toUserDTO(user);
     }
 
     @Override
     public UserDTO updateUser(UserUpdateDTO userUpdateDTO) {
-        return null;
+        User userToUpdate = userRepository.findById(userUpdateDTO.getId()).orElseThrow(
+                () -> new UserNotFound("User not found with id:" + userUpdateDTO.getId())
+        );
+        userToUpdate.setName(userUpdateDTO.getName());
+        userToUpdate.setEmail(userUpdateDTO.getEmail());
+        userToUpdate.setBirthday(userUpdateDTO.getBirthday());
+        userToUpdate.setHeightInCm(userUpdateDTO.getHeightInCm());
+        userToUpdate.setWeightInKg(userUpdateDTO.getWeightInKg());
+
+        userToUpdate = userRepository.save(userToUpdate);
+        return userMapper.toUserDTO(userToUpdate);
     }
 
     @Override
