@@ -71,27 +71,38 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserDTO> getAllUsers() {
-        return List.of();
+        List<User> users = userRepository.findAll();
+        return userMapper.toUserDTOList(users);
     }
 
     @Override
     public List<UserDTO> getUsersByName(String name) {
-        return List.of();
+        List<User> users = userRepository.findUsersByName(name);
+        return userMapper.toUserDTOList(users);
     }
 
     @Override
     public UserWithWorkoutsDTO getUserWithWorkoutsById(long id) {
-        return null;
+        User user = userRepository.findUserById(id).orElseThrow(
+                () -> new UserNotFound("User not found with id: " + id)
+        );
+        return userMapper.toUserWithWorkoutsDTO(user);
     }
 
     @Override
     public UserWithFriendsDTO getUserWithFriendsById(long id) {
-        return null;
+        User user = userRepository.findUserById(id).orElseThrow(
+                () -> new UserNotFound("User not found with id: " + id)
+        );
+        return userMapper.toUserWithFriendsDTO(user);
     }
 
     @Override
     public UserWithPostsDTO getUserWithPostsById(long id) {
-        return null;
+        User user = userRepository.findUserById(id).orElseThrow(
+                () -> new UserNotFound("User not found with id: " + id)
+        );
+        return userMapper.toUserWithPostsDTO(user);
     }
 
     @Override
