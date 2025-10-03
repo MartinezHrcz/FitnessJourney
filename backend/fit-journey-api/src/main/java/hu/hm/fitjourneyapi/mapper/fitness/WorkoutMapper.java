@@ -9,10 +9,14 @@ import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 import org.mapstruct.ReportingPolicy;
 
+import java.util.List;
+
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface WorkoutMapper {
     @Mapping(source = "user", target = "userId", qualifiedByName = "userToId")
     WorkoutDTO toDTO(Workout workout);
+
+    List<WorkoutDTO> toDTOList(List<Workout> workouts);
 
     @Mapping(source = "dto.name", target = "name")
     @Mapping(source = "dto.description", target = "description")
