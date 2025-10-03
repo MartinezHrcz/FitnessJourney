@@ -46,6 +46,7 @@ public class WorkoutServiceImpl implements WorkoutService {
         return workoutMapper.toDTO(workout);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public WorkoutDTO getWorkoutByWorkoutId(long id) {
         log.debug("Fetching workout with id: {}", id);
@@ -60,6 +61,7 @@ public class WorkoutServiceImpl implements WorkoutService {
         return workoutMapper.toDTO(workout);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<WorkoutDTO> getWorkouts() {
         log.debug("Fetching workouts");
@@ -69,6 +71,7 @@ public class WorkoutServiceImpl implements WorkoutService {
         return workoutDTOs;
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<WorkoutDTO> getWorkoutByUserId(long id) {
         log.debug("Fetching workout by user id: {}", id);
@@ -78,6 +81,7 @@ public class WorkoutServiceImpl implements WorkoutService {
         return workoutDTOs;
     }
 
+    @Transactional
     @Override
     public WorkoutDTO updateWorkout(WorkoutDTO workoutDTO) {
         log.debug("Updating workout {}", workoutDTO.getId());
@@ -101,6 +105,7 @@ public class WorkoutServiceImpl implements WorkoutService {
         return workoutMapper.toDTO(workout);
     }
 
+    @Transactional
     @Override
     public void deleteWorkoutById(long id) {
         log.debug("Deleting workout {}", id);
