@@ -8,9 +8,9 @@ import hu.hm.fitjourneyapi.dto.fitness.set.StrengthSetDTO;
 import java.util.List;
 
 public interface SetService {
+
     AbstractSetDTO getSetBySetId(long id);
     List<AbstractSetDTO> getSets();
-    List<AbstractSetDTO> getSetsByUserId(long id);
 
     StrengthSetDTO createStrengthSet(StrengthSetDTO strengthSetDTO);
     FlexibilitySetDTO createFlexibilitySet(FlexibilitySetDTO flexibilitySet);
