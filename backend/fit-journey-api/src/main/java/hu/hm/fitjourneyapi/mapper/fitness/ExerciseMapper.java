@@ -7,11 +7,14 @@ import hu.hm.fitjourneyapi.dto.fitness.excercise.ExerciseStrengthSetDTO;
 import hu.hm.fitjourneyapi.dto.fitness.set.CardioSetDTO;
 import hu.hm.fitjourneyapi.dto.fitness.set.FlexibilitySetDTO;
 import hu.hm.fitjourneyapi.dto.fitness.set.StrengthSetDTO;
+import hu.hm.fitjourneyapi.exception.setExceptions.InvalidSetType;
+import hu.hm.fitjourneyapi.model.enums.ExerciseTypes;
 import hu.hm.fitjourneyapi.model.fitness.*;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 
@@ -30,7 +33,7 @@ public interface ExerciseMapper {
                                 StrengthSet strengthSet = (StrengthSet) set;
                                 return StrengthSetDTO.builder()
                                         .id(strengthSet.getId())
-                                        .exerciseId(strengthSet.getExercise().getId())
+                                        .exerciseId(exercise.getId())
                                         .reps(strengthSet.getReps())
                                         .weight(strengthSet.getWeight())
                                         .build();
@@ -53,7 +56,7 @@ public interface ExerciseMapper {
                                     .id(cardioSet.getId())
                                     .distanceInKilometers(cardioSet.getDistanceInKm())
                                     .durationInSeconds(cardioSet.getDurationInSeconds())
-                                    .exerciseId(set.getId())
+                                    .exerciseId(exercise.getId())
                                     .build();
                         }
                 ).collect(Collectors.toList())).build();
@@ -73,7 +76,7 @@ public interface ExerciseMapper {
                             return FlexibilitySetDTO.builder()
                                     .id(flexibilitySet.getId())
                                     .reps(flexibilitySet.getReps())
-                                    .exerciseId(set.getId())
+                                    .exerciseId(exercise.getId())
                                     .build();
                         }
                 ).collect(Collectors.toList())).build();
@@ -86,6 +89,24 @@ public interface ExerciseMapper {
     @Mapping(target="workout", expression="java(workout)")
     Exercise toExercise(AbstractExerciseDTO dto, Workout workout);
 
+    List<Exercise> toExercises(List<AbstractExerciseDTO> exerciseDTOS, Workout workout);
+
+    default List<AbstractExerciseDTO> toExerciseDTOs(List<Exercise> exercises){
+        if (exercises == null || exercises.isEmpty()) return null;
+
+        return exercises.stream()
+                .map(
+                        exercise ->
+                        {
+                            switch (exercise.getType()){
+                                case ExerciseTypes.RESISTANCE, ExerciseTypes.BODYWEIGHT, NOT_GIVEN: return toExerciseStrengthSetDTO(exercise);
+                                case ExerciseTypes.CARDIO: return toExerciseCardioSetDTO(exercise);
+                                case ExerciseTypes.FLEXIBILITY: return toExerciseFlexibilitySetDTO(exercise);
+                                default: throw new InvalidSetType("Incorrect exercise type " + exercise.getType());
+                            }
+                        }
+                ).collect(Collectors.toList());
+    }
 
 
 }
