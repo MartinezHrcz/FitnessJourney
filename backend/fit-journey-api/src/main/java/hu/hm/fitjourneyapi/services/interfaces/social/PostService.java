@@ -1,4 +1,4 @@
-package hu.hm.fitjourneyapi.services.interfaces;
+package hu.hm.fitjourneyapi.services.interfaces.social;
 
 import hu.hm.fitjourneyapi.dto.social.post.PostDTO;
 

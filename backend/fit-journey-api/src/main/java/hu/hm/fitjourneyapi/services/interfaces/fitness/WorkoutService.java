@@ -1,8 +1,7 @@
-package hu.hm.fitjourneyapi.services.interfaces;
+package hu.hm.fitjourneyapi.services.interfaces.fitness;
 
 import hu.hm.fitjourneyapi.dto.fitness.workout.WorkoutCreateDTO;
 import hu.hm.fitjourneyapi.dto.fitness.workout.WorkoutDTO;
-import hu.hm.fitjourneyapi.model.fitness.Workout;
 
 import java.util.List;
 

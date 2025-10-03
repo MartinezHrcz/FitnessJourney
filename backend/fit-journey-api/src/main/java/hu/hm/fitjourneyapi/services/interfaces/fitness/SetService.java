@@ -1,4 +1,4 @@
-package hu.hm.fitjourneyapi.services.interfaces;
+package hu.hm.fitjourneyapi.services.interfaces.fitness;
 
 import hu.hm.fitjourneyapi.dto.fitness.set.AbstractSetDTO;
 import hu.hm.fitjourneyapi.dto.fitness.set.CardioSetDTO;
