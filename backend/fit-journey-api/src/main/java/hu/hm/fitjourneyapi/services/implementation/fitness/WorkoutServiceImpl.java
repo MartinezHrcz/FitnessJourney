@@ -14,7 +14,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -36,7 +35,10 @@ public class WorkoutServiceImpl implements WorkoutService {
     public WorkoutDTO createWorkout(WorkoutCreateDTO workoutCreateDTO) {
         log.debug("Attempting to create workout {}", workoutCreateDTO.getName());
         User user = userRepository.findById(workoutCreateDTO.getUserId()).orElseThrow(
-                () -> new UserNotFound("User not found with id " + workoutCreateDTO.getUserId())
+                () -> {
+                    log.warn("User not found for id {}", workoutCreateDTO.getUserId());
+                    return new UserNotFound("User not found with id " + workoutCreateDTO.getUserId());
+                }
         );
         Workout workout = workoutMapper.toWorkout(workoutCreateDTO, user);
         workout = workoutRepository.save(workout);
@@ -48,7 +50,11 @@ public class WorkoutServiceImpl implements WorkoutService {
     public WorkoutDTO getWorkoutByWorkoutId(long id) {
         log.debug("Fetching workout with id: {}", id);
         Workout workout = workoutRepository.findById(id).orElseThrow(
-                () -> new WorkoutNotFound("Workout not found with id " + id)
+                () ->
+                {
+                    log.warn("Workout with id {} not found", id);
+                    return new WorkoutNotFound("Workout not found with id " + id);
+                }
         );
         log.debug("Fetched workout with id: {}", workout.getId());
         return workoutMapper.toDTO(workout);
@@ -65,16 +71,46 @@ public class WorkoutServiceImpl implements WorkoutService {
 
     @Override
     public List<WorkoutDTO> getWorkoutByUserId(long id) {
-        return List.of();
+        log.debug("Fetching workout by user id: {}", id);
+        List<Workout> workouts = workoutRepository.findWorkoutsByUser_Id(id);
+        List<WorkoutDTO> workoutDTOs = workoutMapper.toDTOList(workouts);
+        log.debug("Fetched workouts by user id: {}", id);
+        return workoutDTOs;
     }
 
     @Override
     public WorkoutDTO updateWorkout(WorkoutDTO workoutDTO) {
-        return null;
+        log.debug("Updating workout {}", workoutDTO.getId());
+        Workout workout = workoutRepository.findById(workoutDTO.getId()).orElseThrow(
+                () -> {
+                    log.warn("Workout with id {} not found", workoutDTO.getId());
+                    return new WorkoutNotFound("Workout not found with id " + workoutDTO.getId());
+                    }
+                );
+        workout.setName(workoutDTO.getName());
+        workout.setDescription(workoutDTO.getDescription());
+        User user = userRepository.findById(workoutDTO.getUserId()).orElseThrow(
+                () -> {
+                    log.warn("user not found with id " + workoutDTO.getUserId());
+                    return new UserNotFound("User not found with id " + workoutDTO.getUserId());
+                }
+        );
+        workout.setUser(user);
+        workout = workoutRepository.save(workout);
+        log.info("Updated workout {} with id {}", workoutDTO.getName(), workoutDTO.getId());
+        return workoutMapper.toDTO(workout);
     }
 
     @Override
     public void deleteWorkoutById(long id) {
-
+        log.debug("Deleting workout {}", id);
+        Workout workout = workoutRepository.findById(id).orElseThrow(
+                ()->{
+                    log.warn("Workout with id {} not found", id);
+                    return new WorkoutNotFound("Workout not found with id " + id);
+                }
+        );
+        workoutRepository.delete(workout);
+        log.info("Deleted workout {}", id);
     }
 }
