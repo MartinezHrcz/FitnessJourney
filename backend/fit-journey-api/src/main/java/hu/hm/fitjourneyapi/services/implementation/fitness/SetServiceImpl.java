@@ -28,7 +28,6 @@ public class SetServiceImpl implements SetService {
     private final FlexibilitySetRepository flexibilitySetRepository;
     private final ExerciseRepository exerciseRepository;
     private final SetMapper setMapper;
-    private final UserRepository userRepository;
 
     public SetServiceImpl(SetRepository setRepository, StrengthSetRepository strengthSetRepository, CardioSetRepository cardioSetRepository, FlexibilitySetRepository flexibilitySetRepository, ExerciseRepository exerciseRepository, SetMapper setMapper, UserRepository userRepository) {
         this.setRepository = setRepository;
@@ -37,7 +36,6 @@ public class SetServiceImpl implements SetService {
         this.flexibilitySetRepository = flexibilitySetRepository;
         this.exerciseRepository = exerciseRepository;
         this.setMapper = setMapper;
-        this.userRepository = userRepository;
     }
 
 
@@ -81,6 +79,7 @@ public class SetServiceImpl implements SetService {
     }
 
 
+    @Transactional
     @Override
     public StrengthSetDTO createStrengthSet(StrengthSetDTO strengthSetDTO) {
         log.debug("Creating strength set with id: {}", strengthSetDTO.getId());
@@ -93,6 +92,7 @@ public class SetServiceImpl implements SetService {
         return setMapper.toStrengthSetDTO(set);
     }
 
+    @Transactional
     @Override
     public FlexibilitySetDTO createFlexibilitySet(FlexibilitySetDTO flexibilitySet) {
         log.debug("Creating strength set with id: {}", flexibilitySet.getId());
@@ -105,6 +105,7 @@ public class SetServiceImpl implements SetService {
         return setMapper.toFlexibilitySetDTO(set);
     }
 
+    @Transactional
     @Override
     public CardioSetDTO createCardioSet(CardioSetDTO cardioSet) {
         log.debug("Creating cardio set");
@@ -117,6 +118,7 @@ public class SetServiceImpl implements SetService {
         return setMapper.toCardioSetDTO(set);
     }
 
+    @Transactional
     @Override
     public StrengthSetDTO updateStrengthSet(StrengthSetDTO strengthSetDTO) {
         log.debug("Updating strength set with id: {}", strengthSetDTO.getId());
@@ -130,6 +132,7 @@ public class SetServiceImpl implements SetService {
         return setMapper.toStrengthSetDTO(set);
     }
 
+    @Transactional
     @Override
     public FlexibilitySetDTO updateFlexibilitySet(FlexibilitySetDTO flexibilitySet) {
         log.debug("Updating flexibility set with id: {}", flexibilitySet.getId());
@@ -142,6 +145,7 @@ public class SetServiceImpl implements SetService {
         return setMapper.toFlexibilitySetDTO(set);
     }
 
+    @Transactional
     @Override
     public CardioSetDTO updateCardioSet(CardioSetDTO cardioSet) {
         log.debug("Updating cardio set with id: {}", cardioSet.getId());
@@ -156,6 +160,7 @@ public class SetServiceImpl implements SetService {
         return setMapper.toCardioSetDTO(set);
     }
 
+    @Transactional
     @Override
     public void deleteSetById(long id) {
         log.debug("Deleting set with id: {}", id);
