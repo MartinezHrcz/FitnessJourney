@@ -1,4 +1,4 @@
-package hu.hm.fitjourneyapi.exception.fitness.setExceptions;
+package hu.hm.fitjourneyapi.exception.setExceptions;
 
 public class InvalidSetType extends RuntimeException {
     public InvalidSetType(String message) {
