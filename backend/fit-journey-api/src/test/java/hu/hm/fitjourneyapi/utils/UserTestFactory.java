@@ -22,6 +22,7 @@ public class UserTestFactory {
 
     public static UserDTO getUserDTO() {
         UserDTO dto = UserDTO.builder()
+                .id(1L)
                 .name("Test name")
                 .email("user@gmail.com")
                 .heightInCm(180)
@@ -33,6 +34,7 @@ public class UserTestFactory {
 
     public static User getUser() {
         User user = User.builder()
+                .id(1L)
                 .name("Test name")
                 .email("user@gmail.com")
                 .heightInCm(180)
