@@ -140,7 +140,6 @@ public class UserServiceTests {
     void testDeleteUser_fail() {
         when(userRepository.findUserById(user.getId())).thenReturn(Optional.empty());
         assertThrows(UserNotFound.class, () -> userService.deleteUser(user.getId()));
-        verify(userRepository, times(1)).delete(user);
     }
 
     @Test
@@ -196,12 +195,25 @@ public class UserServiceTests {
         assertEquals(result.getPosts().getFirst().getContent(), postDTO.getContent());
     }
 
+    @Test
     void testGetUserByEmail_success() {
-
+        when(userRepository.findUserByEmail(user.getEmail())).thenReturn(Optional.of(user));
+        UserDTO dto = userService.getUserByEmail(user.getEmail());
+        assertNotNull(dto);
+        assertEquals(1L, dto.getId());
+        assertEquals(user.getName(), dto.getName());
+        assertEquals(user.getEmail(), dto.getEmail());
     }
 
-    void testGetUserByUsername_success() {
-
+    @Test
+    void testGetUsersByUsername_success() {
+        when(userRepository.findUsersByName(anyString())).thenReturn(List.of(user));
+        when(userMapper.toUserDTOList(List.of(user))).thenReturn(List.of(userDTO));
+        List<UserDTO> dto = userService.getUsersByName(user.getName());
+        assertNotNull(dto);
+        assertEquals(1, dto.size());
+        assertEquals(user.getName(), dto.getFirst().getName());
+        assertEquals(user.getEmail(), dto.getFirst().getEmail());
     }
 
 
