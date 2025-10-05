@@ -5,6 +5,7 @@ import hu.hm.fitjourneyapi.dto.user.UserCreateDTO;
 import hu.hm.fitjourneyapi.dto.user.UserDTO;
 import hu.hm.fitjourneyapi.dto.user.UserPasswordUpdateDTO;
 import hu.hm.fitjourneyapi.dto.user.UserUpdateDTO;
+import hu.hm.fitjourneyapi.dto.user.fitness.UserWithWorkoutsDTO;
 import hu.hm.fitjourneyapi.exception.userExceptions.UserNotFound;
 import hu.hm.fitjourneyapi.mapper.UserMapper;
 import hu.hm.fitjourneyapi.model.User;
@@ -149,8 +150,18 @@ public class UserServiceTests {
         }
     }
 
+    @Test
     void testGetUserWithWorkout_success() {
-        
+        when(userRepository.findUserById(1L)).thenReturn(Optional.of(user));
+        when(userMapper.toUserWithWorkoutsDTO(user)).thenReturn(UserTestFactory.getUserWithWorkoutsDTO());
+        UserWithWorkoutsDTO result = userService.getUserWithWorkoutsById(1L);
+        assertNotNull(result);
+        assertEquals(1L, result.getId());
+        assertEquals(user.getName(), result.getName());
+        assertEquals(user.getEmail(), result.getEmail());
+        assertEquals(user.getWeightInKg(), result.getWeightInKg());
+        assertEquals(user.getWorkouts().getFirst().getName(), result.getWorkouts().getFirst().getName());
+        assertEquals(user.getWorkouts().getFirst().getUser().getId(), result.getWorkouts().getFirst().getUserId());
     }
 
     void testGetUserWithFriends_success() {
