@@ -20,7 +20,11 @@ public class FriendsTestFactory {
         return friendDTO;
     }
 
-    public static Friend getFriend(User user1, User user2) {
+    public static Friend getFriend(User user1) {
+        User user2 = user1;
+        user2.setId(2L);
+        user2.setName("Friend Name");
+
         Friend friend = Friend
                 .builder()
                 .user(user1)

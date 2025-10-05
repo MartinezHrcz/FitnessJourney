@@ -3,6 +3,7 @@ package hu.hm.fitjourneyapi.utils;
 import hu.hm.fitjourneyapi.dto.user.UserCreateDTO;
 import hu.hm.fitjourneyapi.dto.user.UserDTO;
 import hu.hm.fitjourneyapi.dto.user.fitness.UserWithWorkoutsDTO;
+import hu.hm.fitjourneyapi.dto.user.social.UserWithFriendsDTO;
 import hu.hm.fitjourneyapi.model.User;
 import hu.hm.fitjourneyapi.model.enums.Roles;
 import hu.hm.fitjourneyapi.model.fitness.Workout;
@@ -72,6 +73,8 @@ public class UserTestFactory {
         List<Post> posts = new ArrayList<>();
 
         workouts.add(WorkoutTestFactory.getWorkout(user));
+        friends.add(FriendsTestFactory.getFriend(user));
+
 
         user.setWorkouts(workouts);
 
@@ -90,5 +93,20 @@ public class UserTestFactory {
                         .workouts(List.of(WorkoutTestFactory.getWorkoutDTO(1L)))
                         .build();
         return dto;
+    }
+
+    public static UserWithFriendsDTO getUserWithFriendsDTO() {
+        UserWithFriendsDTO dto =
+                UserWithFriendsDTO.builder()
+                        .id(1L)
+                        .name("Test name")
+                        .email("user@gmail.com")
+                        .heightInCm(180)
+                        .weightInKg(100)
+                        .birthday(LocalDate.of(1990, 1, 1))
+                        .friends(List.of(FriendsTestFactory.getFriendDTO()))
+                        .build();
+        return dto;
+
     }
 }
