@@ -3,8 +3,12 @@ package hu.hm.fitjourneyapi.utils;
 import hu.hm.fitjourneyapi.dto.social.friend.FriendDTO;
 import hu.hm.fitjourneyapi.model.User;
 import hu.hm.fitjourneyapi.model.enums.FriendStatus;
+import hu.hm.fitjourneyapi.model.enums.Roles;
 import hu.hm.fitjourneyapi.model.social.Friend;
+import org.h2.engine.Role;
+import org.springframework.util.SerializationUtils;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class FriendsTestFactory {
@@ -12,8 +16,8 @@ public class FriendsTestFactory {
     public static FriendDTO getFriendDTO() {
         FriendDTO friendDTO =
                 FriendDTO.builder()
-                        .friendId(1L)
-                        .userId(2L)
+                        .friendId(2L)
+                        .userId(1L)
                         .requestedTime(LocalDateTime.MIN)
                         .status(FriendStatus.ACCEPTED)
                         .build();
@@ -21,9 +25,15 @@ public class FriendsTestFactory {
     }
 
     public static Friend getFriend(User user1) {
-        User user2 = user1;
-        user2.setId(2L);
-        user2.setName("Friend Name");
+        User user2 = User.builder()
+                .id(2L)
+                .name("Friend Name")
+                .email("friend@gmail.com")
+                .birthday(LocalDate.of(1991, 1,1))
+                .role(Roles.USER)
+                .heightInCm(180)
+                .weightInKg(100)
+                .build();
 
         Friend friend = Friend
                 .builder()
