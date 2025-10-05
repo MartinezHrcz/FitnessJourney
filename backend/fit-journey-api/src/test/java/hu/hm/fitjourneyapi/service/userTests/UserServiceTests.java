@@ -172,7 +172,6 @@ public class UserServiceTests {
 
     }
 
-
     void testGetUserById_success() {
 
     }
