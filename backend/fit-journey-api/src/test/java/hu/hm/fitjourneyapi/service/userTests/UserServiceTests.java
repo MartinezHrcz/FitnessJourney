@@ -3,6 +3,7 @@ package hu.hm.fitjourneyapi.service.userTests;
 
 import hu.hm.fitjourneyapi.dto.user.UserCreateDTO;
 import hu.hm.fitjourneyapi.dto.user.UserDTO;
+import hu.hm.fitjourneyapi.dto.user.UserPasswordUpdateDTO;
 import hu.hm.fitjourneyapi.dto.user.UserUpdateDTO;
 import hu.hm.fitjourneyapi.mapper.UserMapper;
 import hu.hm.fitjourneyapi.model.User;
@@ -100,8 +101,24 @@ public class UserServiceTests {
         verify(userRepository, times(1)).save(any(User.class));
     }
 
+    @Test
     void testUpdateUserPassword_success() {
+        UserPasswordUpdateDTO updateDTO = UserPasswordUpdateDTO.builder()
+                .id(1L)
+                .passwordNew("A123a!")
+                .passwordOld("EncodedPassword123!")
+                .build();
+        when(userRepository.findById(1L)).thenReturn(Optional.ofNullable(user));
+        when(passwordEncoder.encode(anyString())).thenReturn("NewEncodedPassword123!");
+        when(passwordEncoder.matches(updateDTO.getPasswordOld(), user.getPassword())).thenReturn(true);
+        UserDTO result = userService.updatePassword(updateDTO);
 
+        assertNotNull(result);
+        assertEquals(1L,result.getId());
+        assertEquals(user.getName(), result.getName());
+        assertEquals(user.getEmail(), result.getEmail());
+        verify(userRepository, times(1)).save(any(User.class));
+        verify(passwordEncoder, times(1)).encode(anyString());
     }
 
 
