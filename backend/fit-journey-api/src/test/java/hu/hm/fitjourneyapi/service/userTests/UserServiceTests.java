@@ -5,6 +5,7 @@ import hu.hm.fitjourneyapi.dto.user.UserCreateDTO;
 import hu.hm.fitjourneyapi.dto.user.UserDTO;
 import hu.hm.fitjourneyapi.dto.user.UserPasswordUpdateDTO;
 import hu.hm.fitjourneyapi.dto.user.UserUpdateDTO;
+import hu.hm.fitjourneyapi.exception.userExceptions.UserNotFound;
 import hu.hm.fitjourneyapi.mapper.UserMapper;
 import hu.hm.fitjourneyapi.model.User;
 import hu.hm.fitjourneyapi.repository.UserRepository;
@@ -122,12 +123,17 @@ public class UserServiceTests {
     }
 
 
+    @Test
     void testDeleteUser_success() {
-
+        when(userRepository.findUserById(user.getId())).thenReturn(Optional.of(user));
+        userService.deleteUser(user.getId());
+        verify(userRepository, times(1)).delete(user);
     }
 
+    @Test
     void testDeleteUser_fail() {
-
+        when(userRepository.findUserById(user.getId())).thenReturn(Optional.empty());
+        assertThrows(UserNotFound.class, () -> userService.deleteUser(user.getId()));
     }
 
     void testGetAllUsers_success() {
