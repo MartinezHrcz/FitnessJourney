@@ -1,17 +1,20 @@
 package hu.hm.fitjourneyapi.service.userTests;
 
 
+import hu.hm.fitjourneyapi.dto.social.post.PostDTO;
 import hu.hm.fitjourneyapi.dto.user.UserCreateDTO;
 import hu.hm.fitjourneyapi.dto.user.UserDTO;
 import hu.hm.fitjourneyapi.dto.user.UserPasswordUpdateDTO;
 import hu.hm.fitjourneyapi.dto.user.UserUpdateDTO;
 import hu.hm.fitjourneyapi.dto.user.fitness.UserWithWorkoutsDTO;
 import hu.hm.fitjourneyapi.dto.user.social.UserWithFriendsDTO;
+import hu.hm.fitjourneyapi.dto.user.social.UserWithPostsDTO;
 import hu.hm.fitjourneyapi.exception.userExceptions.UserNotFound;
 import hu.hm.fitjourneyapi.mapper.UserMapper;
 import hu.hm.fitjourneyapi.model.User;
 import hu.hm.fitjourneyapi.repository.UserRepository;
 import hu.hm.fitjourneyapi.services.interfaces.UserService;
+import hu.hm.fitjourneyapi.utils.PostsTestFactory;
 import hu.hm.fitjourneyapi.utils.UserTestFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -137,6 +140,7 @@ public class UserServiceTests {
     void testDeleteUser_fail() {
         when(userRepository.findUserById(user.getId())).thenReturn(Optional.empty());
         assertThrows(UserNotFound.class, () -> userService.deleteUser(user.getId()));
+        verify(userRepository, times(1)).delete(user);
     }
 
     @Test
@@ -149,6 +153,7 @@ public class UserServiceTests {
         for (int i = 0; i < result.size(); i++) {
             assertEquals(expected.get(i), result.get(i));
         }
+        verify(userRepository, times(1)).findAll();
     }
 
     @Test
@@ -178,16 +183,17 @@ public class UserServiceTests {
         assertEquals(user.getFriends().getFirst().getFriend().getId(), result.getFriends().getFirst().getFriendId());
     }
 
+    @Test
     void testGetUserWithPosts_success() {
-
-    }
-
-    void testGetUserById_success() {
-
-    }
-
-    void testGetUserById_fail() {
-
+        when(userRepository.findUserById(1L)).thenReturn(Optional.of(user));
+        when(userMapper.toUserWithPostsDTO(user)).thenReturn(UserTestFactory.getUserWithPostsDTO());
+        UserWithPostsDTO result = userService.getUserWithPostsById(1L);
+        assertNotNull(result);
+        PostDTO postDTO = PostsTestFactory.getPostDTO();
+        assertEquals(1L, result.getId());
+        assertEquals(result.getPosts().getFirst().getUserId(), user.getId());
+        assertEquals(result.getPosts().getFirst().getTitle(), postDTO.getTitle());
+        assertEquals(result.getPosts().getFirst().getContent(), postDTO.getContent());
     }
 
     void testGetUserByEmail_success() {

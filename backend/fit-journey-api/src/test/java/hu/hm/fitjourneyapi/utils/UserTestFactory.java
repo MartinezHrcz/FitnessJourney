@@ -75,7 +75,7 @@ public class UserTestFactory {
 
         workouts.add(WorkoutTestFactory.getWorkout(user));
         friends.add(FriendsTestFactory.getFriend(user));
-        posts.add(PostsTestFactory.getPost());
+        posts.add(PostsTestFactory.getPost(user));
 
         user.setWorkouts(workouts);
         user.setFriends(friends);
