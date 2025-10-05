@@ -3,6 +3,7 @@ package hu.hm.fitjourneyapi.service.userTests;
 
 import hu.hm.fitjourneyapi.dto.user.UserCreateDTO;
 import hu.hm.fitjourneyapi.dto.user.UserDTO;
+import hu.hm.fitjourneyapi.dto.user.UserUpdateDTO;
 import hu.hm.fitjourneyapi.mapper.UserMapper;
 import hu.hm.fitjourneyapi.model.User;
 import hu.hm.fitjourneyapi.repository.UserRepository;
@@ -17,6 +18,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
+
+import java.time.LocalDate;
+import java.util.Optional;
 
 @SpringBootTest
 public class UserServiceTests {
@@ -47,7 +51,19 @@ public class UserServiceTests {
         when(userMapper.toUser(userCreateDTO)).thenReturn(user);
         when(userMapper.toUserDTO(user)).thenReturn(userDTO);
         when(passwordEncoder.encode(userCreateDTO.getPassword())).thenReturn("Encodedpassword123!");
-        when(userRepository.save(user)).thenReturn(user);
+        when(userRepository.save(user)).thenAnswer(invocation -> invocation.getArgument(0));
+        when(userMapper.toUserDTO(user)).thenAnswer(invocation ->
+        {
+            User u = invocation.getArgument(0);
+            return UserDTO.builder()
+                    .id(u.getId())
+                    .name(u.getName())
+                    .email(u.getEmail())
+                    .weightInKg(u.getWeightInKg())
+                    .heightInCm(u.getHeightInCm())
+                    .birthday(u.getBirthday())
+                    .build();
+        });
     }
 
     @Test
@@ -59,24 +75,35 @@ public class UserServiceTests {
         verify(userRepository, times(1)).save(any(User.class));
     }
 
-    void testCreateUser_fail() {
-    }
-
+    @Test
     void testUpdateUser_success() {
+        UserUpdateDTO updateDTO = UserUpdateDTO.builder()
+                .id(1L)
+                .name("New name")
+                .email("newEmail@gmail.com")
+                .weightInKg(101)
+                .heightInCm(190)
+                .birthday(LocalDate.of(1991, 1, 1))
+                .build();
 
-    }
+        when(userRepository.findById(1L)).thenReturn(Optional.ofNullable(user));
 
-    void testUpdateUser_fail() {
+        UserDTO result = userService.updateUser(updateDTO);
 
+        assertNotNull(result);
+
+        assertEquals(updateDTO.getName(), result.getName());
+        assertEquals(updateDTO.getEmail(), result.getEmail());
+        assertEquals(updateDTO.getWeightInKg(), result.getWeightInKg());
+        assertEquals(updateDTO.getHeightInCm(), result.getHeightInCm());
+        assertEquals(updateDTO.getBirthday(), result.getBirthday());
+        verify(userRepository, times(1)).save(any(User.class));
     }
 
     void testUpdateUserPassword_success() {
 
     }
 
-    void testUpdateUserPassword_fail() {
-
-    }
 
     void testDeleteUser_success() {
 
