@@ -22,6 +22,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 @SpringBootTest
@@ -136,12 +137,20 @@ public class UserServiceTests {
         assertThrows(UserNotFound.class, () -> userService.deleteUser(user.getId()));
     }
 
+    @Test
     void testGetAllUsers_success() {
-
+        when(userRepository.findAll()).thenReturn(UserTestFactory.getMultipleUsers());
+        List<UserDTO> result = userService.getAllUsers();
+        List<UserDTO> expected = userMapper.toUserDTOList(UserTestFactory.getMultipleUsers());
+        assertNotNull(result);
+        assertEquals(expected.size(), result.size());
+        for (int i = 0; i < result.size(); i++) {
+            assertEquals(expected.get(i), result.get(i));
+        }
     }
 
     void testGetUserWithWorkout_success() {
-
+        
     }
 
     void testGetUserWithFriends_success() {
