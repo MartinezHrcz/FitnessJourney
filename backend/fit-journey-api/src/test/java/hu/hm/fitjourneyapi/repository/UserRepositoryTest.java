@@ -9,10 +9,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.FilterType;
 import org.springframework.context.annotation.Import;
-import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.util.Optional;

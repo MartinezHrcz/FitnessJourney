@@ -20,6 +20,8 @@ public interface UserMapper {
 
     User toUser(UserCreateDTO userCreateDTO);
 
+    User toUser(UserDTO userDTO);
+
     UserWithWorkoutsDTO toUserWithWorkoutsDTO(User user);
 
     UserWithPostsDTO toUserWithPostsDTO(User user);
