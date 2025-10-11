@@ -1,6 +1,8 @@
 package hu.hm.fitjourneyapi.services.implementation.social;
 
+import hu.hm.fitjourneyapi.dto.social.post.PostCreateDTO;
 import hu.hm.fitjourneyapi.dto.social.post.PostDTO;
+import hu.hm.fitjourneyapi.dto.social.post.PostUpdateDTO;
 import hu.hm.fitjourneyapi.exception.social.post.PostNotFoundException;
 import hu.hm.fitjourneyapi.mapper.social.PostMapper;
 import hu.hm.fitjourneyapi.model.social.Post;
@@ -55,12 +57,25 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public PostDTO updatePost(PostDTO postDTO) {
-        return null;
+    public PostDTO updatePost(long id, PostUpdateDTO postUpdateDTO) {
+        log.debug("Attempting to update post by id: {}", id);
+        Post post = postRepository.findById(id).orElseThrow(
+                ()->{
+                    log.warn("Post not found by id: {}", id);
+                    return new PostNotFoundException("Post not found by id: " + id);
+                }
+        );
+        post.setTitle(postUpdateDTO.getTitle());
+        post.setContent(postUpdateDTO.getContent());
+
+        log.info("Updated post with id: {} ",id);
+        postRepository.save(post);
+        return postMapper.toPostDTO(post);
+
     }
 
     @Override
-    public PostDTO createPost(PostDTO postDTO) {
+    public PostDTO createPost(PostCreateDTO postCreateDTO) {
         return null;
     }
 
