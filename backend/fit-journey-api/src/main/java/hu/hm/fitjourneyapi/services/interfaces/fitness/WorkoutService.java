@@ -2,6 +2,8 @@ package hu.hm.fitjourneyapi.services.interfaces.fitness;
 
 import hu.hm.fitjourneyapi.dto.fitness.workout.WorkoutCreateDTO;
 import hu.hm.fitjourneyapi.dto.fitness.workout.WorkoutDTO;
+import hu.hm.fitjourneyapi.dto.fitness.workout.WorkoutUpdateDTO;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -14,7 +16,7 @@ public interface WorkoutService {
 
     List<WorkoutDTO> getWorkoutByUserId(long id);
 
-    WorkoutDTO updateWorkout(long id,WorkoutDTO workoutDTO);
+    WorkoutDTO updateWorkout(long id, WorkoutUpdateDTO workoutUpdateDTO);
 
     void deleteWorkoutById(long id);
 }

@@ -2,6 +2,7 @@ package hu.hm.fitjourneyapi.service.fitnessTests;
 
 import hu.hm.fitjourneyapi.dto.fitness.workout.WorkoutCreateDTO;
 import hu.hm.fitjourneyapi.dto.fitness.workout.WorkoutDTO;
+import hu.hm.fitjourneyapi.dto.fitness.workout.WorkoutUpdateDTO;
 import hu.hm.fitjourneyapi.dto.user.UserDTO;
 import hu.hm.fitjourneyapi.exception.userExceptions.UserNotFound;
 import hu.hm.fitjourneyapi.mapper.fitness.WorkoutMapper;
@@ -81,7 +82,7 @@ public class WorkoutServiceTests {
     @Test
     public void WorkoutUpdateTest_WorkoutUpdated_success() {
         long idToUpdate = workoutDTO.getId();
-        WorkoutDTO update = WorkoutDTO.builder()
+        WorkoutUpdateDTO update = WorkoutUpdateDTO.builder()
                 .name("Updated name")
                 .description("Updated desc")
                 .lengthInMins(10)

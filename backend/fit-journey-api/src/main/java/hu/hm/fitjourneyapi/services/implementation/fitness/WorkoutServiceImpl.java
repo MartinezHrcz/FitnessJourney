@@ -2,6 +2,7 @@ package hu.hm.fitjourneyapi.services.implementation.fitness;
 
 import hu.hm.fitjourneyapi.dto.fitness.workout.WorkoutCreateDTO;
 import hu.hm.fitjourneyapi.dto.fitness.workout.WorkoutDTO;
+import hu.hm.fitjourneyapi.dto.fitness.workout.WorkoutUpdateDTO;
 import hu.hm.fitjourneyapi.exception.fitness.WorkoutNotFound;
 import hu.hm.fitjourneyapi.exception.userExceptions.UserNotFound;
 import hu.hm.fitjourneyapi.mapper.fitness.WorkoutMapper;
@@ -83,26 +84,26 @@ public class WorkoutServiceImpl implements WorkoutService {
 
     @Transactional
     @Override
-    public WorkoutDTO updateWorkout(long id,WorkoutDTO workoutDTO) {
-        log.debug("Updating workout {}", workoutDTO.getId());
+    public WorkoutDTO updateWorkout(long id, WorkoutUpdateDTO workoutUpdateDTO) {
+        log.debug("Updating workout {}", workoutUpdateDTO.getId());
         Workout workout = workoutRepository.findById(id).orElseThrow(
                 () -> {
-                    log.warn("Workout with id {} not found", workoutDTO.getId());
-                    return new WorkoutNotFound("Workout not found with id " + workoutDTO.getId());
+                    log.warn("Workout with id {} not found", workoutUpdateDTO.getId());
+                    return new WorkoutNotFound("Workout not found with id " + id);
                     }
                 );
-        workout.setName(workoutDTO.getName());
-        workout.setDescription(workoutDTO.getDescription());
-        workout.setLengthInMins(workoutDTO.getLengthInMins());
-        User user = userRepository.findById(workoutDTO.getUserId()).orElseThrow(
+        workout.setName(workoutUpdateDTO.getName());
+        workout.setDescription(workoutUpdateDTO.getDescription());
+        workout.setLengthInMins(workoutUpdateDTO.getLengthInMins());
+        User user = userRepository.findById(workoutUpdateDTO.getUserId()).orElseThrow(
                 () -> {
-                    log.warn("user not found with id " + workoutDTO.getUserId());
-                    return new UserNotFound("User not found with id " + workoutDTO.getUserId());
+                    log.warn("user not found with id " + workoutUpdateDTO.getUserId());
+                    return new UserNotFound("User not found with id " + workoutUpdateDTO.getUserId());
                 }
         );
         workout.setUser(user);
         workout = workoutRepository.save(workout);
-        log.info("Updated workout {} with id {}", workoutDTO.getName(), workoutDTO.getId());
+        log.info("Updated workout {} with id {}", workoutUpdateDTO.getName(), workoutUpdateDTO.getId());
         return workoutMapper.toDTO(workout);
     }
 
