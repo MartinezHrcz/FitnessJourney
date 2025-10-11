@@ -99,6 +99,14 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public void deletePostById(long id) {
-
+        log.debug("Attempting to delete post by id: {}", id);
+        Post post = postRepository.findById(id).orElseThrow(
+                () -> {
+                    log.warn("Post not found by id: {}", id);
+                    return new PostNotFoundException("Post not found by id: " + id);
+                }
+        );
+        log.info("Deleted post with id: {} ",id);
+        postRepository.delete(post);
     }
 }
