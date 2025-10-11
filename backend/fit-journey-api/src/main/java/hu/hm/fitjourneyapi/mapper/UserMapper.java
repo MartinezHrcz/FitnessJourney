@@ -5,6 +5,7 @@ import hu.hm.fitjourneyapi.dto.user.UserDTO;
 import hu.hm.fitjourneyapi.dto.user.fitness.UserWithWorkoutsDTO;
 import hu.hm.fitjourneyapi.dto.user.social.UserWithFriendsDTO;
 import hu.hm.fitjourneyapi.dto.user.social.UserWithPostsDTO;
+import hu.hm.fitjourneyapi.mapper.fitness.ExerciseMapper;
 import hu.hm.fitjourneyapi.model.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
@@ -12,7 +13,7 @@ import org.mapstruct.ReportingPolicy;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
+@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE, uses = {ExerciseMapper.class})
 public interface UserMapper {
     UserDTO toUserDTO(User user);
 

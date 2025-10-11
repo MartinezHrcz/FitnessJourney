@@ -8,6 +8,7 @@ import hu.hm.fitjourneyapi.model.enums.ExerciseTypes;
 import hu.hm.fitjourneyapi.model.fitness.Exercise;
 import hu.hm.fitjourneyapi.model.fitness.Workout;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class WorkoutTestFactory {
@@ -27,9 +28,11 @@ public class WorkoutTestFactory {
                 .name("Test Workout")
                 .description("This is for a test")
                 .lengthInMins(60)
+                .exercises(new ArrayList<>())
                 .userId(userId)
                 .build();
         AbstractExerciseDTO exerciseDTO = ExerciseTestFactory.getExerciseDTO(ExerciseTypes.RESISTANCE, dto.getId());
+        dto.getExercises().add(exerciseDTO);
         return dto;
     }
 
@@ -39,7 +42,7 @@ public class WorkoutTestFactory {
                 .name("Test Workout")
                 .description("This is for a test")
                 .lengthInMins(60)
-                .exercises(List.of())
+                .exercises(new ArrayList<>())
                 .build();
         List<Exercise> exercises = List.of(ExerciseTestFactory.getExercise(workout));
         workout.setExercises(exercises);

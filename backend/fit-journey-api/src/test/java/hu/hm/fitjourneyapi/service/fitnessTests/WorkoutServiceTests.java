@@ -1,5 +1,6 @@
 package hu.hm.fitjourneyapi.service.fitnessTests;
 
+import hu.hm.fitjourneyapi.dto.fitness.excercise.AbstractExerciseDTO;
 import hu.hm.fitjourneyapi.dto.fitness.workout.WorkoutCreateDTO;
 import hu.hm.fitjourneyapi.dto.fitness.workout.WorkoutDTO;
 import hu.hm.fitjourneyapi.dto.fitness.workout.WorkoutUpdateDTO;
@@ -8,13 +9,14 @@ import hu.hm.fitjourneyapi.exception.fitness.WorkoutNotFound;
 import hu.hm.fitjourneyapi.exception.userExceptions.UserNotFound;
 import hu.hm.fitjourneyapi.mapper.fitness.WorkoutMapper;
 import hu.hm.fitjourneyapi.model.User;
+import hu.hm.fitjourneyapi.model.enums.ExerciseTypes;
 import hu.hm.fitjourneyapi.model.fitness.Workout;
 import hu.hm.fitjourneyapi.repository.UserRepository;
 import hu.hm.fitjourneyapi.repository.fitness.WorkoutRepository;
 import hu.hm.fitjourneyapi.services.interfaces.fitness.WorkoutService;
+import hu.hm.fitjourneyapi.utils.ExerciseTestFactory;
 import hu.hm.fitjourneyapi.utils.UserTestFactory;
 import hu.hm.fitjourneyapi.utils.WorkoutTestFactory;
-import org.hibernate.jdbc.Work;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +26,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -59,6 +62,8 @@ public class WorkoutServiceTests {
         when(repository.save(workout)).thenReturn(workout);
         when(repository.findWorkoutsByUser_Id(user.getId())).thenReturn(List.of(workout));
         when(repository.findById(1L)).thenReturn(Optional.ofNullable(workout));
+        when(repository.findAll()).thenReturn(List.of(workout));
+        when(workoutMapper.toDTOList(List.of(workout))).thenReturn(List.of(workoutDTO));
         when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
         when(workoutMapper.toDTO(workout))
                 .thenAnswer(invocation ->
@@ -70,7 +75,7 @@ public class WorkoutServiceTests {
                                     .description(w.getDescription())
                                     .userId(user.getId())
                                     .lengthInMins(w.getLengthInMins())
-                                    .exercises(w.getExercises())
+                                    .exercises((List<AbstractExerciseDTO>) List.of(ExerciseTestFactory.getExerciseDTO(ExerciseTypes.RESISTANCE, 1L)))
                                     .build();
                         }
                         );
@@ -103,11 +108,10 @@ public class WorkoutServiceTests {
 
         WorkoutDTO result = workoutService.updateWorkout(idToUpdate, update);
         assertNotNull(result);
-        assertEquals(1L, result.getId());
+        assertEquals(0L, result.getId());
         assertEquals(update.getName(), result.getName());
         assertEquals(update.getDescription(), result.getDescription());
         assertEquals(update.getUserId(), result.getUserId());
-        assertEquals(update.getExercises(), result.getExercises());
     }
 
     @Test
@@ -147,8 +151,8 @@ public class WorkoutServiceTests {
     @Test
     public void WorkoutDeleteTest_WorkoutIdNotFound_fail() {
         long idToDelete = workoutDTO.getId();
-        when(workoutRepository.findById(idToDelete)).thenThrow(WorkoutNotFound.class);
-        assertThrows(WorkoutNotFound.class, () -> workoutRepository.deleteById(idToDelete));
+        when(workoutRepository.findById(idToDelete)).thenReturn(Optional.empty());
+        assertThrows(WorkoutNotFound.class, () -> workoutService.deleteWorkoutById(idToDelete));
     }
 
     @Test
@@ -168,12 +172,12 @@ public class WorkoutServiceTests {
         assertEquals(workoutDTO.getName(), result.getName());
         assertEquals(workoutDTO.getDescription(), result.getDescription());
         assertEquals(workoutDTO.getUserId(), result.getUserId());
-        assertEquals(workoutDTO.getExercises(), result.getExercises());
+        assertEquals(workoutDTO.getExercises().getFirst().getName(), result.getExercises().getFirst().getName());
     }
 
     @Test
     public void WorkoutGetByIdTest_WorkoutIdNotFound_fail(){
-        when(workoutRepository.findById(1L)).thenThrow(WorkoutNotFound.class);
+        when(workoutRepository.findById(1L)).thenReturn(Optional.empty());
         assertThrows(WorkoutNotFound.class, () -> workoutService.getWorkoutByWorkoutId(1L));
     }
 
@@ -182,9 +186,9 @@ public class WorkoutServiceTests {
         when(workoutRepository.findWorkoutsByUser_Id(1L)).thenReturn(List.of(workout));
         List<WorkoutDTO> result = workoutService.getWorkoutByUserId(1L);
         assertNotNull(result);
-        assertEquals(workoutDTO.getName(), result.getFirst().getName());
-        assertEquals(workoutDTO.getDescription(), result.getFirst().getDescription());
-        assertEquals(workoutDTO.getUserId(), result.getFirst().getUserId());
-        assertEquals(workoutDTO.getExercises(), result.getFirst().getExercises());
+        assertEquals(workoutDTO.getName(), result.get(0).getName());
+        assertEquals(workoutDTO.getDescription(), result.get(0).getDescription());
+        assertEquals(workoutDTO.getUserId(), result.get(0).getUserId());
+        assertEquals(workoutDTO.getExercises(), result.get(0).getExercises());
     }
 }

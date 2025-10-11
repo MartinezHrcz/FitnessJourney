@@ -1,8 +1,10 @@
 package hu.hm.fitjourneyapi.mapper.fitness;
 
+import hu.hm.fitjourneyapi.dto.fitness.excercise.AbstractExerciseDTO;
 import hu.hm.fitjourneyapi.dto.fitness.workout.WorkoutCreateDTO;
 import hu.hm.fitjourneyapi.dto.fitness.workout.WorkoutDTO;
 import hu.hm.fitjourneyapi.model.User;
+import hu.hm.fitjourneyapi.model.fitness.Exercise;
 import hu.hm.fitjourneyapi.model.fitness.Workout;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -11,7 +13,7 @@ import org.mapstruct.ReportingPolicy;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
+@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE, uses = ExerciseMapper.class)
 public interface WorkoutMapper {
     @Mapping(source = "user", target = "userId", qualifiedByName = "userToId")
     WorkoutDTO toDTO(Workout workout);
@@ -27,4 +29,5 @@ public interface WorkoutMapper {
     static Long userToId(User user) {
         return user != null ? user.getId() : null;
     }
+
 }

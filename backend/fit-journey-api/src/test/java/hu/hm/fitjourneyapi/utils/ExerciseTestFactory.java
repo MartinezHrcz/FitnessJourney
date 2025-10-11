@@ -12,6 +12,7 @@ import hu.hm.fitjourneyapi.model.fitness.Exercise;
 import hu.hm.fitjourneyapi.model.fitness.Set;
 import hu.hm.fitjourneyapi.model.fitness.Workout;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ExerciseTestFactory {
@@ -41,6 +42,7 @@ public class ExerciseTestFactory {
                         .name("Test Exercise")
                         .description("Exercise desc")
                         .workoutId(workoutId)
+                        .sets(new ArrayList<>())
                         .type(ExerciseTypes.RESISTANCE)
                     .build();
                 es.getSets().add((StrengthSetDTO) SetTestFactory.getSetDTO(es.getId(), exerciseType));
