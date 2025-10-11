@@ -52,7 +52,9 @@ public class UserServiceImpl implements UserService {
     public UserDTO updateUser(UserUpdateDTO userUpdateDTO) {
         log.debug("Attempting to update user with id {} email {}", userUpdateDTO.getId(), userUpdateDTO.getName());
         User userToUpdate = userRepository.findById(userUpdateDTO.getId()).orElseThrow(
-                () -> new UserNotFound("User not found with id:" + userUpdateDTO.getId())
+                () ->{
+                    log.warn("User not found with id: {}", userUpdateDTO.getId());
+                    return new UserNotFound("User not found with id:" + userUpdateDTO.getId());}
         );
         userToUpdate.setName(userUpdateDTO.getName());
         userToUpdate.setEmail(userUpdateDTO.getEmail());
@@ -70,10 +72,13 @@ public class UserServiceImpl implements UserService {
     public UserDTO updatePassword(UserPasswordUpdateDTO userPasswordUpdateDTO) {
         log.debug("Attempting to update user password with id {} ", userPasswordUpdateDTO.getId());
         User userToUpdate = userRepository.findById(userPasswordUpdateDTO.getId()).orElseThrow(
-                () -> new UserNotFound("User not found with id:" + userPasswordUpdateDTO.getId())
+                () -> {
+                    log.warn("User not found with id: " + userPasswordUpdateDTO.getId());
+                    return new UserNotFound("User not found with id:" + userPasswordUpdateDTO.getId());}
         );
 
         if (!passwordEncoder.matches(userToUpdate.getPassword(), userPasswordUpdateDTO.getPasswordOld())){
+            log.warn("Password does not match old password");
             throw new IncorrectPassword("Old password doesn't match");
         }
 
@@ -88,7 +93,11 @@ public class UserServiceImpl implements UserService {
     public UserDTO getUserById(long id) {
         log.debug("Fetching user with id {} ", id);
         User user = userRepository.findUserById(id).orElseThrow(
-                () -> new UserNotFound("User not found with id: " + id));
+                () ->{
+                    log.warn("User not found with id: {}", id);
+                    return new UserNotFound("User not found with id: " + id);
+                    }
+                );
         log.debug("Fetched user with id: " + user.getId());
         return userMapper.toUserDTO(user);
     }
@@ -98,7 +107,10 @@ public class UserServiceImpl implements UserService {
     public UserDTO getUserByEmail(String email) {
         log.debug("Fetching user with email {} ", email);
         User user = userRepository.findUserByEmail(email).orElseThrow(
-                () -> new UserNotFound("User not found with email: " + email)
+                () -> {
+                    log.warn("User not found with email: " + email);
+                    return new  UserNotFound("User not found with email: " + email);
+                }
         );
         log.debug("Fetched user with email: " + user.getId());
         return userMapper.toUserDTO(user);
@@ -127,7 +139,10 @@ public class UserServiceImpl implements UserService {
     public UserWithWorkoutsDTO getUserWithWorkoutsById(long id) {
         log.debug("Fetching user with id {} ", id);
         User user = userRepository.findUserById(id).orElseThrow(
-                () -> new UserNotFound("User not found with id: " + id)
+                () -> {
+                    log.warn("User not found with id: {}", id);
+                    return new UserNotFound("User not found with id: " + id);
+                }
         );
         log.debug("Fetched user-workoutList with id {} ", id);
         return userMapper.toUserWithWorkoutsDTO(user);
@@ -138,7 +153,10 @@ public class UserServiceImpl implements UserService {
     public UserWithFriendsDTO getUserWithFriendsById(long id) {
         log.debug("Fetching user-friendList with id {} ", id);
         User user = userRepository.findUserById(id).orElseThrow(
-                () -> new UserNotFound("User not found with id: " + id)
+                () -> {
+                    log.warn("User not found with id: {}", id);
+                    return new UserNotFound("User not found with id: " + id);
+                }
         );
         log.debug("Fetched user-friendList with id {} ", id);
         return userMapper.toUserWithFriendsDTO(user);
@@ -149,7 +167,9 @@ public class UserServiceImpl implements UserService {
     public UserWithPostsDTO getUserWithPostsById(long id) {
         log.debug("Fetching user-posts with id {} ", id);
         User user = userRepository.findUserById(id).orElseThrow(
-                () -> new UserNotFound("User not found with id: " + id)
+                () -> {
+                    log.warn("User not found with id: {}", id);
+                    return new UserNotFound("User not found with id: " + id);}
         );
         log.debug("Fetched user-posts with id {} ", id);
         return userMapper.toUserWithPostsDTO(user);
@@ -160,7 +180,9 @@ public class UserServiceImpl implements UserService {
     public void deleteUser(long id) {
         log.debug("Deleting user with id {} ", id);
         User user = userRepository.findUserById(id).orElseThrow(
-                () -> new UserNotFound("User not found with id: " + id)
+                () -> {
+                    log.warn("User not found with id: {}", id);
+                    return new UserNotFound("User not found with id: " + id);}
         );
         log.info("Deleted user with id: {} ",id);
         userRepository.delete(user);
