@@ -1,6 +1,7 @@
 package hu.hm.fitjourneyapi.services.implementation.social;
 
 import hu.hm.fitjourneyapi.dto.social.post.PostDTO;
+import hu.hm.fitjourneyapi.exception.social.post.PostNotFoundException;
 import hu.hm.fitjourneyapi.mapper.social.PostMapper;
 import hu.hm.fitjourneyapi.model.social.Post;
 import hu.hm.fitjourneyapi.repository.social.PostRepository;
@@ -26,17 +27,31 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public PostDTO getPostById(long id) {
-        return null;
+        log.debug("Fetching post by id: {}", id);
+        Post post = postRepository.findById(id).orElseThrow(()->
+        {
+            log.warn("Post not found with id: {}", id);
+            return new PostNotFoundException("Post not found with id: " + id);
+        }
+        );
+        log.info("Fetched post with id: {} ",id);
+        return postMapper.toPostDTO(post);
     }
 
     @Override
     public List<PostDTO> getPosts() {
-        return List.of();
+        log.debug("Fetching posts");
+        List<Post> posts = postRepository.findAll();
+        log.info("Fetched posts");
+        return postMapper.toListPostDTO(posts);
     }
 
     @Override
     public List<PostDTO> getPostsByUserId(long id) {
-        return List.of();
+        log.debug("Fetching posts by user id: {}", id);
+        List<Post> posts = postRepository.findPostsByUserId(id);
+        log.info("Fetched posts by user id: {} ",id);
+        return postMapper.toListPostDTO(posts);
     }
 
     @Override
