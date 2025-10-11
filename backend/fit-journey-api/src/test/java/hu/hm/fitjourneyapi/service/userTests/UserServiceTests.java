@@ -58,7 +58,6 @@ public class UserServiceTests {
 
         when(userMapper.toUser(userDTO)).thenReturn(user);
         when(userMapper.toUser(userCreateDTO)).thenReturn(user);
-        when(userMapper.toUserDTO(user)).thenReturn(userDTO);
         when(passwordEncoder.encode(userCreateDTO.getPassword())).thenReturn("Encodedpassword123!");
         when(userRepository.save(user)).thenAnswer(invocation -> invocation.getArgument(0));
         when(userMapper.toUserDTO(user)).thenAnswer(invocation ->

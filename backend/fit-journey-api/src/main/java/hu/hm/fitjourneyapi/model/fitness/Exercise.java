@@ -26,7 +26,6 @@ public class Exercise {
 
     @Column(unique = true, nullable = false, length = 50)
     private String name;
-
     @Column(length = 100)
     private String description;
     @Builder.Default
@@ -50,6 +49,15 @@ public class Exercise {
         }
         if (this.type == ExerciseTypes.FLEXIBILITY && !(set instanceof FlexibilitySet)) {
             throw new InvalidSetType("Flexibility exercise can only be used with flexibility sets");
+        }
+        switch (this.type)
+        {
+            case RESISTANCE:
+                this.weightType = WeightType.FREE_WEIGHT;
+                break;
+            case BODYWEIGHT:
+                this.weightType = WeightType.BODYWEIGHT;
+                break;
         }
         sets.add(set);
         set.setExercise(this);
