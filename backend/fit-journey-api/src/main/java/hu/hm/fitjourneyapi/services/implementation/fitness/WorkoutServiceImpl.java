@@ -83,9 +83,9 @@ public class WorkoutServiceImpl implements WorkoutService {
 
     @Transactional
     @Override
-    public WorkoutDTO updateWorkout(WorkoutDTO workoutDTO) {
+    public WorkoutDTO updateWorkout(long id,WorkoutDTO workoutDTO) {
         log.debug("Updating workout {}", workoutDTO.getId());
-        Workout workout = workoutRepository.findById(workoutDTO.getId()).orElseThrow(
+        Workout workout = workoutRepository.findById(id).orElseThrow(
                 () -> {
                     log.warn("Workout with id {} not found", workoutDTO.getId());
                     return new WorkoutNotFound("Workout not found with id " + workoutDTO.getId());
@@ -93,6 +93,7 @@ public class WorkoutServiceImpl implements WorkoutService {
                 );
         workout.setName(workoutDTO.getName());
         workout.setDescription(workoutDTO.getDescription());
+        workout.setLengthInMins(workoutDTO.getLengthInMins());
         User user = userRepository.findById(workoutDTO.getUserId()).orElseThrow(
                 () -> {
                     log.warn("user not found with id " + workoutDTO.getUserId());

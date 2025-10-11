@@ -33,7 +33,8 @@ import java.util.Optional;
 @SpringBootTest
 public class UserServiceTests {
 
-    private final UserService userService;
+    @Autowired
+    private UserService userService;
 
     @MockitoBean
     private UserMapper userMapper;
@@ -48,9 +49,6 @@ public class UserServiceTests {
     private User user;
     private UserDTO userDTO;
 
-    public UserServiceTests(UserService userService) {
-        this.userService = userService;
-    }
 
     @BeforeEach
     void setup() {

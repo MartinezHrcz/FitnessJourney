@@ -7,5 +7,4 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor
 public class WorkoutCreateDTO  extends AbstractWorkoutDTO {
-    private long userId;
 }
