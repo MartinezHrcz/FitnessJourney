@@ -1,6 +1,6 @@
 package hu.hm.fitjourneyapi.utils;
 
-import hu.hm.fitjourneyapi.exception.setExceptions.InvalidSetType;
+import hu.hm.fitjourneyapi.exception.fitness.setExceptions.InvalidSetType;
 import hu.hm.fitjourneyapi.model.User;
 import hu.hm.fitjourneyapi.model.enums.ExerciseTypes;
 import hu.hm.fitjourneyapi.model.fitness.*;
