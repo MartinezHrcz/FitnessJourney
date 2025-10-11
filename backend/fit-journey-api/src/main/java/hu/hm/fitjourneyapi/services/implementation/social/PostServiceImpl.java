@@ -12,6 +12,7 @@ import hu.hm.fitjourneyapi.repository.social.PostRepository;
 import hu.hm.fitjourneyapi.services.interfaces.social.PostService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -31,6 +32,7 @@ public class PostServiceImpl implements PostService {
     }
 
 
+    @Transactional
     @Override
     public PostDTO getPostById(long id) {
         log.debug("Fetching post by id: {}", id);
@@ -44,6 +46,7 @@ public class PostServiceImpl implements PostService {
         return postMapper.toPostDTO(post);
     }
 
+    @Transactional
     @Override
     public List<PostDTO> getPosts() {
         log.debug("Fetching posts");
@@ -52,6 +55,7 @@ public class PostServiceImpl implements PostService {
         return postMapper.toListPostDTO(posts);
     }
 
+    @Transactional
     @Override
     public List<PostDTO> getPostsByUserId(long id) {
         log.debug("Fetching posts by user id: {}", id);
@@ -60,6 +64,7 @@ public class PostServiceImpl implements PostService {
         return postMapper.toListPostDTO(posts);
     }
 
+    @Transactional
     @Override
     public PostDTO updatePost(long id, PostUpdateDTO postUpdateDTO) {
         log.debug("Attempting to update post by id: {}", id);
@@ -78,6 +83,7 @@ public class PostServiceImpl implements PostService {
 
     }
 
+    @Transactional
     @Override
     public PostDTO createPost(PostCreateDTO postCreateDTO) {
         log.debug("Attempting to create post");
@@ -97,6 +103,7 @@ public class PostServiceImpl implements PostService {
         return postMapper.toPostDTO(post);
     }
 
+    @Transactional
     @Override
     public void deletePostById(long id) {
         log.debug("Attempting to delete post by id: {}", id);
