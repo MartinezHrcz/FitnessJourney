@@ -1,5 +1,8 @@
 package hu.hm.fitjourneyapi.services.implementation;
 
+import hu.hm.fitjourneyapi.dto.fitness.workout.WorkoutDTO;
+import hu.hm.fitjourneyapi.dto.social.friend.FriendDTO;
+import hu.hm.fitjourneyapi.dto.social.post.PostDTO;
 import hu.hm.fitjourneyapi.dto.user.UserCreateDTO;
 import hu.hm.fitjourneyapi.dto.user.UserDTO;
 import hu.hm.fitjourneyapi.dto.user.UserPasswordUpdateDTO;
@@ -7,11 +10,16 @@ import hu.hm.fitjourneyapi.dto.user.UserUpdateDTO;
 import hu.hm.fitjourneyapi.dto.user.fitness.UserWithWorkoutsDTO;
 import hu.hm.fitjourneyapi.dto.user.social.UserWithFriendsDTO;
 import hu.hm.fitjourneyapi.dto.user.social.UserWithPostsDTO;
+import hu.hm.fitjourneyapi.exception.social.post.PostNotFoundException;
 import hu.hm.fitjourneyapi.exception.userExceptions.IncorrectPassword;
 import hu.hm.fitjourneyapi.exception.userExceptions.UserNotFound;
 import hu.hm.fitjourneyapi.mapper.UserMapper;
 import hu.hm.fitjourneyapi.model.User;
+import hu.hm.fitjourneyapi.model.social.Post;
 import hu.hm.fitjourneyapi.repository.UserRepository;
+import hu.hm.fitjourneyapi.repository.fitness.WorkoutRepository;
+import hu.hm.fitjourneyapi.repository.social.FriendRepository;
+import hu.hm.fitjourneyapi.repository.social.PostRepository;
 import hu.hm.fitjourneyapi.services.interfaces.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -27,13 +35,19 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
+    private final PostRepository postRepository;
+    private final FriendRepository friendRepository;
+    private final WorkoutRepository workoutRepository;
 
     public UserServiceImpl(UserRepository userRepository,
                            UserMapper userMapper,
-                           PasswordEncoder passwordEncoder) {
+                           PasswordEncoder passwordEncoder, PostRepository postRepository, FriendRepository friendRepository, WorkoutRepository workoutRepository) {
         this.userRepository = userRepository;
         this.userMapper = userMapper;
         this.passwordEncoder = passwordEncoder;
+        this.postRepository = postRepository;
+        this.friendRepository = friendRepository;
+        this.workoutRepository = workoutRepository;
     }
 
     @Transactional
@@ -173,6 +187,37 @@ public class UserServiceImpl implements UserService {
         );
         log.debug("Fetched user-posts with id {} ", id);
         return userMapper.toUserWithPostsDTO(user);
+    }
+
+    @Transactional
+    @Override
+    public void deleteUserPost(PostDTO postDTO) {
+        log.debug("Deleting user post with id {} ", postDTO.getId());
+        User user = userRepository.findUserById(postDTO.getUserId()).orElseThrow(
+                () -> {
+                    log.warn("User not found with id: {}", postDTO.getUserId());
+                    return new UserNotFound("User not found with id: " + postDTO.getUserId());}
+        );
+        Post post = postRepository.findById(postDTO.getId()).orElseThrow(
+                () -> {
+                    log.warn("Post not found with id: {}", postDTO.getId());
+                    return new PostNotFoundException("Post not found with id: " + postDTO.getId());
+                }
+        );
+        log.info("Deleted user post with id {} ", postDTO.getId());
+        user.removePost(post);
+    }
+
+    @Transactional
+    @Override
+    public void deleteUserFriends(FriendDTO friendDTO) {
+
+    }
+
+    @Transactional
+    @Override
+    public void deleteUserWorkout(WorkoutDTO workoutDTO) {
+
     }
 
     @Transactional

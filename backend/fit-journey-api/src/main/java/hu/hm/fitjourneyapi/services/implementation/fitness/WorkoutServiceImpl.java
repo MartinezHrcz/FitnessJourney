@@ -43,6 +43,7 @@ public class WorkoutServiceImpl implements WorkoutService {
         );
         Workout workout = workoutMapper.toWorkout(workoutCreateDTO, user);
         workout = workoutRepository.save(workout);
+        user.addWorkout(workout);
         log.info("Created workout {} with id {}", workoutCreateDTO.getName(), workout.getId());
         return workoutMapper.toDTO(workout);
     }

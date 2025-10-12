@@ -1,5 +1,8 @@
 package hu.hm.fitjourneyapi.services.interfaces;
 
+import hu.hm.fitjourneyapi.dto.fitness.workout.WorkoutDTO;
+import hu.hm.fitjourneyapi.dto.social.friend.FriendDTO;
+import hu.hm.fitjourneyapi.dto.social.post.PostDTO;
 import hu.hm.fitjourneyapi.dto.user.UserCreateDTO;
 import hu.hm.fitjourneyapi.dto.user.UserDTO;
 import hu.hm.fitjourneyapi.dto.user.UserPasswordUpdateDTO;
@@ -32,6 +35,12 @@ public interface UserService {
     UserWithFriendsDTO getUserWithFriendsById(long id);
 
     UserWithPostsDTO getUserWithPostsById(long id);
+
+    void deleteUserPost(PostDTO postDTO);
+
+    void deleteUserFriends(FriendDTO friendDTO);
+
+    void deleteUserWorkout(WorkoutDTO workoutDTO);
 
     void deleteUser(long id);
 
