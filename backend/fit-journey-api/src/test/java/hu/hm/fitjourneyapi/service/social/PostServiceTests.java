@@ -23,7 +23,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.util.List;
 import java.util.Optional;
 
-import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
 @SpringBootTest
 public class PostServiceTests {
@@ -32,7 +33,7 @@ public class PostServiceTests {
     private PostService postService;
 
     @MockitoBean
-    private PostRepository repository;
+    private PostRepository postRepository;
 
     @MockitoBean
     private PostMapper postMapper;
@@ -43,8 +44,6 @@ public class PostServiceTests {
     private User userDTO;
     @MockitoBean
     private UserRepository userRepository;
-    @Autowired
-    private PostRepository postRepository;
 
     @BeforeEach
     void setUp() {
@@ -52,16 +51,16 @@ public class PostServiceTests {
         post = PostsTestFactory.getPost(user);
         postDTO = PostsTestFactory.getPostDTO();
 
-        when(repository.save(post)).thenReturn(post);
-        when(repository.findPostsByUserId(user.getId())).thenReturn(List.of(post));
-        when(repository.findById(1L)).thenReturn(Optional.ofNullable(post));
-        when(repository.findAll()).thenReturn(List.of(post));
+        when(postRepository.save(post)).thenReturn(post);
+        when(postRepository.findPostsByUserId(user.getId())).thenReturn(List.of(post));
+        when(postRepository.findById(1L)).thenReturn(Optional.ofNullable(post));
+        when(postRepository.findAll()).thenReturn(List.of(post));
         when(postMapper.toListPostDTO(List.of(post))).thenReturn(List.of(postDTO));
-        when(repository.findById(post.getId())).thenReturn(Optional.of(post));
+        when(postRepository.findById(post.getId())).thenReturn(Optional.of(post));
         when(userRepository.findById(postDTO.getUserId())).thenReturn(Optional.ofNullable(user));
 
 
-        when(postMapper.toPostDTO(post))
+        when(postMapper.toPostDTO(any(Post.class)))
                 .thenAnswer(invocation ->
                         {
                            Post post = invocation.getArgument(0);
@@ -84,8 +83,12 @@ public class PostServiceTests {
                 .content(postDTO.getContent())
                 .userId(1L)
                 .build();
+
+        when(userRepository.findById(createDTO.getUserId())).thenReturn(Optional.ofNullable(user));
+        when(postRepository.save(any(Post.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
         PostDTO result = postService.createPost(createDTO);
-        assertNotNull(result);
+
         assertEquals(postDTO.getTitle(), result.getTitle());
         assertEquals(postDTO.getContent(), result.getContent());
         assertEquals(postDTO.getUserId(), result.getUserId());
@@ -116,6 +119,19 @@ public class PostServiceTests {
         assertEquals("Updated content", result.getContent());
     }
 
+    public void PostUpdateTest_PostIdNotFound_fail() {
+
+        PostUpdateDTO updateDTO = PostUpdateDTO
+                .builder()
+                .title("Updated title")
+                .content("Updated content")
+                .build();
+
+        when(postRepository.findById(post.getId())).thenThrow(UserNotFound.class);
+        assertThrows(UserNotFound.class,()-> postService.updatePost(post.getId(), updateDTO));
+
+    }
+
     @Test
     public void PostUpdateTest_PostNotFound_fail() {
         PostUpdateDTO updateDTO = PostUpdateDTO
@@ -125,6 +141,18 @@ public class PostServiceTests {
                 .build();
         when(postRepository.findById(post.getId())).thenReturn(Optional.empty());
         assertThrows(PostNotFoundException.class, () ->postService.updatePost(post.getId(), updateDTO));
+    }
+
+    @Test
+    public void PostDeleteTest_PostDeleted_success() {
+        postService.deletePostById(post.getId());
+        verify(postRepository,times(1)).delete(any(Post.class));
+    }
+
+    @Test
+    public void PostDeleteTest_PostNotFound_fail() {
+        when(postRepository.findById(post.getId())).thenThrow(PostNotFoundException.class);
+        assertThrows(PostNotFoundException.class, () ->postService.deletePostById(post.getId()));
     }
 
 }

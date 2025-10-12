@@ -80,7 +80,6 @@ public class PostServiceImpl implements PostService {
         log.info("Updated post with id: {} ",id);
         post = postRepository.save(post);
         return postMapper.toPostDTO(post);
-
     }
 
     @Transactional
