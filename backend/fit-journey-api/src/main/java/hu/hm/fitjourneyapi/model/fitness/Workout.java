@@ -40,4 +40,15 @@ public class Workout {
     @OneToMany(mappedBy = "workout", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Exercise> exercises = new ArrayList<>();
 
+    public void AddExercise(Exercise exercise) {
+        exercises.add(exercise);
+        exercise.setWorkout(this);
+    }
+
+    public void RemoveExercise(Exercise exercise) {
+        exercises.remove(exercise);
+        exercise.setWorkout(null);
+    }
+
+
 }
