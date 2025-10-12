@@ -99,6 +99,7 @@ public class PostServiceImpl implements PostService {
                 .build();
         log.info("Created post with id: {} ",postCreateDTO.getUserId());
         post = postRepository.save(post);
+        user.addPost(post);
         return postMapper.toPostDTO(post);
     }
 
