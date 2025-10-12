@@ -157,12 +157,21 @@ public class PostServiceTests {
 
     @Test
     public void GetPostByIdTest_PostFound_success() {
-
+        PostDTO result = postService.getPostById(post.getId());
+        assertNotNull(result);
+        assertEquals(postDTO.getTitle(), result.getTitle());
+        assertEquals(postDTO.getContent(), result.getContent());
+        assertEquals(postDTO.getUserId(), result.getUserId());
     }
 
     @Test
     public void GetPostByUserIdTest_success() {
-
+        List<PostDTO> result = postService.getPostsByUserId(user.getId());
+        assertNotNull(result);
+        assertEquals(1, result.size());
+        assertEquals(postDTO.getTitle(), result.get(0).getTitle());
+        assertEquals(postDTO.getContent(), result.get(0).getContent());
+        assertEquals(postDTO.getUserId(), result.get(0).getUserId());
     }
 
     @Test
