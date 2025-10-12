@@ -155,4 +155,29 @@ public class PostServiceTests {
         assertThrows(PostNotFoundException.class, () ->postService.deletePostById(post.getId()));
     }
 
+    @Test
+    public void GetPostByIdTest_PostFound_success() {
+
+    }
+
+    @Test
+    public void GetPostByUserIdTest_success() {
+
+    }
+
+    @Test
+    public void GetPostByIdTest_PostNotFound_fail() {
+
+    }
+
+    @Test
+    public void GetPostByUserId_UserIdNotFound_fail() {
+
+    }
+
+    @Test
+    public void GetPosts_success(){
+
+    }
+
 }
