@@ -1,19 +1,16 @@
 package hu.hm.fitjourneyapi.service.social;
 
-import hu.hm.fitjourneyapi.dto.fitness.excercise.AbstractExerciseDTO;
-import hu.hm.fitjourneyapi.dto.fitness.workout.WorkoutDTO;
 import hu.hm.fitjourneyapi.dto.social.post.PostCreateDTO;
 import hu.hm.fitjourneyapi.dto.social.post.PostDTO;
+import hu.hm.fitjourneyapi.dto.social.post.PostUpdateDTO;
+import hu.hm.fitjourneyapi.exception.social.post.PostNotFoundException;
 import hu.hm.fitjourneyapi.exception.userExceptions.UserNotFound;
 import hu.hm.fitjourneyapi.mapper.social.PostMapper;
 import hu.hm.fitjourneyapi.model.User;
-import hu.hm.fitjourneyapi.model.enums.ExerciseTypes;
-import hu.hm.fitjourneyapi.model.fitness.Workout;
 import hu.hm.fitjourneyapi.model.social.Post;
 import hu.hm.fitjourneyapi.repository.UserRepository;
 import hu.hm.fitjourneyapi.repository.social.PostRepository;
 import hu.hm.fitjourneyapi.services.interfaces.social.PostService;
-import hu.hm.fitjourneyapi.utils.ExerciseTestFactory;
 import hu.hm.fitjourneyapi.utils.PostsTestFactory;
 import hu.hm.fitjourneyapi.utils.UserTestFactory;
 import org.junit.jupiter.api.BeforeEach;
@@ -46,6 +43,8 @@ public class PostServiceTests {
     private User userDTO;
     @MockitoBean
     private UserRepository userRepository;
+    @Autowired
+    private PostRepository postRepository;
 
     @BeforeEach
     void setUp() {
@@ -106,7 +105,26 @@ public class PostServiceTests {
 
     @Test
     public void PostUpdateTest_PostUpdated_success() {
+        PostUpdateDTO updateDTO = PostUpdateDTO
+                .builder()
+                .title("Updated title")
+                .content("Updated content")
+                .build();
+        PostDTO result = postService.updatePost(post.getId(), updateDTO);
+        assertNotNull(result);
+        assertEquals("Updated title", result.getTitle());
+        assertEquals("Updated content", result.getContent());
+    }
 
+    @Test
+    public void PostUpdateTest_PostNotFound_fail() {
+        PostUpdateDTO updateDTO = PostUpdateDTO
+                .builder()
+                .title("Updated title")
+                .content("Updated content")
+                .build();
+        when(postRepository.findById(post.getId())).thenReturn(Optional.empty());
+        assertThrows(PostNotFoundException.class, () ->postService.updatePost(post.getId(), updateDTO));
     }
 
 }
