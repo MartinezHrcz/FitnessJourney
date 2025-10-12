@@ -10,11 +10,15 @@ import hu.hm.fitjourneyapi.dto.user.UserUpdateDTO;
 import hu.hm.fitjourneyapi.dto.user.fitness.UserWithWorkoutsDTO;
 import hu.hm.fitjourneyapi.dto.user.social.UserWithFriendsDTO;
 import hu.hm.fitjourneyapi.dto.user.social.UserWithPostsDTO;
+import hu.hm.fitjourneyapi.exception.fitness.WorkoutNotFound;
+import hu.hm.fitjourneyapi.exception.social.friend.FriendNotFoundException;
 import hu.hm.fitjourneyapi.exception.social.post.PostNotFoundException;
 import hu.hm.fitjourneyapi.exception.userExceptions.IncorrectPassword;
 import hu.hm.fitjourneyapi.exception.userExceptions.UserNotFound;
 import hu.hm.fitjourneyapi.mapper.UserMapper;
 import hu.hm.fitjourneyapi.model.User;
+import hu.hm.fitjourneyapi.model.fitness.Workout;
+import hu.hm.fitjourneyapi.model.social.Friend;
 import hu.hm.fitjourneyapi.model.social.Post;
 import hu.hm.fitjourneyapi.repository.UserRepository;
 import hu.hm.fitjourneyapi.repository.fitness.WorkoutRepository;
@@ -211,13 +215,40 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @Override
     public void deleteUserFriends(FriendDTO friendDTO) {
-
+        log.debug("Deleting user friend with id {} ", friendDTO.getId());
+        User user = userRepository.findUserById(friendDTO.getUserId()).orElseThrow(
+                () -> {
+                    log.warn("User not found with id: {}", friendDTO.getUserId());
+                    return new UserNotFound("User not found with id: " + friendDTO.getUserId());}
+        );
+        Friend friend = friendRepository.findById(friendDTO.getId()).orElseThrow(
+                () -> {
+                    log.warn("Friend not found with id: {}", friendDTO.getId());
+                    return new FriendNotFoundException("Friend not found with id: " + friendDTO.getId());
+                }
+        );
+        log.info("Deleted user friend with id {} ", friend.getId());
+        user.removeFriend(friend);
     }
 
     @Transactional
     @Override
     public void deleteUserWorkout(WorkoutDTO workoutDTO) {
-
+        log.debug("Deleting user workout with id {} ", workoutDTO.getId());
+        User user = userRepository.findUserById(workoutDTO.getUserId()).orElseThrow(
+                ()->{
+                    log.warn("User not found with id: {}", workoutDTO.getUserId());
+                    return new UserNotFound("User not found with id: " + workoutDTO.getUserId());
+                }
+        );
+        Workout workout = workoutRepository.findById(workoutDTO.getId()).orElseThrow(
+                ()->{
+                    log.warn("Workout not found with id: {}", workoutDTO.getId());
+                    return new WorkoutNotFound("Workout not found with id: " + workoutDTO.getId());
+                }
+        );
+        log.info("Deleted user workout with id {} ", workoutDTO.getId());
+        user.removeWorkout(workout);
     }
 
     @Transactional
