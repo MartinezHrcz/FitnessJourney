@@ -62,4 +62,14 @@ public class Exercise {
         sets.add(set);
         set.setExercise(this);
     }
+
+    public void AddSet(Set set) {
+        sets.add(set);
+        set.setExercise(this);
+    }
+
+    public void removeSet(Set set) {
+        sets.remove(set);
+        set.setExercise(null);
+    }
 }
