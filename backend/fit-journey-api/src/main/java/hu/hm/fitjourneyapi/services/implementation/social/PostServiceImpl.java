@@ -78,7 +78,7 @@ public class PostServiceImpl implements PostService {
         post.setContent(postUpdateDTO.getContent());
 
         log.info("Updated post with id: {} ",id);
-        postRepository.save(post);
+        post = postRepository.save(post);
         return postMapper.toPostDTO(post);
 
     }
@@ -99,7 +99,7 @@ public class PostServiceImpl implements PostService {
                 .content(postCreateDTO.getContent())
                 .build();
         log.info("Created post with id: {} ",postCreateDTO.getUserId());
-        postRepository.save(post);
+        post = postRepository.save(post);
         return postMapper.toPostDTO(post);
     }
 

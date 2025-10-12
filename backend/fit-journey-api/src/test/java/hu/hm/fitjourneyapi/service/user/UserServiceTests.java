@@ -1,4 +1,4 @@
-package hu.hm.fitjourneyapi.service.userTests;
+package hu.hm.fitjourneyapi.service.user;
 
 
 import hu.hm.fitjourneyapi.dto.social.post.PostDTO;

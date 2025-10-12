@@ -1,4 +1,4 @@
-package hu.hm.fitjourneyapi.service.fitnessTests;
+package hu.hm.fitjourneyapi.service.fitness;
 
 import hu.hm.fitjourneyapi.dto.fitness.excercise.AbstractExerciseDTO;
 import hu.hm.fitjourneyapi.dto.fitness.workout.WorkoutCreateDTO;
@@ -26,7 +26,6 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
