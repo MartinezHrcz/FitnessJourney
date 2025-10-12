@@ -119,6 +119,7 @@ public class PostServiceTests {
         assertEquals("Updated content", result.getContent());
     }
 
+    @Test
     public void PostUpdateTest_PostIdNotFound_fail() {
 
         PostUpdateDTO updateDTO = PostUpdateDTO
@@ -127,8 +128,8 @@ public class PostServiceTests {
                 .content("Updated content")
                 .build();
 
-        when(postRepository.findById(post.getId())).thenThrow(UserNotFound.class);
-        assertThrows(UserNotFound.class,()-> postService.updatePost(post.getId(), updateDTO));
+        when(postRepository.findById(post.getId())).thenReturn(Optional.empty());
+        assertThrows(PostNotFoundException.class,()-> postService.updatePost(post.getId(), updateDTO));
 
     }
 
@@ -151,7 +152,7 @@ public class PostServiceTests {
 
     @Test
     public void PostDeleteTest_PostNotFound_fail() {
-        when(postRepository.findById(post.getId())).thenThrow(PostNotFoundException.class);
+        when(postRepository.findById(post.getId())).thenReturn(Optional.empty());
         assertThrows(PostNotFoundException.class, () ->postService.deletePostById(post.getId()));
     }
 
@@ -176,17 +177,18 @@ public class PostServiceTests {
 
     @Test
     public void GetPostByIdTest_PostNotFound_fail() {
-
-    }
-
-    @Test
-    public void GetPostByUserId_UserIdNotFound_fail() {
-
+        when(postRepository.findById(post.getId())).thenReturn(Optional.empty());
+        assertThrows(PostNotFoundException.class, () ->postService.getPostById(post.getId()));
     }
 
     @Test
     public void GetPosts_success(){
-
+        List<PostDTO> result = postService.getPosts();
+        assertNotNull(result);
+        assertEquals(1, result.size());
+        assertEquals(postDTO.getTitle(), result.get(0).getTitle());
+        assertEquals(postDTO.getContent(), result.get(0).getContent());
+        assertEquals(postDTO.getUserId(), result.get(0).getUserId());
     }
 
 }
