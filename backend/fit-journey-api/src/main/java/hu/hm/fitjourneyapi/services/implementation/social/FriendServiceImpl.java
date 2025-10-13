@@ -68,7 +68,16 @@ public class FriendServiceImpl implements FriendService {
 
     @Override
     public FriendDTO updateFriend(FriendDTO friendDTO) {
-        return null;
+        log.debug("Attempting to update friend with id {} ", friendDTO.getId());
+        Friend friend = friendRepository.findById(friendDTO.getId()).orElseThrow(
+                ()->{
+                    log.warn("Friend with id {} not found", friendDTO.getId());
+                    return new FriendNotFoundException("Friend with id " + friendDTO.getId() + " not found");
+                }
+        );
+        friend.setStatus(friendDTO.getStatus());
+        friendRepository.save(friend);
+        return friendMapper.toFriendDTO(friend);
     }
 
     @Override
