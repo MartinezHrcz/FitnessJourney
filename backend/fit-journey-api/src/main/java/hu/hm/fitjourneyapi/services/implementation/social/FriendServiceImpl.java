@@ -2,8 +2,10 @@ package hu.hm.fitjourneyapi.services.implementation.social;
 
 import hu.hm.fitjourneyapi.dto.social.friend.FriendDTO;
 import hu.hm.fitjourneyapi.exception.social.friend.FriendNotFoundException;
+import hu.hm.fitjourneyapi.exception.userExceptions.UserNotFound;
 import hu.hm.fitjourneyapi.mapper.UserMapper;
 import hu.hm.fitjourneyapi.mapper.social.FriendMapper;
+import hu.hm.fitjourneyapi.model.User;
 import hu.hm.fitjourneyapi.model.social.Friend;
 import hu.hm.fitjourneyapi.repository.UserRepository;
 import hu.hm.fitjourneyapi.repository.social.FriendRepository;
@@ -82,7 +84,29 @@ public class FriendServiceImpl implements FriendService {
 
     @Override
     public FriendDTO createFriend(FriendDTO friendDTO) {
-        return null;
+        log.debug("Attempting to create friend with id {} ", friendDTO.getId());
+        User user = userRepository.findById(friendDTO.getUserId()).orElseThrow(
+                ()->{
+                    log.warn("Friend with id {} not found", friendDTO.getId());
+                    return new UserNotFound("Friend with id " + friendDTO.getId() + " not found");
+                }
+        );
+        User friend = userRepository.findById(friendDTO.getFriendId()).orElseThrow(
+                ()-> {
+                    log.warn("Friend with id {} not found", friendDTO.getFriendId());
+                    return new UserNotFound("Friend with id " + friendDTO.getFriendId() + " not found");
+                }
+        );
+
+        Friend RelationshipFromUser = friendMapper.toFriend(friendDTO,user,friend);
+        Friend RelationshipToFriend = friendMapper.toFriend(friendDTO,friend,user);
+
+        user.addFriend(RelationshipFromUser);
+
+        friendRepository.save(RelationshipFromUser);
+        friendRepository.save(RelationshipToFriend);
+
+        return friendMapper.toFriendDTO(RelationshipFromUser);
     }
 
     @Override
