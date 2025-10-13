@@ -5,21 +5,17 @@ import hu.hm.fitjourneyapi.dto.user.UserDTO;
 import hu.hm.fitjourneyapi.exception.social.message.MessageNotFoundException;
 import hu.hm.fitjourneyapi.exception.userExceptions.UserNotFound;
 import hu.hm.fitjourneyapi.mapper.social.MessageMapper;
-import hu.hm.fitjourneyapi.mapper.social.PostMapper;
 import hu.hm.fitjourneyapi.model.User;
 import hu.hm.fitjourneyapi.model.social.Message;
-import hu.hm.fitjourneyapi.model.social.Post;
 import hu.hm.fitjourneyapi.repository.UserRepository;
 import hu.hm.fitjourneyapi.repository.social.MessageRepository;
 import hu.hm.fitjourneyapi.services.interfaces.social.MessageService;
 import hu.hm.fitjourneyapi.utils.MessageTestFactory;
 import hu.hm.fitjourneyapi.utils.UserTestFactory;
-import org.junit.Before;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -27,7 +23,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @SpringBootTest
 public class MessageServiceTests {
@@ -158,14 +154,16 @@ public class MessageServiceTests {
         assertThrows(MessageNotFoundException.class, ()->messageService.updateMessage(messageDTO.getId(), messageDTO));
     }
 
+    @Test
     public void DeleteMessageTest_Delete_success() {
-
+        messageService.deleteMessage(1L);
+        verify(messageRepository, times(1)).delete(any(Message.class));
     }
 
+    @Test
     public void DeleteMessageTest_MessageNotFound_fail() {
-
+        when(messageRepository.findById(any(long.class))).thenReturn(Optional.empty());
+        assertThrows(MessageNotFoundException.class,()->messageService.deleteMessage(1L));
     }
-
-
 
 }
