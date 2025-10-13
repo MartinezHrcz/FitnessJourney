@@ -90,8 +90,17 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
-    public MessageDTO updateMessage(MessageDTO messageDTO) {
-        return null;
+    public MessageDTO updateMessage(long id,MessageDTO messageDTO) {
+        log.debug("Attempting to update message");
+        Message message = messageRepository.findById(id).orElseThrow(
+                ()-> {
+                    log.warn("Message with id {} not found", id);
+                    return new MessageNotFoundException("Message " + id + " not found");
+                }
+        );
+        message.setContent(messageDTO.getContent());
+        log.info("Updated message with id {} ", id);
+        return messageMapper.toDTO(message);
     }
 
     @Override

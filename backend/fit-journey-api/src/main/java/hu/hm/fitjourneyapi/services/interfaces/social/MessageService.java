@@ -15,7 +15,7 @@ public interface MessageService {
 
     MessageDTO createMessage(MessageDTO messageDTO);
 
-    MessageDTO updateMessage(MessageDTO messageDTO);
+    MessageDTO updateMessage(long id,MessageDTO messageDTO);
 
     void deleteMessage(long id);
 }
