@@ -68,7 +68,7 @@ public class FriendServiceImpl implements FriendService {
     }
 
     @Override
-    public FriendDTO updateFriend(FriendDTO friendDTO) {
+    public FriendDTO updateFriend(long id, FriendDTO friendDTO) {
         log.debug("Attempting to update friend with id {} ", friendDTO.getId());
         Friend friend = friendRepository.findById(friendDTO.getId()).orElseThrow(
                 ()->{
@@ -77,7 +77,7 @@ public class FriendServiceImpl implements FriendService {
                 }
         );
         friend.setStatus(friendDTO.getStatus());
-        friendRepository.save(friend);
+        friend = friendRepository.save(friend);
         return friendMapper.toFriendDTO(friend);
     }
 
@@ -102,8 +102,8 @@ public class FriendServiceImpl implements FriendService {
 
         user.addFriend(RelationshipFromUser);
 
-        friendRepository.save(RelationshipFromUser);
-        friendRepository.save(RelationshipToFriend);
+        RelationshipFromUser = friendRepository.save(RelationshipFromUser);
+        RelationshipToFriend = friendRepository.save(RelationshipToFriend);
 
         return friendMapper.toFriendDTO(RelationshipFromUser);
     }

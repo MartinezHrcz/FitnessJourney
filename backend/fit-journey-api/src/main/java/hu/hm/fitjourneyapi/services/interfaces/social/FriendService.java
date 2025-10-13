@@ -13,7 +13,7 @@ public interface FriendService {
 
     List<FriendDTO> getFriendsByUserIdAndRecipientName(long id, String recipientName);
 
-    FriendDTO updateFriend(FriendDTO friendDTO);
+    FriendDTO updateFriend(long id,FriendDTO friendDTO);
 
     FriendDTO createFriend(FriendDTO friendDTO);
 

@@ -1,8 +1,10 @@
 package hu.hm.fitjourneyapi.service.social;
 
 import hu.hm.fitjourneyapi.dto.social.friend.FriendDTO;
+import hu.hm.fitjourneyapi.exception.social.friend.FriendNotFoundException;
 import hu.hm.fitjourneyapi.mapper.social.FriendMapper;
 import hu.hm.fitjourneyapi.model.User;
+import hu.hm.fitjourneyapi.model.enums.FriendStatus;
 import hu.hm.fitjourneyapi.model.social.Friend;
 import hu.hm.fitjourneyapi.repository.UserRepository;
 import hu.hm.fitjourneyapi.repository.social.FriendRepository;
@@ -53,14 +55,13 @@ public class FriendServiceTests {
         relationshipDTO = FriendsTestFactory.getFriendDTO();
 
         when(friendRepository.findById(any(long.class))).thenReturn(Optional.ofNullable(relationship));
-        when(friendRepository.save(any(Friend.class))).thenReturn(relationship);
+        when(friendRepository.save(any(Friend.class))).thenAnswer(invocation -> invocation.getArgument(0));
         when(userRepository.findById(1L)).thenReturn(Optional.of(sender));
         when(userRepository.findById(2L)).thenReturn(Optional.of(recipient));
         when(friendRepository.findFriendsByUser_Id(any(long.class))).thenReturn(List.of(relationship));
         when(friendRepository.findFriendsByUser_Id(any(long.class))).thenReturn(List.of(relationship));
         when(friendRepository.findAll()).thenReturn(List.of(relationship));
         when(friendRepository.findFriendsByUser_IdAndFriend_Name(any(long.class), any(String.class))).thenReturn(List.of(relationship));
-
         when(friendMapper.toFriendDTO(any(Friend.class))).thenAnswer(
                 invocation -> {
                     Friend friend = invocation.getArgument(0);
@@ -107,12 +108,18 @@ public class FriendServiceTests {
 
     @Test
     public void updateFriend_updated_success() {
-
+        FriendDTO update = FriendDTO
+                .builder()
+                .status(FriendStatus.DECLINED)
+                .build();
+        FriendDTO result = friendService.updateFriend(relationship.getId(), update);
+        assertEquals(update.getStatus(), result.getStatus());
     }
 
     @Test
     public void updateFriend_relationNotFound_fail() {
-
+        when(friendRepository.findById(any(long.class))).thenReturn(Optional.empty());
+        assertThrows(FriendNotFoundException.class, ()-> friendService.updateFriend(relationship.getId(), new FriendDTO()));
     }
 
     @Test
