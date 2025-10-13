@@ -111,6 +111,13 @@ public class FriendServiceImpl implements FriendService {
 
     @Override
     public void deleteFriend(long id) {
-
+        Friend friend = friendRepository.findById(id).orElseThrow(
+                ()->{
+                    log.warn("Friend with id {} not found", id);
+                    return new FriendNotFoundException("Friend with id " + id + " not found");
+                }
+        );
+        friend.getUser().removeFriend(friend);
+        friendRepository.delete(friend);
     }
 }
