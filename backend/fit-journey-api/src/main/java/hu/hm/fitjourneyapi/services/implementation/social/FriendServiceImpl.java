@@ -1,14 +1,17 @@
 package hu.hm.fitjourneyapi.services.implementation.social;
 
 import hu.hm.fitjourneyapi.dto.social.friend.FriendDTO;
+import hu.hm.fitjourneyapi.exception.social.friend.FriendNotFoundException;
 import hu.hm.fitjourneyapi.mapper.UserMapper;
 import hu.hm.fitjourneyapi.mapper.social.FriendMapper;
+import hu.hm.fitjourneyapi.model.social.Friend;
 import hu.hm.fitjourneyapi.repository.UserRepository;
 import hu.hm.fitjourneyapi.repository.social.FriendRepository;
 import hu.hm.fitjourneyapi.services.interfaces.social.FriendService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -27,12 +30,23 @@ public class FriendServiceImpl implements FriendService {
 
     @Override
     public FriendDTO getFriendById(long id) {
-        return null;
+        log.debug("Fetching friend with id {} ", id);
+        Friend friend = friendRepository.findById(id).orElseThrow(
+                ()-> {
+                    log.warn("Friend with id {} not found", id);
+                    return new FriendNotFoundException("Friend with id " + id + " not found");
+                }
+        );
+        log.info("Fetched friend with id {} ", id);
+        return friendMapper.toFriendDTO(friend);
     }
 
     @Override
     public List<FriendDTO> getFriends() {
-        return List.of();
+        log.debug("Fetching all friends");
+        List<Friend> friends = friendRepository.findAll();
+        log.info("Fetched all friends");
+        return friendMapper.toListFriendDTO(friends);
     }
 
     @Override
