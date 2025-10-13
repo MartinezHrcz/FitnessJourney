@@ -10,6 +10,7 @@ import hu.hm.fitjourneyapi.repository.social.MessageRepository;
 import hu.hm.fitjourneyapi.services.interfaces.social.MessageService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +30,7 @@ public class MessageServiceImpl implements MessageService {
         this.userRepository = userRepository;
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<MessageDTO> getMessages() {
         log.debug("Getting all messages");
@@ -38,6 +40,7 @@ public class MessageServiceImpl implements MessageService {
         return dtos;
     }
 
+    @Transactional(readOnly = true)
     @Override
     public MessageDTO getMessageById(long id) {
         log.debug("Getting message with id {}", id);
@@ -51,6 +54,7 @@ public class MessageServiceImpl implements MessageService {
         return messageMapper.toDTO(message);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<MessageDTO> getMessagesBySenderId(long id) {
         log.debug("Getting messages by sender id {}", id);
@@ -60,6 +64,7 @@ public class MessageServiceImpl implements MessageService {
         return dtos;
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<MessageDTO> getMessagesByRecipientId(long id) {
         log.debug("Getting messages by recipient id {}", id);
@@ -69,6 +74,7 @@ public class MessageServiceImpl implements MessageService {
         return dtos;
     }
 
+    @Transactional
     @Override
     public MessageDTO createMessage(MessageDTO messageDTO) {
         log.debug("Attempting to creat message");
@@ -89,6 +95,7 @@ public class MessageServiceImpl implements MessageService {
         return messageMapper.toDTO(message);
     }
 
+    @Transactional
     @Override
     public MessageDTO updateMessage(long id,MessageDTO messageDTO) {
         log.debug("Attempting to update message");
@@ -103,6 +110,7 @@ public class MessageServiceImpl implements MessageService {
         return messageMapper.toDTO(message);
     }
 
+    @Transactional
     @Override
     public void deleteMessage(long id) {
         log.debug("Attempting to delete message");
