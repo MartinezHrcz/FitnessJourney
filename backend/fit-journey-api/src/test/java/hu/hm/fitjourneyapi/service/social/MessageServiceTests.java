@@ -19,6 +19,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -140,12 +141,21 @@ public class MessageServiceTests {
         assertThrows(UserNotFound.class, ()->messageService.createMessage(messageDTO));
     }
 
+    @Test
     public void UpdateMessageTest_Update_success() {
-
+        MessageDTO updateDTO = MessageDTO.builder()
+                .content("update content")
+                .build();
+        MessageDTO result = messageService.updateMessage(messageDTO.getId(), updateDTO);
+        assertNotEquals(messageDTO.getContent(), result.getContent());
+        assertEquals(messageDTO.getRecipientId(), result.getRecipientId());
+        assertEquals(messageDTO.getSenderId(), result.getSenderId());
     }
 
+    @Test
     public void UpdateMessageTest_MessageNotFound_fail() {
-
+        when(messageRepository.findById(any(long.class))).thenReturn(Optional.empty());
+        assertThrows(MessageNotFoundException.class, ()->messageService.updateMessage(messageDTO.getId(), messageDTO));
     }
 
     public void DeleteMessageTest_Delete_success() {
