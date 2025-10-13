@@ -105,6 +105,14 @@ public class MessageServiceImpl implements MessageService {
 
     @Override
     public void deleteMessage(long id) {
-
+        log.debug("Attempting to delete message");
+        Message message = messageRepository.findById(id).orElseThrow(
+                ()->{
+                    log.warn("Message with id {} not found", id);
+                    return new MessageNotFoundException("Message " + id + " not found");
+                }
+        );
+        log.info("Deleted message with id {} ", id);
+        messageRepository.delete(message);
     }
 }
