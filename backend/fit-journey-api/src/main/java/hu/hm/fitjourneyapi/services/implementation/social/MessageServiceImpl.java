@@ -61,7 +61,11 @@ public class MessageServiceImpl implements MessageService {
 
     @Override
     public List<MessageDTO> getMessagesByRecipientId(long id) {
-        return List.of();
+        log.debug("Getting messages by recipient id {}", id);
+        List<Message> messages = messageRepository.findAllByRecipient_Id(id);
+        List<MessageDTO> dtos = messageMapper.toDTO(messages);
+        log.info("Got {} messages by recipient id {}", messages.size(), id);
+        return dtos;
     }
 
     @Override
