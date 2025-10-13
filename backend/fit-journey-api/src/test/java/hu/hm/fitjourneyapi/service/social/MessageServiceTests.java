@@ -42,7 +42,6 @@ public class MessageServiceTests {
 
     private Message message;
     private MessageDTO messageDTO;
-    private UserDTO userDTO;
     private User sender;
     private User recipient;
 
