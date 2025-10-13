@@ -1,5 +1,7 @@
 package hu.hm.fitjourneyapi.services.interfaces.fitness;
 
+import hu.hm.fitjourneyapi.dto.fitness.excercise.AbstractExerciseDTO;
+import hu.hm.fitjourneyapi.dto.fitness.excercise.ExerciseCardioSetDTO;
 import hu.hm.fitjourneyapi.dto.fitness.workout.WorkoutCreateDTO;
 import hu.hm.fitjourneyapi.dto.fitness.workout.WorkoutDTO;
 import hu.hm.fitjourneyapi.dto.fitness.workout.WorkoutUpdateDTO;
@@ -17,6 +19,8 @@ public interface WorkoutService {
     List<WorkoutDTO> getWorkoutByUserId(long id);
 
     WorkoutDTO updateWorkout(long id, WorkoutUpdateDTO workoutUpdateDTO);
+
+    WorkoutDTO addExerciseToWorkout(long workoutId, AbstractExerciseDTO abstractExerciseDTO);
 
     void deleteWorkoutById(long id);
 }

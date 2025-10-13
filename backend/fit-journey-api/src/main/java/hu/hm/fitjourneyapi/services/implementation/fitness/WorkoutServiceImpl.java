@@ -1,14 +1,18 @@
 package hu.hm.fitjourneyapi.services.implementation.fitness;
 
+import hu.hm.fitjourneyapi.dto.fitness.excercise.AbstractExerciseDTO;
 import hu.hm.fitjourneyapi.dto.fitness.workout.WorkoutCreateDTO;
 import hu.hm.fitjourneyapi.dto.fitness.workout.WorkoutDTO;
 import hu.hm.fitjourneyapi.dto.fitness.workout.WorkoutUpdateDTO;
+import hu.hm.fitjourneyapi.exception.fitness.ExerciseNotFound;
 import hu.hm.fitjourneyapi.exception.fitness.WorkoutNotFound;
 import hu.hm.fitjourneyapi.exception.userExceptions.UserNotFound;
 import hu.hm.fitjourneyapi.mapper.fitness.WorkoutMapper;
 import hu.hm.fitjourneyapi.model.User;
+import hu.hm.fitjourneyapi.model.fitness.Exercise;
 import hu.hm.fitjourneyapi.model.fitness.Workout;
 import hu.hm.fitjourneyapi.repository.UserRepository;
+import hu.hm.fitjourneyapi.repository.fitness.ExerciseRepository;
 import hu.hm.fitjourneyapi.repository.fitness.WorkoutRepository;
 import hu.hm.fitjourneyapi.services.interfaces.fitness.WorkoutService;
 import lombok.extern.slf4j.Slf4j;
@@ -23,11 +27,13 @@ public class WorkoutServiceImpl implements WorkoutService {
 
     private final UserRepository userRepository;
     private final WorkoutRepository workoutRepository;
+    private final ExerciseRepository exerciseRepository;
     private final WorkoutMapper workoutMapper;
 
-    public WorkoutServiceImpl(UserRepository userRepository, WorkoutRepository workoutRepository, WorkoutMapper workoutMapper) {
+    public WorkoutServiceImpl(UserRepository userRepository, WorkoutRepository workoutRepository, ExerciseRepository exerciseRepository, WorkoutMapper workoutMapper) {
         this.userRepository = userRepository;
         this.workoutRepository = workoutRepository;
+        this.exerciseRepository = exerciseRepository;
         this.workoutMapper = workoutMapper;
     }
 
@@ -105,6 +111,26 @@ public class WorkoutServiceImpl implements WorkoutService {
         workout.setUser(user);
         workout = workoutRepository.save(workout);
         log.info("Updated workout {} with id {}", workoutUpdateDTO.getName(), workoutUpdateDTO.getId());
+        return workoutMapper.toDTO(workout);
+    }
+
+    @Override
+    public WorkoutDTO addExerciseToWorkout(long workoutId, AbstractExerciseDTO abstractExerciseDTO) {
+        Workout workout = workoutRepository.findById(workoutId).orElseThrow(
+                ()->{
+                    log.warn("Workout with id {} not found", workoutId);
+                    return new WorkoutNotFound("Workout not found with id " + workoutId);
+                }
+        );
+        Exercise exercise = exerciseRepository.findById(abstractExerciseDTO.getId()).orElseThrow(
+                () -> {
+                    log.warn("Exercise with id {} not found", abstractExerciseDTO.getId());
+                    return new ExerciseNotFound("Exercise not found with id " + abstractExerciseDTO.getId());
+                }
+        );
+        workout.AddExercise(exercise);
+        workout = workoutRepository.save(workout);
+        log.info("Added {} to workout {} with id {}",exercise.getName(), workout.getName(), workout.getId());
         return workoutMapper.toDTO(workout);
     }
 
