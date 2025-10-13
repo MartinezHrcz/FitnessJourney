@@ -2,6 +2,7 @@ package hu.hm.fitjourneyapi.services.implementation.social;
 
 import hu.hm.fitjourneyapi.dto.social.message.MessageDTO;
 import hu.hm.fitjourneyapi.exception.social.message.MessageNotFoundException;
+import hu.hm.fitjourneyapi.exception.userExceptions.UserNotFound;
 import hu.hm.fitjourneyapi.mapper.social.MessageMapper;
 import hu.hm.fitjourneyapi.model.User;
 import hu.hm.fitjourneyapi.model.social.Message;
@@ -79,16 +80,17 @@ public class MessageServiceImpl implements MessageService {
         User sender = userRepository.findById(messageDTO.getSenderId()).orElseThrow(
                 ()->{
                     log.warn("User {} not found", messageDTO.getSenderId());
-                    return new MessageNotFoundException("User " + messageDTO.getSenderId() + " not found");
+                    return new UserNotFound("User " + messageDTO.getSenderId() + " not found");
                 }
         );
         User recipient = userRepository.findById(messageDTO.getRecipientId()).orElseThrow(
                 ()-> {
                     log.warn("User {} not found", messageDTO.getRecipientId());
-                    return new MessageNotFoundException("User " + messageDTO.getRecipientId() + " not found");
+                    return new UserNotFound("User " + messageDTO.getRecipientId() + " not found");
                 }
         );
         Message message = messageMapper.toMessage(messageDTO, sender, recipient);
+        message = messageRepository.save(message);
         log.info("Created message with id {} ", message.getId());
         return messageMapper.toDTO(message);
     }
