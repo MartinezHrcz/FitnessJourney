@@ -89,6 +89,7 @@ public class MessageServiceImpl implements MessageService {
                 }
         );
         Message message = messageMapper.toMessage(messageDTO, sender, recipient);
+        message = messageRepository.save(message);
         log.info("Created message with id {} ", message.getId());
         return messageMapper.toDTO(message);
     }

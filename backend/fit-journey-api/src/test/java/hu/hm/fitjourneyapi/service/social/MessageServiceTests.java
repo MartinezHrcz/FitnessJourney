@@ -62,6 +62,10 @@ public class MessageServiceTests {
         when(messageRepository.findAllBySender_IdAndRecipient_Id(any(long.class), any(long.class))).thenReturn(List.of(message));
         when(messageRepository.findAll()).thenReturn(List.of(message));
         when(messageMapper.toDTO(List.of(message))).thenReturn(List.of(messageDTO));
+        when(userRepository.findById(1L)).thenReturn(Optional.of(sender));
+        when(userRepository.findById(2L)).thenReturn(Optional.of(recipient));
+
+        when(messageMapper.toMessage(any(MessageDTO.class), any(User.class), any(User.class))).thenReturn(message);
         when(messageMapper.toDTO(any(Message.class))).thenAnswer(
                 invocation-> {
                     Message message = invocation.getArgument(0);
@@ -120,8 +124,13 @@ public class MessageServiceTests {
         assertEquals(messageDTO.getSenderId(), result.getFirst().getSenderId());
     }
 
+    @Test
     public void CreateMessageTest_Create_success() {
-
+        MessageDTO result = messageService.createMessage(messageDTO);
+        assertNotNull(result);
+        assertEquals(messageDTO.getContent(), result.getContent());
+        assertEquals(messageDTO.getRecipientId(), result.getRecipientId());
+        assertEquals(messageDTO.getSenderId(), result.getSenderId());
     }
 
     public void CreateMessageTest_UserNotFound_fail() {
