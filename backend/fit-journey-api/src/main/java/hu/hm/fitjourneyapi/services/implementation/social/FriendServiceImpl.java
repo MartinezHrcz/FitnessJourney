@@ -62,8 +62,7 @@ public class FriendServiceImpl implements FriendService {
     @Override
     public List<FriendDTO> getFriendsByUserIdAndRecipientName(long id, String recipientName) {
         log.debug("Fetching all friends with user id {} and recipient name {} ", id, recipientName);
-        List<Friend> friends = friendRepository.findFriendsByUser_Id(id).stream()
-                .filter(friend ->  friend.getFriend().getName().equals(recipientName)).toList();
+        List<Friend> friends = friendRepository.findFriendsByUser_IdAndFriend_Name(id,recipientName);
         log.info("Fetched all friends of user id {} and recipient name {} ", id, recipientName);
         return friendMapper.toListFriendDTO(friends);
     }

@@ -54,7 +54,12 @@ public class FriendServiceTests {
 
         when(friendRepository.findById(any(long.class))).thenReturn(Optional.ofNullable(relationship));
         when(friendRepository.save(any(Friend.class))).thenReturn(relationship);
+        when(userRepository.findById(1L)).thenReturn(Optional.of(sender));
+        when(userRepository.findById(2L)).thenReturn(Optional.of(recipient));
         when(friendRepository.findFriendsByUser_Id(any(long.class))).thenReturn(List.of(relationship));
+        when(friendRepository.findFriendsByUser_Id(any(long.class))).thenReturn(List.of(relationship));
+        when(friendRepository.findAll()).thenReturn(List.of(relationship));
+        when(friendRepository.findFriendsByUser_IdAndFriend_Name(any(long.class), any(String.class))).thenReturn(List.of(relationship));
 
         when(friendMapper.toFriendDTO(any(Friend.class))).thenAnswer(
                 invocation -> {
@@ -67,6 +72,8 @@ public class FriendServiceTests {
                             .build();
                 }
         );
+
+        when(friendMapper.toListFriendDTO(any(List.of(Friend.class).getClass()))).thenReturn(List.of(relationshipDTO));
     }
 
     @Test
@@ -80,12 +87,22 @@ public class FriendServiceTests {
 
     @Test
     public void getFriendsByUserId_getAll_success() {
-
+        List<FriendDTO> result = friendService.getFriendsByUserId(sender.getId());
+        assertNotNull(result);
+        assertEquals(relationshipDTO.getFriendId(), result.getFirst().getFriendId());
+        assertEquals(relationshipDTO.getStatus(), result.getFirst().getStatus());
+        assertEquals(relationshipDTO.getUserId(), result.getFirst().getUserId());
     }
 
     @Test
     public void getFriendsByUserIdAndRecipient_getAll_success() {
-
+        long userId = sender.getId();
+        String recipientName = recipient.getName();
+        List<FriendDTO> result = friendService.getFriendsByUserIdAndRecipientName(userId, recipientName);
+        assertNotNull(result);
+        assertEquals(relationshipDTO.getFriendId(), result.getFirst().getFriendId());
+        assertEquals(relationshipDTO.getStatus(), result.getFirst().getStatus());
+        assertEquals(relationshipDTO.getUserId(), result.getFirst().getUserId());
     }
 
     @Test
@@ -116,8 +133,4 @@ public class FriendServiceTests {
     public void deleteFriend_userNotFound_fail() {
 
     }
-
-
-
-
 }
