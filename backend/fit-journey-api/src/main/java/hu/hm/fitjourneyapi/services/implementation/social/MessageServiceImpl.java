@@ -64,11 +64,11 @@ public class MessageServiceImpl implements MessageService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<MessageDTO> getMessagesByRecipientId(long id) {
-        log.debug("Getting messages by recipient id {}", id);
-        List<Message> messages = messageRepository.findAllByRecipient_Id(id);
+    public List<MessageDTO> getMessagesBySenderAndRecipientId(long senderId, long recipientId) {
+        log.debug("Getting messages by sender id {} and recipient id {}", senderId, recipientId);
+        List<Message> messages = messageRepository.findAllBySender_IdAndRecipient_Id(senderId,recipientId);
         List<MessageDTO> dtos = messageMapper.toDTO(messages);
-        log.info("Got {} messages by recipient id {}", messages.size(), id);
+        log.info("Got {} messages by sender and recipient id", messages.size());
         return dtos;
     }
 
@@ -95,7 +95,7 @@ public class MessageServiceImpl implements MessageService {
 
     @Transactional
     @Override
-    public MessageDTO updateMessage(long id,MessageDTO messageDTO) {
+    public MessageDTO updateMessage(long id, MessageDTO messageDTO) {
         log.debug("Attempting to update message");
         Message message = messageRepository.findById(id).orElseThrow(
                 ()-> {

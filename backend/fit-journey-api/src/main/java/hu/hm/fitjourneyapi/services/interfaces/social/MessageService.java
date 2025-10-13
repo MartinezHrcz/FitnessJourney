@@ -11,7 +11,7 @@ public interface MessageService {
 
     List<MessageDTO> getMessagesBySenderId(long id);
 
-    List<MessageDTO> getMessagesByRecipientId(long id);
+    List<MessageDTO> getMessagesBySenderAndRecipientId(long senderId, long recipientId);
 
     MessageDTO createMessage(MessageDTO messageDTO);
 

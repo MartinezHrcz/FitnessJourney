@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 @Getter
 @Builder
 public class MessageDTO {
+    private long id;
     private long senderId;
     private long recipientId;
     private String content;

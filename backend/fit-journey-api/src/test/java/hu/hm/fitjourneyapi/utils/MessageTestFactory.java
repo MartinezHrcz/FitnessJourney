@@ -7,7 +7,7 @@ import hu.hm.fitjourneyapi.model.social.Message;
 import java.time.LocalDateTime;
 
 public class MessageTestFactory {
-    public Message getMessage(User sender, User recipient){
+    public static Message getMessage(User sender, User recipient){
         return Message.builder()
                 .id(1L)
                 .sender(sender)
@@ -17,7 +17,7 @@ public class MessageTestFactory {
                 .build();
     }
 
-    public MessageDTO getMessageDTO(){
+    public static MessageDTO getMessageDTO(){
         return MessageDTO.builder()
                 .senderId(1L)
                 .recipientId(2L)
