@@ -144,7 +144,7 @@ public class WorkoutServiceTests {
         long idToDelete = workoutDTO.getId();
         when(workoutRepository.findById(idToDelete)).thenReturn(Optional.ofNullable(workout));
         workoutService.deleteWorkoutById(idToDelete);
-        verify(workoutRepository, times(1)).deleteById(idToDelete);
+        verify(workoutRepository, times(1)).delete(any(Workout.class));
     }
 
     @Test
