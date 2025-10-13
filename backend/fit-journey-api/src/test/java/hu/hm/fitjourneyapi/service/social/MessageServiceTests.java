@@ -2,6 +2,7 @@ package hu.hm.fitjourneyapi.service.social;
 
 import hu.hm.fitjourneyapi.dto.social.message.MessageDTO;
 import hu.hm.fitjourneyapi.dto.user.UserDTO;
+import hu.hm.fitjourneyapi.exception.social.message.MessageNotFoundException;
 import hu.hm.fitjourneyapi.mapper.social.MessageMapper;
 import hu.hm.fitjourneyapi.mapper.social.PostMapper;
 import hu.hm.fitjourneyapi.model.User;
@@ -57,6 +58,7 @@ public class MessageServiceTests {
         messageDTO = MessageTestFactory.getMessageDTO();
         when(messageRepository.save(any(Message.class))).thenReturn(message);
         when(messageRepository.findById(any(long.class))).thenReturn(Optional.ofNullable(message));
+        when(messageRepository.findAllBySender_Id(any(long.class))).thenReturn(List.of(message));
         when(messageRepository.findAllBySender_IdAndRecipient_Id(any(long.class), any(long.class))).thenReturn(List.of(message));
         when(messageRepository.findAll()).thenReturn(List.of(message));
         when(messageMapper.toDTO(List.of(message))).thenReturn(List.of(messageDTO));
@@ -78,23 +80,44 @@ public class MessageServiceTests {
         List<MessageDTO> result = messageService.getMessages();
         assertNotNull(result);
         assertTrue(!result.isEmpty());
-        assertEquals(messageDTO, result.get(0));
+        assertEquals(messageDTO.getContent(), result.getFirst().getContent());
+        assertEquals(messageDTO.getRecipientId(), result.getFirst().getRecipientId());
+        assertEquals(messageDTO.getSenderId(), result.getFirst().getSenderId());
     }
 
+    @Test
     public void GetMessageByIdTest_Get_success() {
-
+        MessageDTO result = messageService.getMessageById(1L);
+        assertNotNull(result);
+        assertEquals(messageDTO.getContent(), result.getContent());
+        assertEquals(messageDTO.getRecipientId(), result.getRecipientId());
+        assertEquals(messageDTO.getSenderId(), result.getSenderId());
     }
 
+    @Test
+    public void GetMessageByIdTest_MessageNotFound_fail() {
+        when(messageRepository.findById(any(long.class))).thenReturn(Optional.empty());
+        assertThrows(MessageNotFoundException.class, ()->messageService.getMessageById(1L));
+    }
+
+    @Test
     public void GetMessageBySenderIDTest_Get_success() {
-
+        List<MessageDTO> result = messageService.getMessagesBySenderId(sender.getId());
+        assertNotNull(result);
+        assertFalse(result.isEmpty());
+        assertEquals(messageDTO.getContent(), result.getFirst().getContent());
+        assertEquals(messageDTO.getRecipientId(), result.getFirst().getRecipientId());
+        assertEquals(messageDTO.getSenderId(), result.getFirst().getSenderId());
     }
 
-    public void GetMessagesBySenderIDTest_UserNotFound_fail() {
-
-    }
-
+    @Test
     public void GetMessagesBySenderAndRecipientIDTest_Get_success() {
-
+        List<MessageDTO> result = messageService.getMessagesBySenderAndRecipientId(sender.getId(), recipient.getId());
+        assertNotNull(result);
+        assertFalse(result.isEmpty());
+        assertEquals(messageDTO.getContent(), result.getFirst().getContent());
+        assertEquals(messageDTO.getRecipientId(), result.getFirst().getRecipientId());
+        assertEquals(messageDTO.getSenderId(), result.getFirst().getSenderId());
     }
 
     public void CreateMessageTest_Create_success() {
