@@ -2,6 +2,7 @@ package hu.hm.fitjourneyapi.service.social;
 
 import hu.hm.fitjourneyapi.dto.social.friend.FriendDTO;
 import hu.hm.fitjourneyapi.exception.social.friend.FriendNotFoundException;
+import hu.hm.fitjourneyapi.exception.userExceptions.UserNotFound;
 import hu.hm.fitjourneyapi.mapper.social.FriendMapper;
 import hu.hm.fitjourneyapi.model.User;
 import hu.hm.fitjourneyapi.model.enums.FriendStatus;
@@ -22,7 +23,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @SpringBootTest
 public class FriendServiceTests {
@@ -47,17 +48,17 @@ public class FriendServiceTests {
     @BeforeEach
     void setUp() {
         sender = UserTestFactory.getUser();
-        sender.setId(1);
+        sender.setId(1L);
         recipient = UserTestFactory.getUser();
-        recipient.setId(2);
+        recipient.setId(2L);
 
         relationship = FriendsTestFactory.getFriend(sender);
         relationshipDTO = FriendsTestFactory.getFriendDTO();
 
         when(friendRepository.findById(any(long.class))).thenReturn(Optional.ofNullable(relationship));
         when(friendRepository.save(any(Friend.class))).thenAnswer(invocation -> invocation.getArgument(0));
-        when(userRepository.findById(1L)).thenReturn(Optional.of(sender));
-        when(userRepository.findById(2L)).thenReturn(Optional.of(recipient));
+        when(userRepository.findById(relationshipDTO.getUserId())).thenReturn(Optional.of(sender));
+        when(userRepository.findById(relationshipDTO.getFriendId())).thenReturn(Optional.of(recipient));
         when(friendRepository.findFriendsByUser_Id(any(long.class))).thenReturn(List.of(relationship));
         when(friendRepository.findFriendsByUser_Id(any(long.class))).thenReturn(List.of(relationship));
         when(friendRepository.findAll()).thenReturn(List.of(relationship));
@@ -70,6 +71,18 @@ public class FriendServiceTests {
                             .status(friend.getStatus())
                             .userId(friend.getUser().getId())
                             .friendId(friend.getFriend().getId())
+                            .build();
+                }
+        );
+
+        when(friendMapper.toFriend(any(FriendDTO.class), any(User.class), any(User.class))).thenAnswer(
+                invocation -> {
+                    FriendDTO friend = invocation.getArgument(0);
+                    return Friend.builder()
+                            .id(friend.getId())
+                            .status(friend.getStatus())
+                            .user(sender)
+                            .friend(recipient)
                             .build();
                 }
         );
@@ -124,20 +137,29 @@ public class FriendServiceTests {
 
     @Test
     public void createFriend_success() {
+        FriendDTO result = friendService.createFriend(relationshipDTO);
+        assertNotNull(result);
+        assertEquals(relationshipDTO.getFriendId(), result.getFriendId());
+        assertEquals(relationshipDTO.getStatus(), result.getStatus());
+        assertEquals(relationshipDTO.getUserId(), result.getUserId());
 
     }
+
     @Test
     public void createFriend_userNotFound_fail() {
-
+        when(userRepository.findById(relationshipDTO.getUserId())).thenReturn(Optional.empty());
+        assertThrows(UserNotFound.class,()->friendService.createFriend(new FriendDTO()));
     }
 
     @Test
     public void deleteFriend_success() {
-
+        friendService.deleteFriend(relationship.getId());
+        verify(friendRepository, times(1)).delete(any(Friend.class));
     }
 
     @Test
     public void deleteFriend_userNotFound_fail() {
-
+        when(friendRepository.findById(any(long.class))).thenReturn(Optional.empty());
+        assertThrows(FriendNotFoundException.class,()->friendService.deleteFriend(relationship.getId()));
     }
 }
