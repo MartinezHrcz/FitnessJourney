@@ -31,8 +31,8 @@ public class MessageRepositoryTest {
 
     @BeforeEach
     public void setup() {
-        user1 = factory.createUser();
-        user2 = factory.createUser();
+        user1 = factory.createUser("one");
+        user2 = factory.createUser("two");
         message = factory.createMessage(user1, user2);
     }
 

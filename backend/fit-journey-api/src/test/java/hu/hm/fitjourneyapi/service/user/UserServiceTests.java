@@ -209,11 +209,10 @@ public class UserServiceTests {
     void testGetUsersByUsername_success() {
         when(userRepository.findUsersByName(anyString())).thenReturn(Optional.of(user));
         when(userMapper.toUserDTOList(List.of(user))).thenReturn(List.of(userDTO));
-        List<UserDTO> dto = userService.getUsersByName(user.getName());
+        UserDTO dto = userService.getUsersByName(user.getName());
         assertNotNull(dto);
-        assertEquals(1, dto.size());
-        assertEquals(user.getName(), dto.getFirst().getName());
-        assertEquals(user.getEmail(), dto.getFirst().getEmail());
+        assertEquals(user.getName(), dto.getName());
+        assertEquals(user.getEmail(), dto.getEmail());
     }
 
 

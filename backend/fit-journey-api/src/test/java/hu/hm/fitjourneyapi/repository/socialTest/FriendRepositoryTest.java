@@ -32,8 +32,8 @@ public class FriendRepositoryTest {
 
     @BeforeEach
     void setup() {
-        user1 = factory.createUser();
-        user2 = factory.createUser();
+        user1 = factory.createUser("one");
+        user2 = factory.createUser("two");
         friend = factory.createFriend(user1, user2);
     }
 

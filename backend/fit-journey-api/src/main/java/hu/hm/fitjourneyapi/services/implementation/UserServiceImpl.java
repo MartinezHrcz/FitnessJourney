@@ -147,11 +147,11 @@ public class UserServiceImpl implements UserService {
     @Transactional(readOnly = true)
     @Override
     public UserDTO getUsersByName(String name) {
-        log.debug("Fetching all users with name {} ", name);
+        log.debug("Fetching users with name {} ", name);
         User users = userRepository.findUsersByName(name).orElseThrow(
                 () -> new UserNotFound("User not found with name:" + name)
         );
-        log.debug("Fetched all users with name {} ", name);
+        log.debug("Fetched users with name {} ", name);
         return userMapper.toUserDTO(users);
     }
 

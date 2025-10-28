@@ -36,7 +36,7 @@ public class PostRepositoryTest {
 
     @BeforeEach
     void setup() {
-        user = factory.createUser();
+        user = factory.createUser("");
         post = factory.createPost(user);
     }
 

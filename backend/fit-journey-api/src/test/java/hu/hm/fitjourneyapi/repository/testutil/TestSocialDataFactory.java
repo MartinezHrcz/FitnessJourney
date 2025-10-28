@@ -25,9 +25,9 @@ public class TestSocialDataFactory {
     @Autowired
     MessageRepository messageRepository;
 
-    public User createUser() {
+    public User createUser(String name) {
         User user = User.builder()
-                .name("Placeholder")
+                .name("Placeholder" + name)
                 .email("Placeholder@email.com")
                 .birthday(LocalDate.of(2000, 1,1))
                 .password("PlaceholderPassword")
