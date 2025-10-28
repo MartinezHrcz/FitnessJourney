@@ -31,6 +31,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -145,11 +146,13 @@ public class UserServiceImpl implements UserService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<UserDTO> getUsersByName(String name) {
+    public UserDTO getUsersByName(String name) {
         log.debug("Fetching all users with name {} ", name);
-        List<User> users = userRepository.findUsersByName(name);
+        User users = userRepository.findUsersByName(name).orElseThrow(
+                () -> new UserNotFound("User not found with name:" + name)
+        );
         log.debug("Fetched all users with name {} ", name);
-        return userMapper.toUserDTOList(users);
+        return userMapper.toUserDTO(users);
     }
 
     @Transactional(readOnly = true)
