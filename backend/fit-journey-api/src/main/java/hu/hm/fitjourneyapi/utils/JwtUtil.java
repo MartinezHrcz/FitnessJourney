@@ -1,10 +1,13 @@
 package hu.hm.fitjourneyapi.utils;
 
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.spec.SecretKeySpec;
 import java.security.Key;
+import java.util.Date;
 
 @Component
 public class JwtUtil {
@@ -20,4 +23,14 @@ public class JwtUtil {
     private Key getSigningKey() {
         return  new SecretKeySpec(SECRET_KEY.getBytes(), "HmacSHA256");
     }
+
+    public String generateToken(String username) {
+        return Jwts.builder()
+                .setSubject(username)
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
+                .signWith(getSigningKey(), SignatureAlgorithm.HS256)
+                .compact();
+    }
+
 }
