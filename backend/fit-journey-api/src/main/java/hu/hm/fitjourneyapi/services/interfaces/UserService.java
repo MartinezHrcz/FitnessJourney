@@ -27,7 +27,7 @@ public interface UserService {
 
     List<UserDTO> getAllUsers();
 
-    UserDTO getUsersByName(String name);
+    UserDTO getUserByName(String name);
 
 
     UserWithWorkoutsDTO getUserWithWorkoutsById(long id);
