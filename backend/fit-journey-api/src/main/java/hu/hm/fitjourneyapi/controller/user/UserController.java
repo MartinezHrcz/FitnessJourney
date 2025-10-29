@@ -3,11 +3,11 @@ package hu.hm.fitjourneyapi.controller.user;
 import hu.hm.fitjourneyapi.dto.user.UserCreateDTO;
 import hu.hm.fitjourneyapi.dto.user.UserDTO;
 import hu.hm.fitjourneyapi.dto.user.UserUpdateDTO;
+import hu.hm.fitjourneyapi.exception.userExceptions.UserNotFound;
 import hu.hm.fitjourneyapi.services.interfaces.UserService;
 import jdk.jshell.spi.ExecutionControl;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -20,20 +20,26 @@ public class UserController {
         this.userService = userService;
     }
 
+    @GetMapping
     public ResponseEntity<List<UserDTO>> getAllUsers() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return ResponseEntity.ok(userService.getAllUsers());
     }
 
-    public ResponseEntity<UserDTO> getUserByName(String name) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public ResponseEntity<UserDTO> getUserById(long id) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public ResponseEntity<UserDTO> getUserByEmail(String email){
-        throw new UnsupportedOperationException("Not supported yet.");
+    @GetMapping
+    public ResponseEntity<?> getUser(
+            @RequestParam(required = false) Long id,
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String email
+    ){
+        try {
+            if (id != null) return ResponseEntity.ok(userService.getUserById(id));
+            else if (name != null) return ResponseEntity.ok(userService.getUserByName(name));
+            else if (email != null) return ResponseEntity.ok(userService.getUserByEmail(email));
+            else return ResponseEntity.badRequest().build();
+        }
+        catch (UserNotFound e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     public ResponseEntity<UserDTO> updateUser(UserUpdateDTO dto) {
