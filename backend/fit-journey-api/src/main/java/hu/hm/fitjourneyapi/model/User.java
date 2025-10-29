@@ -34,7 +34,7 @@ public class User {
     @Column(nullable = false, length = 100)
     private String email;
     private LocalDate birthday;
-    @Column(nullable = false, length = 50)
+    @Column(nullable = false, length = 100)
     private String password;
     private float weightInKg;
     private float heightInCm;
