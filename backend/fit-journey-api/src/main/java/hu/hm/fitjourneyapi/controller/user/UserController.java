@@ -42,8 +42,15 @@ public class UserController {
         }
     }
 
-    public ResponseEntity<UserDTO> updateUser(UserUpdateDTO dto) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    @PutMapping
+    public ResponseEntity<UserDTO> updateUser(@RequestBody UserUpdateDTO dto) {
+        try{
+            UserDTO result = userService.updateUser(dto);
+            return ResponseEntity.ok(result);
+        }
+        catch (UserNotFound e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     public ResponseEntity<UserDTO> createUser(UserCreateDTO dto) {
