@@ -5,6 +5,7 @@ import hu.hm.fitjourneyapi.dto.user.UserDTO;
 import hu.hm.fitjourneyapi.dto.user.UserUpdateDTO;
 import hu.hm.fitjourneyapi.exception.userExceptions.UserNotFound;
 import hu.hm.fitjourneyapi.services.interfaces.UserService;
+import jakarta.validation.Valid;
 import jdk.jshell.spi.ExecutionControl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -43,7 +44,7 @@ public class UserController {
     }
 
     @PutMapping
-    public ResponseEntity<UserDTO> updateUser(@RequestBody UserUpdateDTO dto) {
+    public ResponseEntity<UserDTO> updateUser(@RequestBody @Valid UserUpdateDTO dto) {
         try{
             UserDTO result = userService.updateUser(dto);
             return ResponseEntity.ok(result);
@@ -53,11 +54,18 @@ public class UserController {
         }
     }
 
-    public ResponseEntity<UserDTO> createUser(UserCreateDTO dto) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    @PostMapping
+    public ResponseEntity<UserDTO> createUser(@RequestBody @Valid UserCreateDTO dto) {
+        return ResponseEntity.ok(userService.createUser(dto));
     }
 
+    @DeleteMapping
     public ResponseEntity<String> deleteUser(int id){
-        throw new UnsupportedOperationException("Not supported yet.");
+        try{
+            userService.deleteUser(id);
+            return ResponseEntity.ok("Deleted");
+        }catch (UserNotFound e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 }
