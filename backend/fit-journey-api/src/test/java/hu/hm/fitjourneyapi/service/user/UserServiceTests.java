@@ -207,7 +207,7 @@ public class UserServiceTests {
 
     @Test
     void testGetUsersByUsername_success() {
-        when(userRepository.findUsersByName(anyString())).thenReturn(Optional.of(user));
+        when(userRepository.findUserByName(anyString())).thenReturn(Optional.of(user));
         when(userMapper.toUserDTOList(List.of(user))).thenReturn(List.of(userDTO));
         UserDTO dto = userService.getUserByName(user.getName());
         assertNotNull(dto);

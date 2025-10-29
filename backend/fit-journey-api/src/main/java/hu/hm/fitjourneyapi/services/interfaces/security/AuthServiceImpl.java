@@ -10,6 +10,8 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class AuthServiceImpl implements AuthService {
 
@@ -26,16 +28,17 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public AuthResponse register(UserCreateDTO request) {
         UserDTO user = userService.createUser(request);
-        String token = jwtUtil.generateToken(user.getName());
+        String token = jwtUtil.generateToken(user.getName(), List.of(user.getRole().name()));
         return new AuthResponse(token);
     }
 
     @Override
     public AuthResponse login(AuthRequest request) {
+        UserDTO user = userService.getUserByName(request.getUsername());
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
         );
-        String token = jwtUtil.generateToken(request.getUsername());
+        String token = jwtUtil.generateToken(request.getUsername(), List.of(user.getRole().name()));
         return new AuthResponse(token);
     }
 }

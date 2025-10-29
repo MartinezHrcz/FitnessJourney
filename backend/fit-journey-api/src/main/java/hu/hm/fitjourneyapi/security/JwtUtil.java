@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import javax.crypto.spec.SecretKeySpec;
 import java.security.Key;
 import java.util.Date;
+import java.util.List;
 import java.util.function.Function;
 
 @Component
@@ -26,9 +27,10 @@ public class JwtUtil {
         return  new SecretKeySpec(SECRET_KEY.getBytes(), "HmacSHA256");
     }
 
-    public String generateToken(String username) {
+    public String generateToken(String username, List<String> roles) {
         return Jwts.builder()
                 .setSubject(username)
+                .claim("roles",roles)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)
@@ -46,6 +48,10 @@ public class JwtUtil {
     private  <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
         final Claims claims = extractAllClaims(token);
         return claimsResolver.apply(claims);
+    }
+
+    public List<String> extractRoles(String token){
+        return extractClaim(token, claims-> claims.get("roles", List.class));
     }
 
     public String extractUsername(String token) {
