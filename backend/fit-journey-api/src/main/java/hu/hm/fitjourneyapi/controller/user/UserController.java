@@ -26,7 +26,7 @@ public class UserController {
         return ResponseEntity.ok(userService.getAllUsers());
     }
 
-    @GetMapping
+    @GetMapping("/search")
     public ResponseEntity<?> getUser(
             @RequestParam(required = false) Long id,
             @RequestParam(required = false) String name,
