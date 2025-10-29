@@ -8,7 +8,9 @@ import hu.hm.fitjourneyapi.security.JwtUtil;
 import hu.hm.fitjourneyapi.services.interfaces.UserService;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.stereotype.Service;
 
+@Service
 public class AuthServiceImpl implements AuthService {
 
     private final UserService userService;

@@ -5,6 +5,6 @@ import hu.hm.fitjourneyapi.dto.user.AuthResponse;
 import hu.hm.fitjourneyapi.dto.user.UserCreateDTO;
 
 public interface AuthService {
-    public AuthResponse register(UserCreateDTO request);
-    public AuthResponse login(AuthRequest request);
+    AuthResponse register(UserCreateDTO request);
+    AuthResponse login(AuthRequest request);
 }
