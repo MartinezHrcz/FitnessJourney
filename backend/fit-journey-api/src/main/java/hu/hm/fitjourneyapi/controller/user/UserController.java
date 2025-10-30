@@ -29,7 +29,7 @@ public class UserController {
     }
 
     @GetMapping("/search")
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasAnyRole('USER')")
     public ResponseEntity<?> getUser(
             @RequestParam(required = false) Long id,
             @RequestParam(required = false) String name,

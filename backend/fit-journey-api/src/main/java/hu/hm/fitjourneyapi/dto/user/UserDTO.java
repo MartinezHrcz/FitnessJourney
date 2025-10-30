@@ -11,4 +11,5 @@ import lombok.experimental.SuperBuilder;
 public class UserDTO extends AbstractUserDTO {
     private long id;
     private Roles role;
+    private String token;
 }

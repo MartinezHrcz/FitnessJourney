@@ -3,6 +3,7 @@ package hu.hm.fitjourneyapi.security;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -13,6 +14,7 @@ import java.util.List;
 import java.util.function.Function;
 
 @Component
+@Slf4j
 public class JwtUtil {
     @Value("${JWT_SECRET_KEY}")
     private String SECRET_KEY;
@@ -28,6 +30,7 @@ public class JwtUtil {
     }
 
     public String generateToken(String username, List<String> roles) {
+        log.info("Generating token for username {} secretKEy: {}, roles {}", username, SECRET_KEY, roles.stream().toList().toString());
         return Jwts.builder()
                 .setSubject(username)
                 .claim("roles",roles)
@@ -51,6 +54,7 @@ public class JwtUtil {
     }
 
     public List<String> extractRoles(String token){
+        log.info(extractClaim(token, claims-> claims.get("roles", List.class)).toString());
         return extractClaim(token, claims-> claims.get("roles", List.class));
     }
 
