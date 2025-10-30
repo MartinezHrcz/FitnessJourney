@@ -10,6 +10,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -42,7 +43,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             roles = jwtUtil.extractRoles(jwt);
         }
         if(username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+            UserDetails userDetails;
+            try{
+                userDetails = userDetailsService.loadUserByUsername(username);
+            }
+            catch(UsernameNotFoundException e){
+                log.info("Username not found: " + username);
+                return;
+            }
+
             List<SimpleGrantedAuthority> authorities = roles.stream()
                     .map(role -> new SimpleGrantedAuthority("ROLE_" + role))
                     .toList();

@@ -68,9 +68,9 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public UserDTO updateUser(UserUpdateDTO userUpdateDTO) {
+    public UserDTO updateUser(UUID id,UserUpdateDTO userUpdateDTO) {
         log.debug("Attempting to update user with id {} email {}", userUpdateDTO.getId(), userUpdateDTO.getName());
-        User userToUpdate = userRepository.findById(userUpdateDTO.getId()).orElseThrow(
+        User userToUpdate = userRepository.findById(id).orElseThrow(
                 () ->{
                     log.warn("User not found with id: {}", userUpdateDTO.getId());
                     return new UserNotFound("User not found with id:" + userUpdateDTO.getId());}

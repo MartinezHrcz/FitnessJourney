@@ -86,8 +86,8 @@ public class UserServiceTests {
 
     @Test
     void testUpdateUser_success() {
+        UUID id =  UUID.randomUUID();
         UserUpdateDTO updateDTO = UserUpdateDTO.builder()
-                .id(UUID.randomUUID())
                 .name("New name")
                 .email("newEmail@gmail.com")
                 .weightInKg(101)
@@ -97,7 +97,7 @@ public class UserServiceTests {
 
         when(userRepository.findById(any(UUID.class))).thenReturn(Optional.ofNullable(user));
 
-        UserDTO result = userService.updateUser(updateDTO);
+        UserDTO result = userService.updateUser(id,updateDTO);
 
         assertNotNull(result);
 

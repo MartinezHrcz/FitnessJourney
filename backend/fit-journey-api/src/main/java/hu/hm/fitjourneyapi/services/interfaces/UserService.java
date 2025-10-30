@@ -18,7 +18,7 @@ public interface UserService {
 
     UserDTO createUser(UserCreateDTO userCreateDTO);
 
-    UserDTO updateUser(UserUpdateDTO userUpdateDTO);
+    UserDTO updateUser(UUID id,UserUpdateDTO userUpdateDTO);
 
     UserDTO updatePassword(UserPasswordUpdateDTO userPasswordUpdateDTO);
 

@@ -6,7 +6,6 @@ import hu.hm.fitjourneyapi.dto.user.UserUpdateDTO;
 import hu.hm.fitjourneyapi.exception.userExceptions.UserNotFound;
 import hu.hm.fitjourneyapi.services.interfaces.UserService;
 import jakarta.validation.Valid;
-import jdk.jshell.spi.ExecutionControl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +15,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/user")
+@PreAuthorize("hasAnyRole('USER', 'ADMIN')")
 public class UserController {
     private final UserService userService;
 
@@ -24,13 +24,11 @@ public class UserController {
     }
 
     @GetMapping
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<UserDTO>> getAllUsers() {
         return ResponseEntity.ok(userService.getAllUsers());
     }
 
     @GetMapping("/search")
-    @PreAuthorize("hasAnyRole('USER')")
     public ResponseEntity<?> getUser(
             @RequestParam(required = false) UUID id,
             @RequestParam(required = false) String name,
@@ -47,11 +45,10 @@ public class UserController {
         }
     }
 
-    @PutMapping
-    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
-    public ResponseEntity<UserDTO> updateUser(@RequestBody @Valid UserUpdateDTO dto) {
+    @PutMapping("/{id}")
+    public ResponseEntity<UserDTO> updateUser(@PathVariable UUID id, @RequestBody @Valid UserUpdateDTO dto) {
         try{
-            UserDTO result = userService.updateUser(dto);
+            UserDTO result = userService.updateUser(id,dto);
             return ResponseEntity.ok(result);
         }
         catch (UserNotFound e) {
@@ -60,13 +57,11 @@ public class UserController {
     }
 
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<UserDTO> createUser(@RequestBody @Valid UserCreateDTO dto) {
         return ResponseEntity.ok(userService.createUser(dto));
     }
 
     @DeleteMapping
-    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<String> deleteUser(UUID id){
         try{
             userService.deleteUser(id);
