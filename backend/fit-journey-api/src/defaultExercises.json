@@ -1,0 +1,490 @@
+{
+  "exercises": [
+    {
+      "name": "Squat",
+      "description": "A lower‑body exercise where you bend your knees and hips and lower your body, then stand back up.",
+      "weightType": "FREE_WEIGHT",
+      "exerciseType": "RESISTANCE"
+    },
+    {
+      "name": "Bodyweight Squat",
+      "description": "A squat performed with no added weight, using just your bodyweight.",
+      "weightType": "BODYWEIGHT",
+      "exerciseType": "BODY_WEIGHT"
+    },
+    {
+      "name": "Deadlift",
+      "description": "A hip‑hinge movement where you lift a weight from the floor to standing.",
+      "weightType": "FREE_WEIGHT",
+      "exerciseType": "RESISTANCE"
+    },
+    {
+      "name": "Romanian Deadlift",
+      "description": "A variation of deadlift emphasising hamstrings: lower the weight with minimal knee bend and return up.",
+      "weightType": "FREE_WEIGHT",
+      "exerciseType": "RESISTANCE"
+    },
+    {
+      "name": "Leg Press",
+      "description": "A machine‑based lower‑body pushing movement where you push a platform away with your feet.",
+      "weightType": "MACHINE",
+      "exerciseType": "RESISTANCE"
+    },
+    {
+      "name": "Lunge",
+      "description": "Step one foot forward (or backward) and bend both knees to lower your body, then push back up.",
+      "weightType": "FREE_WEIGHT",
+      "exerciseType": "RESISTANCE"
+    },
+    {
+      "name": "Walking Lunge",
+      "description": "A lunge executed by stepping forward repeatedly, alternating legs as you move.",
+      "weightType": "FREE_WEIGHT",
+      "exerciseType": "RESISTANCE"
+    },
+    {
+      "name": "Split Squat",
+      "description": "A stationary lunge variation where one leg is forward and the other is behind (on the floor or bench) and you lower and raise the body.",
+      "weightType": "FREE_WEIGHT",
+      "exerciseType": "RESISTANCE"
+    },
+    {
+      "name": "Leg Extension",
+      "description": "A machine isolation exercise where you extend the knees from a seated position to work the quadriceps.",
+      "weightType": "MACHINE",
+      "exerciseType": "RESISTANCE"
+    },
+    {
+      "name": "Leg Curl",
+      "description": "A machine (or free‑weight) isolation exercise where you bend the knees to bring heels toward glutes, working hamstrings.",
+      "weightType": "MACHINE",
+      "exerciseType": "RESISTANCE"
+    },
+    {
+      "name": "Standing Calf Raise",
+      "description": "Raise up on your toes from a standing position (with or without weight) to work the calves.",
+      "weightType": "FREE_WEIGHT",
+      "exerciseType": "RESISTANCE"
+    },
+    {
+      "name": "Seated Calf Raise",
+      "description": "A machine or free‑weight exercise where your toes press down from a seated position, emphasising the soleus muscle.",
+      "weightType": "MACHINE",
+      "exerciseType": "RESISTANCE"
+    },
+    {
+      "name": "Bench Press",
+      "description": "Lie on a bench and press a weight upward from chest to locked‑out arms, then lower it down.",
+      "weightType": "FREE_WEIGHT",
+      "exerciseType": "RESISTANCE"
+    },
+    {
+      "name": "Incline Dumbbell Press",
+      "description": "On an inclined bench press using dumbbells to press upward, targeting upper chest and shoulders.",
+      "weightType": "FREE_WEIGHT",
+      "exerciseType": "RESISTANCE"
+    },
+    {
+      "name": "Chest Press Machine",
+      "description": "A machine‑based pressing exercise for the chest where you push handles away from your body.",
+      "weightType": "MACHINE",
+      "exerciseType": "RESISTANCE"
+    },
+    {
+      "name": "Push‑up",
+      "description": "Bodyweight pressing exercise where you lower your body toward the floor and push back up.",
+      "weightType": "BODYWEIGHT",
+      "exerciseType": "BODY_WEIGHT"
+    },
+    {
+      "name": "Incline Push‑up",
+      "description": "A push‑up variation with hands elevated (on bench/box) making it slightly easier than standard push‑up.",
+      "weightType": "BODYWEIGHT",
+      "exerciseType": "BODY_WEIGHT"
+    },
+    {
+      "name": "Decline Push‑up",
+      "description": "A push‑up variation with feet elevated and hands on the floor, emphasising upper chest/shoulders.",
+      "weightType": "BODYWEIGHT",
+      "exerciseType": "BODY_WEIGHT"
+    },
+    {
+      "name": "Dips",
+      "description": "Pressing exercise typically on parallel bars or a bench where you lower your body then push up, targeting triceps and chest.",
+      "weightType": "BODYWEIGHT",
+      "exerciseType": "BODY_WEIGHT"
+    },
+    {
+      "name": "Overhead Press",
+      "description": "Pressing weight overhead from shoulder height to locked arms, standing or seated.",
+      "weightType": "FREE_WEIGHT",
+      "exerciseType": "RESISTANCE"
+    },
+    {
+      "name": "Seated Dumbbell Shoulder Press",
+      "description": "Sitting on a bench, pressing dumbbells from shoulders to overhead.",
+      "weightType": "FREE_WEIGHT",
+      "exerciseType": "RESISTANCE"
+    },
+    {
+      "name": "Lateral Raise",
+      "description": "Raise dumbbells (or cables) out to the sides to shoulder height, then lower, isolating the side deltoids.",
+      "weightType": "FREE_WEIGHT",
+      "exerciseType": "RESISTANCE"
+    },
+    {
+      "name": "Front Raise",
+      "description": "Lift weight (dumbbell or plate) straight in front of you to shoulder height then lower, targeting front deltoid.",
+      "weightType": "FREE_WEIGHT",
+      "exerciseType": "RESISTANCE"
+    },
+    {
+      "name": "Bent‑Over Dumbbell Rear Delt Fly",
+      "description": "Bent over at the hips, raise dumbbells out to the sides to target rear deltoids.",
+      "weightType": "FREE_WEIGHT",
+      "exerciseType": "RESISTANCE"
+    },
+    {
+      "name": "Shrugs",
+      "description": "Lift your shoulders toward your ears while holding weights (dumbbells, barbell) to work the trap muscles.",
+      "weightType": "FREE_WEIGHT",
+      "exerciseType": "RESISTANCE"
+    },
+    {
+      "name": "Pull‑up",
+      "description": "Bodyweight pulling exercise where you hang from a bar and pull your chin above the bar, then lower.",
+      "weightType": "BODYWEIGHT",
+      "exerciseType": "BODY_WEIGHT"
+    },
+    {
+      "name": "Chin‑up",
+      "description": "Similar to pull‑up but with underhand grip, emphasising biceps and back.",
+      "weightType": "BODYWEIGHT",
+      "exerciseType": "BODY_WEIGHT"
+    },
+    {
+      "name": "Lat Pulldown",
+      "description": "Machine or cable exercise where you pull a bar down towards your chest to work the lat muscles.",
+      "weightType": "MACHINE",
+      "exerciseType": "RESISTANCE"
+    },
+    {
+      "name": "Seated Cable Row",
+      "description": "Using a cable machine while seated, pull handles toward your body to work back muscles.",
+      "weightType": "CABLES",
+      "exerciseType": "RESISTANCE"
+    },
+    {
+      "name": "One‑Arm Dumbbell Row",
+      "description": "Using one arm and a bench for support, row a dumbbell toward your hip to work back muscles.",
+      "weightType": "FREE_WEIGHT",
+      "exerciseType": "RESISTANCE"
+    },
+    {
+      "name": "Barbell Row",
+      "description": "Bend at hips, hold barbell and row it toward your lower chest/upper abdomen, then lower.",
+      "weightType": "FREE_WEIGHT",
+      "exerciseType": "RESISTANCE"
+    },
+    {
+      "name": "T‑Bar Row",
+      "description": "Rowing exercise using T‑bar apparatus or landmine, targeting back muscles.",
+      "weightType": "FREE_WEIGHT",
+      "exerciseType": "RESISTANCE"
+    },
+    {
+      "name": "Cable Face Pull",
+      "description": "Using a cable machine, pull rope toward your face with elbows high, targeting upper back and rear delts.",
+      "weightType": "CABLES",
+      "exerciseType": "RESISTANCE"
+    },
+    {
+      "name": "Cable Triceps Pushdown",
+      "description": "Using cable machine, push a bar/rope downward from chest height to extend triceps.",
+      "weightType": "CABLES",
+      "exerciseType": "RESISTANCE"
+    },
+    {
+      "name": "Triceps Dip Machine",
+      "description": "Machine‑based triceps pressing exercise where you push handles down or away to extend arms.",
+      "weightType": "MACHINE",
+      "exerciseType": "RESISTANCE"
+    },
+    {
+      "name": "Barbell Curl",
+      "description": "Standing curl with barbell, lifting from thighs toward shoulders to work biceps.",
+      "weightType": "FREE_WEIGHT",
+      "exerciseType": "RESISTANCE"
+    },
+    {
+      "name": "Dumbbell Hammer Curl",
+      "description": "Curl dumbbells with neutral grip (palms facing each other) to work biceps and forearms.",
+      "weightType": "FREE_WEIGHT",
+      "exerciseType": "RESISTANCE"
+    },
+    {
+      "name": "Preacher Curl Machine",
+      "description": "Machine‑based biceps curl done seated with arm support, isolating biceps.",
+      "weightType": "MACHINE",
+      "exerciseType": "RESISTANCE"
+    },
+    {
+      "name": "Chest Fly (Dumbbell)",
+      "description": "Lie on bench and with dumbbells open arms wide then bring together overhead to target chest.",
+      "weightType": "FREE_WEIGHT",
+      "exerciseType": "RESISTANCE"
+    },
+    {
+      "name": "Cable Chest Fly",
+      "description": "Using cable machine arms out to sides then bring together in front of chest, isolating pecs.",
+      "weightType": "CABLES",
+      "exerciseType": "RESISTANCE"
+    },
+    {
+      "name": "Cable Lateral Raise",
+      "description": "Using cable machine, raise one arm out to side to shoulder height to target side deltoid.",
+      "weightType": "CABLES",
+      "exerciseType": "RESISTANCE"
+    },
+    {
+      "name": "Glute Bridge",
+      "description": "Lie on back, feet flat, lift hips up to work glutes and hamstrings, then lower back down.",
+      "weightType": "BODYWEIGHT",
+      "exerciseType": "BODY_WEIGHT"
+    },
+    {
+      "name": "Hip Thrust",
+      "description": "Seated on bench with weight across hips, thrust hips upward then lower to work glutes.",
+      "weightType": "FREE_WEIGHT",
+      "exerciseType": "RESISTANCE"
+    },
+    {
+      "name": "Cable Kickback",
+      "description": "Using cable machine attach ankle strap and kick the leg back to work glute area.",
+      "weightType": "CABLES",
+      "exerciseType": "RESISTANCE"
+    },
+    {
+      "name": "Leg Abduction Machine",
+      "description": "Machine where you sit and push legs apart to work outer glute/hip area.",
+      "weightType": "MACHINE",
+      "exerciseType": "RESISTANCE"
+    },
+    {
+      "name": "Leg Adduction Machine",
+      "description": "Machine where you press legs together to work inner thigh/adductor muscles.",
+      "weightType": "MACHINE",
+      "exerciseType": "RESISTANCE"
+    },
+    {
+      "name": "Plank",
+      "description": "Core stability exercise: hold a push‑up/plank position on forearms (or hands) and toes for time.",
+      "weightType": "BODYWEIGHT",
+      "exerciseType": "BODY_WEIGHT"
+    },
+    {
+      "name": "Side Plank",
+      "description": "Lie on one side, support body on forearm and feet, lift hips to form a straight line and hold.",
+      "weightType": "BODYWEIGHT",
+      "exerciseType": "BODY_WEIGHT"
+    },
+    {
+      "name": "Hanging Leg Raise",
+      "description": "Hang from bar and raise legs toward chest (or straight) to work lower abs/hip flexors.",
+      "weightType": "BODYWEIGHT",
+      "exerciseType": "BODY_WEIGHT"
+    },
+    {
+      "name": "Cable Crunch",
+      "description": "Using cable machine with rope overhead, crunch down bringing elbows toward knees to work abs.",
+      "weightType": "CABLES",
+      "exerciseType": "RESISTANCE"
+    },
+    {
+      "name": "Ab Wheel Rollout",
+      "description": "From knees or standing, roll the ab wheel out and back in to work core anterior chain.",
+      "weightType": "BODYWEIGHT",
+      "exerciseType": "BODY_WEIGHT"
+    },
+    {
+      "name": "Russian Twist",
+      "description": "Seated on floor or bench, lean back slightly and rotate torso side to side holding weight or without.",
+      "weightType": "FREE_WEIGHT",
+      "exerciseType": "RESISTANCE"
+    },
+    {
+      "name": "Burpee",
+      "description": "A full‑body bodyweight exercise: squat down, jump into plank, push‑up, jump back, and stand/jump up.",
+      "weightType": "BODYWEIGHT",
+      "exerciseType": "CARDIO"
+    },
+    {
+      "name": "Jumping Jack",
+      "description": "Bodyweight aerobic exercise: jump feet apart and raise arms overhead then jump back in.",
+      "weightType": "BODYWEIGHT",
+      "exerciseType": "CARDIO"
+    },
+    {
+      "name": "Mountain Climber",
+      "description": "In plank position, alternate bringing knees toward chest rapidly to raise heart rate and work core.",
+      "weightType": "BODYWEIGHT",
+      "exerciseType": "CARDIO"
+    },
+    {
+      "name": "High Knees",
+      "description": "Run in place bringing knees high toward chest quickly to increase heart rate.",
+      "weightType": "BODYWEIGHT",
+      "exerciseType": "CARDIO"
+    },
+    {
+      "name": "Jump Rope",
+      "description": "Skipping rope continuously to boost cardiovascular endurance and coordination.",
+      "weightType": "BODYWEIGHT",
+      "exerciseType": "CARDIO"
+    },
+    {
+      "name": "Running (Treadmill)",
+      "description": "Cardio exercise on treadmill for endurance and calorie burn.",
+      "weightType": "MACHINE",
+      "exerciseType": "CARDIO"
+    },
+    {
+      "name": "Cycling (Stationary Bike)",
+      "description": "Seated on stationary bike pedalling to elevate heart rate and improve leg endurance.",
+      "weightType": "MACHINE",
+      "exerciseType": "CARDIO"
+    },
+    {
+      "name": "Rowing (Machine)",
+      "description": "Using a rowing machine, push with legs and pull handle to work full body and cardiovascular system.",
+      "weightType": "MACHINE",
+      "exerciseType": "CARDIO"
+    },
+    {
+      "name": "Walking Lunges",
+      "description": "Lunges performed by stepping forward into each lunge, walking as you go, good for legs and balance.",
+      "weightType": "FREE_WEIGHT",
+      "exerciseType": "RESISTANCE"
+    },
+    {
+      "name": "Calisthenics Pull‑up (Assisted)",
+      "description": "Using assistance band or machine to perform pull‑up movement for bodyweight strength development.",
+      "weightType": "MACHINE",
+      "exerciseType": "BODY_WEIGHT"
+    },
+    {
+      "name": "Farmer’s Walk",
+      "description": "Carry heavy weights in each hand and walk set distance/time to develop grip, core and whole body strength.",
+      "weightType": "FREE_WEIGHT",
+      "exerciseType": "RESISTANCE"
+    },
+    {
+      "name": "Kettlebell Swing",
+      "description": "Swing a kettlebell from between the legs to shoulder or overhead height using hip drive, working posterior chain and cardio.",
+      "weightType": "FREE_WEIGHT",
+      "exerciseType": "RESISTANCE"
+    },
+    {
+      "name": "Box Jump",
+      "description": "Explosive lower‑body movement: jump from floor onto a raised box/bench then step down and repeat.",
+      "weightType": "BODYWEIGHT",
+      "exerciseType": "CARDIO"
+    },
+    {
+      "name": "Battle Ropes",
+      "description": "Using heavy ropes anchored at one end, whip the ropes in waves or slams to elevate heart rate and build strength/endurance.",
+      "weightType": "FREE_WEIGHT",
+      "exerciseType": "CARDIO"
+    },
+    {
+      "name": "Jump Squat",
+      "description": "From a squat position, explode upward into a jump, land softly and repeat—bodyweight plyometric move.",
+      "weightType": "BODYWEIGHT",
+      "exerciseType": "CARDIO"
+    },
+    {
+      "name": "Hip Flexor Stretch (Kneeling)",
+      "description": "Kneel on one knee and push hips forward to stretch the front of the hip/thigh area.",
+      "weightType": "NOT_GIVEN",
+      "exerciseType": "FLEXIBILITY"
+    },
+    {
+      "name": "Hamstring Stretch (Standing)",
+      "description": "Stand and extend one leg forward with heel on ground, hinge at hips to stretch back of thigh.",
+      "weightType": "NOT_GIVEN",
+      "exerciseType": "FLEXIBILITY"
+    },
+    {
+      "name": "Quad Stretch (Standing)",
+      "description": "Stand and pull one foot toward your glute to stretch front of thigh (quadriceps).",
+      "weightType": "NOT_GIVEN",
+      "exerciseType": "FLEXIBILITY"
+    },
+    {
+      "name": "Shoulder Stretch (Cross‑Body)",
+      "description": "Bring one arm across your chest and use the other arm to pull it closer, stretching the shoulder.",
+      "weightType": "NOT_GIVEN",
+      "exerciseType": "FLEXIBILITY"
+    },
+    {
+      "name": "Triceps Stretch (Overhead)",
+      "description": "Reach one arm overhead and bend at elbow, use opposite hand to push the elbow down/back to stretch triceps.",
+      "weightType": "NOT_GIVEN",
+      "exerciseType": "FLEXIBILITY"
+    },
+    {
+      "name": "Cat‑Cow Stretch",
+      "description": "On hands and knees alternate arching (cat) and dipping (cow) your spine to mobilise back and core.",
+      "weightType": "NOT_GIVEN",
+      "exerciseType": "FLEXIBILITY"
+    },
+    {
+      "name": "Child’s Pose",
+      "description": "From kneeling, sit back onto heels and stretch arms forward on the floor to relax back and hips.",
+      "weightType": "NOT_GIVEN",
+      "exerciseType": "FLEXIBILITY"
+    },
+    {
+      "name": "Seated Forward Fold",
+      "description": "Sit on floor with legs extended and hinge at hips to reach toward toes, stretching hamstrings and lower back.",
+      "weightType": "NOT_GIVEN",
+      "exerciseType": "FLEXIBILITY"
+    },
+    {
+      "name": "Butterfly Stretch",
+      "description": "Sit with soles of feet together and knees out, lean forward to stretch inner thighs and hips.",
+      "weightType": "NOT_GIVEN",
+      "exerciseType": "FLEXIBILITY"
+    },
+    {
+      "name": "Calf Stretch (Against Wall)",
+      "description": "Place hands on wall and one leg back straight with heel down, lean in to stretch calf muscle.",
+      "weightType": "NOT_GIVEN",
+      "exerciseType": "FLEXIBILITY"
+    },
+    {
+      "name": "Foam Roll Quads",
+      "description": "Using a foam roller roll the front thighs to relieve tension and improve flexibility/mobility.",
+      "weightType": "NOT_GIVEN",
+      "exerciseType": "FLEXIBILITY"
+    },
+    {
+      "name": "Foam Roll Back",
+      "description": "Lie on foam roller along spine and roll gently to relieve back tension and improve mobility.",
+      "weightType": "NOT_GIVEN",
+      "exerciseType": "FLEXIBILITY"
+    },
+    {
+      "name": "Dynamic Arm Circles",
+      "description": "Stand or sit and move arms in broad circles (both directions) to warm up and mobilise shoulders.",
+      "weightType": "NOT_GIVEN",
+      "exerciseType": "FLEXIBILITY"
+    },
+    {
+      "name": "Hip Internal/External Rotation Stretch",
+      "description": "Lie on back, cross one ankle over opposite knee and pull the uncrossed leg toward chest to stretch hip rotators.",
+      "weightType": "NOT_GIVEN",
+      "exerciseType": "FLEXIBILITY"
+    }
+  ]
+}
