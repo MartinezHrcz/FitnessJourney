@@ -3,15 +3,16 @@ package hu.hm.fitjourneyapi.services.interfaces.social;
 import hu.hm.fitjourneyapi.dto.social.friend.FriendDTO;
 
 import java.util.List;
+import java.util.UUID;
 
 public interface FriendService {
     FriendDTO getFriendById(long id);
 
     List<FriendDTO> getFriends();
 
-    List<FriendDTO> getFriendsByUserId(long id);
+    List<FriendDTO> getFriendsByUserId(UUID id);
 
-    List<FriendDTO> getFriendsByUserIdAndRecipientName(long id, String recipientName);
+    List<FriendDTO> getFriendsByUserIdAndRecipientName(UUID id, String recipientName);
 
     FriendDTO updateFriend(long id,FriendDTO friendDTO);
 

@@ -6,10 +6,12 @@ import jakarta.validation.constraints.Positive;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
+import java.util.UUID;
+
 @Getter
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserUpdateDTO extends AbstractUserDTO {
-    private long id;
+    private UUID id;
 }

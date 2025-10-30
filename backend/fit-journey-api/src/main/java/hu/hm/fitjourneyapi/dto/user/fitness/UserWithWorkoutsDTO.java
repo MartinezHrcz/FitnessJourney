@@ -8,11 +8,12 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import java.util.List;
+import java.util.UUID;
 
 @Getter
 @SuperBuilder
 @NoArgsConstructor
 public class UserWithWorkoutsDTO extends AbstractUserDTO {
-    private long id;
+    private UUID id;
     private List<WorkoutDTO> workouts;
 }

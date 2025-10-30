@@ -7,12 +7,13 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import java.util.List;
+import java.util.UUID;
 
 @Getter
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserWithFriendsDTO extends AbstractUserDTO {
-    private long id;
+    private UUID id;
     private List<FriendDTO> friends;
 }

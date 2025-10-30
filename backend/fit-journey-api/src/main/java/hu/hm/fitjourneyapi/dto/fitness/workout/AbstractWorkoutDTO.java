@@ -3,11 +3,13 @@ package hu.hm.fitjourneyapi.dto.fitness.workout;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
+import java.util.UUID;
+
 @Getter
 @SuperBuilder
 @NoArgsConstructor
 public abstract class AbstractWorkoutDTO {
     private String name;
     private String description;
-    private long userId;
+    private UUID userId;
 }

@@ -5,14 +5,15 @@ import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @AllArgsConstructor
 @Getter
 @Builder
 public class MessageDTO {
     private long id;
-    private long senderId;
-    private long recipientId;
+    private UUID senderId;
+    private UUID recipientId;
     private String content;
     private LocalDateTime sentTime;
 }

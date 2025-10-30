@@ -25,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Slf4j
 @Service
@@ -67,7 +68,7 @@ public class ExerciseServiceImpl implements ExerciseService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<AbstractExerciseDTO> getByUserId(long id) {
+    public List<AbstractExerciseDTO> getByUserId(UUID id) {
         log.debug("Fetching exercise by workout id {}", id);
         User user = userRepository.getReferenceById(id);
         List<Workout> workouts = user.getWorkouts();

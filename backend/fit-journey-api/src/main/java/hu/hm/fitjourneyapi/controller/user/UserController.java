@@ -12,6 +12,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/user")
@@ -31,7 +32,7 @@ public class UserController {
     @GetMapping("/search")
     @PreAuthorize("hasAnyRole('USER')")
     public ResponseEntity<?> getUser(
-            @RequestParam(required = false) Long id,
+            @RequestParam(required = false) UUID id,
             @RequestParam(required = false) String name,
             @RequestParam(required = false) String email
     ){
@@ -66,7 +67,7 @@ public class UserController {
 
     @DeleteMapping
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<String> deleteUser(int id){
+    public ResponseEntity<String> deleteUser(UUID id){
         try{
             userService.deleteUser(id);
             return ResponseEntity.ok("Deleted");

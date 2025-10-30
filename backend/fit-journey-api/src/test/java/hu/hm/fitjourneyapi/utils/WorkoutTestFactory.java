@@ -10,10 +10,11 @@ import hu.hm.fitjourneyapi.model.fitness.Workout;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class WorkoutTestFactory {
 
-    public static WorkoutCreateDTO getWorkoutCreateDTO(long userId) {
+    public static WorkoutCreateDTO getWorkoutCreateDTO(UUID userId) {
         WorkoutCreateDTO dto = WorkoutCreateDTO.builder()
                 .name("Test Workout")
                 .description("This is for a test")

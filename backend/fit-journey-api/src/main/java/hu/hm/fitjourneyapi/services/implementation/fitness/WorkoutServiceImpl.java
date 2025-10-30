@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.UUID;
 
 @Slf4j
 @Service
@@ -81,7 +82,7 @@ public class WorkoutServiceImpl implements WorkoutService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<WorkoutDTO> getWorkoutByUserId(long id) {
+    public List<WorkoutDTO> getWorkoutByUserId(UUID id) {
         log.debug("Fetching workout by user id: {}", id);
         List<Workout> workouts = workoutRepository.findWorkoutsByUser_Id(id);
         List<WorkoutDTO> workoutDTOs = workoutMapper.toDTOList(workouts);

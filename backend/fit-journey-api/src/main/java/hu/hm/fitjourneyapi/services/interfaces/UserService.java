@@ -12,6 +12,7 @@ import hu.hm.fitjourneyapi.dto.user.social.UserWithFriendsDTO;
 import hu.hm.fitjourneyapi.dto.user.social.UserWithPostsDTO;
 
 import java.util.List;
+import java.util.UUID;
 
 public interface UserService {
 
@@ -21,7 +22,7 @@ public interface UserService {
 
     UserDTO updatePassword(UserPasswordUpdateDTO userPasswordUpdateDTO);
 
-    UserDTO getUserById(long id);
+    UserDTO getUserById(UUID id);
 
     UserDTO getUserByEmail(String email);
 
@@ -30,11 +31,11 @@ public interface UserService {
     UserDTO getUserByName(String name);
 
 
-    UserWithWorkoutsDTO getUserWithWorkoutsById(long id);
+    UserWithWorkoutsDTO getUserWithWorkoutsById(UUID id);
 
-    UserWithFriendsDTO getUserWithFriendsById(long id);
+    UserWithFriendsDTO getUserWithFriendsById(UUID id);
 
-    UserWithPostsDTO getUserWithPostsById(long id);
+    UserWithPostsDTO getUserWithPostsById(UUID id);
 
     void deleteUserPost(PostDTO postDTO);
 
@@ -42,6 +43,6 @@ public interface UserService {
 
     void deleteUserWorkout(WorkoutDTO workoutDTO);
 
-    void deleteUser(long id);
+    void deleteUser(UUID id);
 
 }

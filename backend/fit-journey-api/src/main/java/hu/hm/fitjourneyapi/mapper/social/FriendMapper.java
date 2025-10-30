@@ -9,6 +9,7 @@ import org.mapstruct.Named;
 import org.mapstruct.ReportingPolicy;
 
 import java.util.List;
+import java.util.UUID;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface FriendMapper {
@@ -25,7 +26,7 @@ public interface FriendMapper {
     Friend toFriend(FriendDTO dto, User user, User friend  );
 
     @Named("userToId")
-    static Long userToId(User user) {
+    static UUID userToId(User user) {
         return user != null ? user.getId() : null;
     }
 }

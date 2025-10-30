@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 
 @Getter
@@ -15,8 +16,8 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class FriendDTO {
     private long id;
-    private long userId;
-    private long friendId;
+    private UUID userId;
+    private UUID friendId;
     private FriendStatus status;
     private LocalDateTime requestedTime;
 

@@ -6,12 +6,14 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
+import java.util.UUID;
+
 @Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserPasswordUpdateDTO {
-    private long id;
+    private UUID id;
     private String passwordOld;
     @NotBlank(message = "Password cannot be blank!")
     @Size(min = 8, max=40, message = "Password must be between ")

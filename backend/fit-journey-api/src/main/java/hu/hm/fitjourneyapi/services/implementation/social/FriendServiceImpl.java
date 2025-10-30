@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Slf4j
 @Service
@@ -52,7 +53,7 @@ public class FriendServiceImpl implements FriendService {
     }
 
     @Override
-    public List<FriendDTO> getFriendsByUserId(long id) {
+    public List<FriendDTO> getFriendsByUserId(UUID id) {
         log.debug("Fetching all friends with user id {} ", id);
         List<Friend> friends = friendRepository.findFriendsByUser_Id(id);
         log.info("Fetched all friends with user id {} ", id);
@@ -60,7 +61,7 @@ public class FriendServiceImpl implements FriendService {
     }
 
     @Override
-    public List<FriendDTO> getFriendsByUserIdAndRecipientName(long id, String recipientName) {
+    public List<FriendDTO> getFriendsByUserIdAndRecipientName(UUID id, String recipientName) {
         log.debug("Fetching all friends with user id {} and recipient name {} ", id, recipientName);
         List<Friend> friends = friendRepository.findFriendsByUser_IdAndFriend_Name(id,recipientName);
         log.info("Fetched all friends of user id {} and recipient name {} ", id, recipientName);

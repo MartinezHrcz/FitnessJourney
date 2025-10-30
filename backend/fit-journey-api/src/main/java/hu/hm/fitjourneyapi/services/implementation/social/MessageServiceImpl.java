@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.UUID;
 
 @Slf4j
 @Service
@@ -55,7 +56,7 @@ public class MessageServiceImpl implements MessageService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<MessageDTO> getMessagesBySenderId(long id) {
+    public List<MessageDTO> getMessagesBySenderId(UUID id) {
         log.debug("Getting messages by sender id {}", id);
         List<Message> messages = messageRepository.findAllBySender_Id(id);
         List<MessageDTO> dtos = messageMapper.toDTO(messages);
@@ -65,7 +66,7 @@ public class MessageServiceImpl implements MessageService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<MessageDTO> getMessagesBySenderAndRecipientId(long senderId, long recipientId) {
+    public List<MessageDTO> getMessagesBySenderAndRecipientId(UUID senderId, UUID recipientId) {
         log.debug("Getting messages by sender id {} and recipient id {}", senderId, recipientId);
         List<Message> messages = messageRepository.findAllBySender_IdAndRecipient_Id(senderId,recipientId);
         List<MessageDTO> dtos = messageMapper.toDTO(messages);

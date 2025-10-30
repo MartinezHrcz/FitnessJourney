@@ -31,6 +31,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.UUID;
 
 @Slf4j
 @Service
@@ -108,7 +109,7 @@ public class UserServiceImpl implements UserService {
 
     @Transactional(readOnly = true)
     @Override
-    public UserDTO getUserById(long id) {
+    public UserDTO getUserById(UUID id) {
         log.debug("Fetching user with id {} ", id);
         User user = userRepository.findUserById(id).orElseThrow(
                 () ->{
@@ -156,7 +157,7 @@ public class UserServiceImpl implements UserService {
 
     @Transactional(readOnly = true)
     @Override
-    public UserWithWorkoutsDTO getUserWithWorkoutsById(long id) {
+    public UserWithWorkoutsDTO getUserWithWorkoutsById(UUID id) {
         log.debug("Fetching user with id {} ", id);
         User user = userRepository.findUserById(id).orElseThrow(
                 () -> {
@@ -170,7 +171,7 @@ public class UserServiceImpl implements UserService {
 
     @Transactional(readOnly = true)
     @Override
-    public UserWithFriendsDTO getUserWithFriendsById(long id) {
+    public UserWithFriendsDTO getUserWithFriendsById(UUID id) {
         log.debug("Fetching user-friendList with id {} ", id);
         User user = userRepository.findUserById(id).orElseThrow(
                 () -> {
@@ -184,7 +185,7 @@ public class UserServiceImpl implements UserService {
 
     @Transactional(readOnly = true)
     @Override
-    public UserWithPostsDTO getUserWithPostsById(long id) {
+    public UserWithPostsDTO getUserWithPostsById(UUID id) {
         log.debug("Fetching user-posts with id {} ", id);
         User user = userRepository.findUserById(id).orElseThrow(
                 () -> {
@@ -255,7 +256,7 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public void deleteUser(long id) {
+    public void deleteUser(UUID id) {
         log.debug("Deleting user with id {} ", id);
         User user = userRepository.findUserById(id).orElseThrow(
                 () -> {

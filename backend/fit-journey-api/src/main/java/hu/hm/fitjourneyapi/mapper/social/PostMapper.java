@@ -10,6 +10,7 @@ import org.mapstruct.Named;
 import org.mapstruct.ReportingPolicy;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
@@ -24,8 +25,9 @@ public interface PostMapper {
     @Mapping(target = "user", expression = "java(user)")
     Post toPost(PostDTO dto, User user);
 
+
     @Named("userToId")
-    static Long userToId(User user) {
+    static UUID userToId(User user) {
         return user != null ? user.getId() : null;
     }
 }

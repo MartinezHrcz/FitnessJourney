@@ -6,13 +6,14 @@ import hu.hm.fitjourneyapi.dto.fitness.excercise.ExerciseFlexibilitySetDTO;
 import hu.hm.fitjourneyapi.dto.fitness.excercise.ExerciseStrengthSetDTO;
 
 import java.util.List;
+import java.util.UUID;
 
 public interface ExerciseService {
     List<AbstractExerciseDTO> getExercises();
 
     List<AbstractExerciseDTO> getByWorkoutId(long id);
 
-    List<AbstractExerciseDTO> getByUserId(long id);
+    List<AbstractExerciseDTO> getByUserId(UUID id);
 
     List<AbstractExerciseDTO> getByName(String name);
 

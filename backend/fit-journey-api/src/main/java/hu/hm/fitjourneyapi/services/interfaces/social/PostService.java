@@ -6,13 +6,14 @@ import hu.hm.fitjourneyapi.dto.social.post.PostUpdateDTO;
 import jakarta.persistence.PostUpdate;
 
 import java.util.List;
+import java.util.UUID;
 
 public interface PostService {
     PostDTO getPostById(long id);
 
     List<PostDTO> getPosts();
 
-    List<PostDTO> getPostsByUserId(long id);
+    List<PostDTO> getPostsByUserId(UUID id);
 
     PostDTO updatePost(long id,PostUpdateDTO postUpdateDTO);
 

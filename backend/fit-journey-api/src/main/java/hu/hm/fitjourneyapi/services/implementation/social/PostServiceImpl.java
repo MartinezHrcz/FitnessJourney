@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.UUID;
 
 @Slf4j
 @Service
@@ -57,7 +58,7 @@ public class PostServiceImpl implements PostService {
 
     @Transactional
     @Override
-    public List<PostDTO> getPostsByUserId(long id) {
+    public List<PostDTO> getPostsByUserId(UUID id) {
         log.debug("Fetching posts by user id: {}", id);
         List<Post> posts = postRepository.findPostsByUserId(id);
         log.info("Fetched posts by user id: {} ",id);
