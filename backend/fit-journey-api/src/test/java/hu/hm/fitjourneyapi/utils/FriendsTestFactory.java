@@ -10,14 +10,15 @@ import org.springframework.util.SerializationUtils;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 public class FriendsTestFactory {
 
     public static FriendDTO getFriendDTO() {
         FriendDTO friendDTO =
                 FriendDTO.builder()
-                        .friendId(2L)
-                        .userId(1L)
+                        .friendId(UUID.randomUUID())
+                        .userId(UUID.randomUUID())
                         .requestedTime(LocalDateTime.MIN)
                         .status(FriendStatus.ACCEPTED)
                         .build();
@@ -26,7 +27,7 @@ public class FriendsTestFactory {
 
     public static Friend getFriend(User user1) {
         User user2 = User.builder()
-                .id(2L)
+                .id(UUID.randomUUID())
                 .name("Friend Name")
                 .email("friend@gmail.com")
                 .birthday(LocalDate.of(1991, 1,1))

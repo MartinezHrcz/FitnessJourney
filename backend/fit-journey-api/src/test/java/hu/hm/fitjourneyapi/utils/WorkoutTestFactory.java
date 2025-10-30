@@ -23,7 +23,7 @@ public class WorkoutTestFactory {
         return dto;
     }
 
-    public static WorkoutDTO getWorkoutDTO(long userId) {
+    public static WorkoutDTO getWorkoutDTO(UUID userId) {
         WorkoutDTO dto = WorkoutDTO.builder()
                 .id(1L)
                 .name("Test Workout")

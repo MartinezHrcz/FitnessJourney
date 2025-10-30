@@ -78,6 +78,7 @@ public class MessageServiceImpl implements MessageService {
     @Override
     public MessageDTO createMessage(MessageDTO messageDTO) {
         log.debug("Attempting to creat message");
+
         User sender = userRepository.findById(messageDTO.getSenderId()).orElseThrow(
                 ()->{
                     log.warn("User {} not found", messageDTO.getSenderId());

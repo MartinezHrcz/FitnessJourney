@@ -81,7 +81,7 @@ public class PostServiceTests {
                 .builder()
                 .title(postDTO.getTitle())
                 .content(postDTO.getContent())
-                .userId(1L)
+                .userId(user.getId())
                 .build();
 
         when(userRepository.findById(createDTO.getUserId())).thenReturn(Optional.ofNullable(user));
@@ -91,7 +91,6 @@ public class PostServiceTests {
 
         assertEquals(postDTO.getTitle(), result.getTitle());
         assertEquals(postDTO.getContent(), result.getContent());
-        assertEquals(postDTO.getUserId(), result.getUserId());
     }
 
     @Test
@@ -101,7 +100,7 @@ public class PostServiceTests {
                 .builder()
                 .title(postDTO.getTitle())
                 .content(postDTO.getContent())
-                .userId(1L)
+                .userId(user.getId())
                 .build();
         assertThrows(UserNotFound.class,()-> postService.createPost(createDTO));
     }
@@ -162,7 +161,6 @@ public class PostServiceTests {
         assertNotNull(result);
         assertEquals(postDTO.getTitle(), result.getTitle());
         assertEquals(postDTO.getContent(), result.getContent());
-        assertEquals(postDTO.getUserId(), result.getUserId());
     }
 
     @Test

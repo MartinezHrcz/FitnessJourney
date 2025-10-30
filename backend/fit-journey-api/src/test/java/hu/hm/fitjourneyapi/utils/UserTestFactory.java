@@ -14,6 +14,7 @@ import hu.hm.fitjourneyapi.model.social.Post;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class UserTestFactory {
     public static UserCreateDTO getUserCreateDTO() {
@@ -30,7 +31,7 @@ public class UserTestFactory {
 
     public static UserDTO getUserDTO() {
         UserDTO dto = UserDTO.builder()
-                .id(1L)
+                .id(UUID.randomUUID())
                 .name("Test name")
                 .email("user@gmail.com")
                 .heightInCm(180)
@@ -44,7 +45,7 @@ public class UserTestFactory {
         List<User> users = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
             User user = User.builder()
-                    .id(i)
+                    .id(UUID.randomUUID())
                     .name("Test name")
                     .email("user@gmail.com")
                     .heightInCm(180)
@@ -61,7 +62,7 @@ public class UserTestFactory {
     public static User getUser() {
 
         User user = User.builder()
-                .id(1L)
+                .id(UUID.randomUUID())
                 .name("Test name")
                 .email("user@gmail.com")
                 .heightInCm(180)
@@ -85,15 +86,16 @@ public class UserTestFactory {
     }
 
     public static UserWithWorkoutsDTO getUserWithWorkoutsDTO() {
+        UUID id = UUID.randomUUID();
         UserWithWorkoutsDTO dto =
                 UserWithWorkoutsDTO.builder()
-                        .id(1L)
+                        .id(UUID.randomUUID())
                         .name("Test name")
                         .email("user@gmail.com")
                         .heightInCm(180)
                         .weightInKg(100)
                         .birthday(LocalDate.of(1990, 1, 1))
-                        .workouts(List.of(WorkoutTestFactory.getWorkoutDTO(1L)))
+                        .workouts(List.of(WorkoutTestFactory.getWorkoutDTO(id)))
                         .build();
         return dto;
     }
@@ -101,7 +103,7 @@ public class UserTestFactory {
     public static UserWithFriendsDTO getUserWithFriendsDTO() {
         UserWithFriendsDTO dto =
                 UserWithFriendsDTO.builder()
-                        .id(1L)
+                        .id(UUID.randomUUID())
                         .name("Test name")
                         .email("user@gmail.com")
                         .heightInCm(180)
@@ -115,7 +117,7 @@ public class UserTestFactory {
     public static UserWithPostsDTO getUserWithPostsDTO() {
         UserWithPostsDTO dto = UserWithPostsDTO
                 .builder()
-                .id(1L)
+                .id(UUID.randomUUID())
                 .name("Test name")
                 .email("user@gmail.com")
                 .heightInCm(180)

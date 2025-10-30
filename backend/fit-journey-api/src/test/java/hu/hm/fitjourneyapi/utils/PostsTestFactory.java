@@ -5,6 +5,7 @@ import hu.hm.fitjourneyapi.model.User;
 import hu.hm.fitjourneyapi.model.social.Post;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 public class PostsTestFactory {
     public static Post getPost(User user){
@@ -22,7 +23,7 @@ public class PostsTestFactory {
         PostDTO dto = PostDTO
                 .builder()
                 .id(1L)
-                .userId(1L)
+                .userId(UUID.randomUUID())
                 .title("Test Post")
                 .content("This is test content!")
                 .sentTime(LocalDateTime.now())

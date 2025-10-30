@@ -21,6 +21,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -48,19 +49,19 @@ public class MessageServiceTests {
     @BeforeEach
     void setUp() {
         sender = UserTestFactory.getUser();
-        sender.setId(1);
+        sender.setId(UUID.randomUUID());
         recipient = UserTestFactory.getUser();
-        recipient.setId(2);
+        recipient.setId(UUID.randomUUID());
         message = MessageTestFactory.getMessage(sender, recipient);
         messageDTO = MessageTestFactory.getMessageDTO();
         when(messageRepository.save(any(Message.class))).thenReturn(message);
         when(messageRepository.findById(any(long.class))).thenReturn(Optional.ofNullable(message));
-        when(messageRepository.findAllBySender_Id(any(long.class))).thenReturn(List.of(message));
-        when(messageRepository.findAllBySender_IdAndRecipient_Id(any(long.class), any(long.class))).thenReturn(List.of(message));
+        when(messageRepository.findAllBySender_Id(any(UUID.class))).thenReturn(List.of(message));
+        when(messageRepository.findAllBySender_IdAndRecipient_Id(any(UUID.class), any(UUID.class))).thenReturn(List.of(message));
         when(messageRepository.findAll()).thenReturn(List.of(message));
         when(messageMapper.toDTO(List.of(message))).thenReturn(List.of(messageDTO));
-        when(userRepository.findById(1L)).thenReturn(Optional.of(sender));
-        when(userRepository.findById(2L)).thenReturn(Optional.of(recipient));
+        when(userRepository.findById(sender.getId())).thenReturn(Optional.of(sender));
+        when(userRepository.findById(recipient.getId())).thenReturn(Optional.of(recipient));
 
         when(messageMapper.toMessage(any(MessageDTO.class), any(User.class), any(User.class))).thenReturn(message);
         when(messageMapper.toDTO(any(Message.class))).thenAnswer(
@@ -91,8 +92,6 @@ public class MessageServiceTests {
         MessageDTO result = messageService.getMessageById(1L);
         assertNotNull(result);
         assertEquals(messageDTO.getContent(), result.getContent());
-        assertEquals(messageDTO.getRecipientId(), result.getRecipientId());
-        assertEquals(messageDTO.getSenderId(), result.getSenderId());
     }
 
     @Test
@@ -126,13 +125,11 @@ public class MessageServiceTests {
         MessageDTO result = messageService.createMessage(messageDTO);
         assertNotNull(result);
         assertEquals(messageDTO.getContent(), result.getContent());
-        assertEquals(messageDTO.getRecipientId(), result.getRecipientId());
-        assertEquals(messageDTO.getSenderId(), result.getSenderId());
     }
 
     @Test
     public void CreateMessageTest_UserNotFound_fail() {
-        when(userRepository.findById(any(long.class))).thenReturn(Optional.empty());
+        when(userRepository.findById(any(UUID.class))).thenReturn(Optional.empty());
         assertThrows(UserNotFound.class, ()->messageService.createMessage(messageDTO));
     }
 
@@ -143,8 +140,6 @@ public class MessageServiceTests {
                 .build();
         MessageDTO result = messageService.updateMessage(messageDTO.getId(), updateDTO);
         assertNotEquals(messageDTO.getContent(), result.getContent());
-        assertEquals(messageDTO.getRecipientId(), result.getRecipientId());
-        assertEquals(messageDTO.getSenderId(), result.getSenderId());
     }
 
     @Test

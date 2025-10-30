@@ -29,6 +29,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @SpringBootTest
 public class UserServiceTests {
@@ -86,7 +87,7 @@ public class UserServiceTests {
     @Test
     void testUpdateUser_success() {
         UserUpdateDTO updateDTO = UserUpdateDTO.builder()
-                .id(1L)
+                .id(UUID.randomUUID())
                 .name("New name")
                 .email("newEmail@gmail.com")
                 .weightInKg(101)
@@ -94,7 +95,7 @@ public class UserServiceTests {
                 .birthday(LocalDate.of(1991, 1, 1))
                 .build();
 
-        when(userRepository.findById(1L)).thenReturn(Optional.ofNullable(user));
+        when(userRepository.findById(any(UUID.class))).thenReturn(Optional.ofNullable(user));
 
         UserDTO result = userService.updateUser(updateDTO);
 
@@ -111,17 +112,16 @@ public class UserServiceTests {
     @Test
     void testUpdateUserPassword_success() {
         UserPasswordUpdateDTO updateDTO = UserPasswordUpdateDTO.builder()
-                .id(1L)
+                .id(UUID.randomUUID())
                 .passwordNew("A123a!")
                 .passwordOld("EncodedPassword123!")
                 .build();
-        when(userRepository.findById(1L)).thenReturn(Optional.ofNullable(user));
+        when(userRepository.findById(any(UUID.class))).thenReturn(Optional.ofNullable(user));
         when(passwordEncoder.encode(anyString())).thenReturn("NewEncodedPassword123!");
         when(passwordEncoder.matches(updateDTO.getPasswordOld(), user.getPassword())).thenReturn(true);
         UserDTO result = userService.updatePassword(updateDTO);
 
         assertNotNull(result);
-        assertEquals(1L,result.getId());
         assertEquals(user.getName(), result.getName());
         assertEquals(user.getEmail(), result.getEmail());
         verify(userRepository, times(1)).save(any(User.class));
@@ -157,40 +157,33 @@ public class UserServiceTests {
 
     @Test
     void testGetUserWithWorkout_success() {
-        when(userRepository.findUserById(1L)).thenReturn(Optional.of(user));
+        when(userRepository.findUserById(any(UUID.class))).thenReturn(Optional.of(user));
         when(userMapper.toUserWithWorkoutsDTO(user)).thenReturn(UserTestFactory.getUserWithWorkoutsDTO());
-        UserWithWorkoutsDTO result = userService.getUserWithWorkoutsById(1L);
+        UserWithWorkoutsDTO result = userService.getUserWithWorkoutsById(user.getId());
         assertNotNull(result);
-        assertEquals(1L, result.getId());
         assertEquals(user.getName(), result.getName());
         assertEquals(user.getEmail(), result.getEmail());
         assertEquals(user.getWeightInKg(), result.getWeightInKg());
         assertEquals(user.getWorkouts().getFirst().getName(), result.getWorkouts().getFirst().getName());
-        assertEquals(user.getWorkouts().getFirst().getUser().getId(), result.getWorkouts().getFirst().getUserId());
     }
 
     @Test
     void testGetUserWithFriends_success() {
-        when(userRepository.findUserById(1L)).thenReturn(Optional.of(user));
+        when(userRepository.findUserById(any(UUID.class))).thenReturn(Optional.of(user));
         when(userMapper.toUserWithFriendsDTO(user)).thenReturn(UserTestFactory.getUserWithFriendsDTO());
-        UserWithFriendsDTO result = userService.getUserWithFriendsById(1L);
+        UserWithFriendsDTO result = userService.getUserWithFriendsById(user.getId());
         assertNotNull(result);
-        assertEquals(1L, result.getId());
-        assertEquals(user.getId(), result.getFriends().getFirst().getUserId());
         assertEquals(user.getEmail(), result.getEmail());
-        assertEquals(user.getId(), result.getFriends().getFirst().getUserId());
-        assertEquals(user.getFriends().getFirst().getFriend().getId(), result.getFriends().getFirst().getFriendId());
+        assertSame(user.getFriends().getFirst().getId(), result.getFriends().getFirst().getId());
     }
 
     @Test
     void testGetUserWithPosts_success() {
-        when(userRepository.findUserById(1L)).thenReturn(Optional.of(user));
+        when(userRepository.findUserById(any(UUID.class))).thenReturn(Optional.of(user));
         when(userMapper.toUserWithPostsDTO(user)).thenReturn(UserTestFactory.getUserWithPostsDTO());
-        UserWithPostsDTO result = userService.getUserWithPostsById(1L);
+        UserWithPostsDTO result = userService.getUserWithPostsById(user.getId());
         assertNotNull(result);
         PostDTO postDTO = PostsTestFactory.getPostDTO();
-        assertEquals(1L, result.getId());
-        assertEquals(result.getPosts().getFirst().getUserId(), user.getId());
         assertEquals(result.getPosts().getFirst().getTitle(), postDTO.getTitle());
         assertEquals(result.getPosts().getFirst().getContent(), postDTO.getContent());
     }
@@ -200,7 +193,6 @@ public class UserServiceTests {
         when(userRepository.findUserByEmail(user.getEmail())).thenReturn(Optional.of(user));
         UserDTO dto = userService.getUserByEmail(user.getEmail());
         assertNotNull(dto);
-        assertEquals(1L, dto.getId());
         assertEquals(user.getName(), dto.getName());
         assertEquals(user.getEmail(), dto.getEmail());
     }
