@@ -8,6 +8,7 @@ import java.util.UUID;
 
 
 @Getter
+@Setter
 @SuperBuilder
 @NoArgsConstructor
 public class UserDTO extends AbstractUserDTO {

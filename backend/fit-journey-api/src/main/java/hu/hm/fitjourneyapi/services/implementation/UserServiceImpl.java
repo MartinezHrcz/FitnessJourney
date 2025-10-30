@@ -24,6 +24,7 @@ import hu.hm.fitjourneyapi.repository.UserRepository;
 import hu.hm.fitjourneyapi.repository.fitness.WorkoutRepository;
 import hu.hm.fitjourneyapi.repository.social.FriendRepository;
 import hu.hm.fitjourneyapi.repository.social.PostRepository;
+import hu.hm.fitjourneyapi.security.JwtUtil;
 import hu.hm.fitjourneyapi.services.interfaces.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -43,16 +44,18 @@ public class UserServiceImpl implements UserService {
     private final PostRepository postRepository;
     private final FriendRepository friendRepository;
     private final WorkoutRepository workoutRepository;
+    private final JwtUtil jwtUtil;
 
     public UserServiceImpl(UserRepository userRepository,
                            UserMapper userMapper,
-                           PasswordEncoder passwordEncoder, PostRepository postRepository, FriendRepository friendRepository, WorkoutRepository workoutRepository) {
+                           PasswordEncoder passwordEncoder, PostRepository postRepository, FriendRepository friendRepository, WorkoutRepository workoutRepository, JwtUtil jwtUtil) {
         this.userRepository = userRepository;
         this.userMapper = userMapper;
         this.passwordEncoder = passwordEncoder;
         this.postRepository = postRepository;
         this.friendRepository = friendRepository;
         this.workoutRepository = workoutRepository;
+        this.jwtUtil = jwtUtil;
     }
 
     @Transactional
@@ -80,10 +83,11 @@ public class UserServiceImpl implements UserService {
         userToUpdate.setBirthday(userUpdateDTO.getBirthday());
         userToUpdate.setHeightInCm(userUpdateDTO.getHeightInCm());
         userToUpdate.setWeightInKg(userUpdateDTO.getWeightInKg());
-
         userToUpdate = userRepository.save(userToUpdate);
+        UserDTO userDTO = userMapper.toUserDTO(userToUpdate);
+        userDTO.setToken(jwtUtil.generateToken(userToUpdate.getId(),userToUpdate.getName(), List.of(userDTO.getRole().name())));
         log.info("Updated user with id: " + userToUpdate.getId());
-        return userMapper.toUserDTO(userToUpdate);
+        return userDTO;
     }
 
     @Transactional

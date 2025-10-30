@@ -11,6 +11,7 @@ import javax.crypto.spec.SecretKeySpec;
 import java.security.Key;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 import java.util.function.Function;
 
 @Component
@@ -29,10 +30,10 @@ public class JwtUtil {
         return  new SecretKeySpec(SECRET_KEY.getBytes(), "HmacSHA256");
     }
 
-    public String generateToken(String username, List<String> roles) {
-        log.info("Generating token for username {} secretKEy: {}, roles {}", username, SECRET_KEY, roles.stream().toList().toString());
+    public String generateToken(UUID userID, String username, List<String> roles) {
         return Jwts.builder()
-                .setSubject(username)
+                .setSubject(userID.toString())
+                .claim("username", username)
                 .claim("roles",roles)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
@@ -58,7 +59,7 @@ public class JwtUtil {
         return extractClaim(token, claims-> claims.get("roles", List.class));
     }
 
-    public String extractUsername(String token) {
+    public String extractID(String token) {
         return extractClaim(token, Claims::getSubject);
     }
 
@@ -70,9 +71,9 @@ public class JwtUtil {
         return extractExpiration(token).before(new Date());
     }
 
-    public boolean validateToken(String token, String username) {
-        final String tokenUsername = extractUsername(token);
-        return (tokenUsername.equals(username) && ! isTokenExpired(token));
+    public boolean validateToken(String token, String id) {
+        final String tokenID = extractID(token);
+        return (tokenID.equals(id) && ! isTokenExpired(token));
     }
 
 }

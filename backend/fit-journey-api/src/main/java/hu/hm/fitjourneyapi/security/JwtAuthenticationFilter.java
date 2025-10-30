@@ -34,28 +34,28 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
         final String authorizationHeader = request.getHeader("Authorization");
-        String username = null;
+        String id = null;
         String jwt = null;
         List<String> roles = null;
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             jwt = authorizationHeader.substring(7);
-            username = jwtUtil.extractUsername(jwt);
+            id = jwtUtil.extractID(jwt);
             roles = jwtUtil.extractRoles(jwt);
         }
-        if(username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+        if(id != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails;
             try{
-                userDetails = userDetailsService.loadUserByUsername(username);
+                userDetails = userDetailsService.loadUserByUsername(id);
             }
             catch(UsernameNotFoundException e){
-                log.info("Username not found: " + username);
+                log.info("User not found: " + id);
                 return;
             }
 
             List<SimpleGrantedAuthority> authorities = roles.stream()
                     .map(role -> new SimpleGrantedAuthority("ROLE_" + role))
                     .toList();
-            if (jwtUtil.validateToken(jwt, userDetails.getUsername()))
+            if (jwtUtil.validateToken(jwt, id))
             {
                 UsernamePasswordAuthenticationToken authToken =
                         new UsernamePasswordAuthenticationToken(
