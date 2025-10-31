@@ -102,7 +102,7 @@ public interface ExerciseMapper {
                         exercise ->
                         {
                             switch (exercise.getType()){
-                                case ExerciseTypes.RESISTANCE, ExerciseTypes.BODYWEIGHT, NOT_GIVEN: return toExerciseStrengthSetDTO(exercise);
+                                case ExerciseTypes.RESISTANCE, ExerciseTypes.BODY_WEIGHT, NOT_GIVEN: return toExerciseStrengthSetDTO(exercise);
                                 case ExerciseTypes.CARDIO: return toExerciseCardioSetDTO(exercise);
                                 case ExerciseTypes.FLEXIBILITY: return toExerciseFlexibilitySetDTO(exercise);
                                 default: throw new InvalidSetType("Incorrect exercise type " + exercise.getType());

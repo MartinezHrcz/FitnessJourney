@@ -45,7 +45,7 @@ public class FitnessModelDataFactory {
         switch (excercise.getType()){
             case RESISTANCE -> set =  StrengthSet.builder().reps(10).weight(100).build();
             case NOT_GIVEN -> set = StrengthSet.builder().reps(10).weight(100).build();
-            case BODYWEIGHT -> set = StrengthSet.builder().reps(10).weight(100).build();
+            case BODY_WEIGHT -> set = StrengthSet.builder().reps(10).weight(100).build();
             case CARDIO -> set =  CardioSet.builder().durationInSeconds(100).distanceInKm(0.5).build();
             case FLEXIBILITY -> set =  FlexibilitySet.builder().reps(10).build();
             default -> throw new InvalidSetType("Unkonwn type");

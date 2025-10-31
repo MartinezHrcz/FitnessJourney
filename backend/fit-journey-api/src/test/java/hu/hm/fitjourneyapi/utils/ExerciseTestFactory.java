@@ -35,7 +35,7 @@ public class ExerciseTestFactory {
     public static AbstractExerciseDTO getExerciseDTO(ExerciseTypes exerciseType, long workoutId) {
         switch (exerciseType)
         {
-            case RESISTANCE, NOT_GIVEN, BODYWEIGHT:
+            case RESISTANCE, NOT_GIVEN, BODY_WEIGHT:
             {
                 ExerciseStrengthSetDTO es = ExerciseStrengthSetDTO.builder()
                         .id(1L)

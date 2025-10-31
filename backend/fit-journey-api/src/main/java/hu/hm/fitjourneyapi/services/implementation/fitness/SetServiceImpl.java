@@ -48,7 +48,7 @@ public class SetServiceImpl implements SetService {
         );
         log.debug("Fetched exercise by id {}", id);
         return switch (set.getExercise().getType()){
-            case RESISTANCE,NOT_GIVEN, BODYWEIGHT-> setMapper.toStrengthSetDTO((StrengthSet) set) ;
+            case RESISTANCE, NOT_GIVEN, BODY_WEIGHT -> setMapper.toStrengthSetDTO((StrengthSet) set) ;
             case CARDIO -> setMapper.toCardioSetDTO((CardioSet) set);
             case FLEXIBILITY -> setMapper.toFlexibilitySetDTO((FlexibilitySet) set);
         };
@@ -63,7 +63,7 @@ public class SetServiceImpl implements SetService {
         return sets.stream().map(
                 set-> {
                     switch (set.getExercise().getType()){
-                        case RESISTANCE,NOT_GIVEN, BODYWEIGHT-> {
+                        case RESISTANCE, NOT_GIVEN, BODY_WEIGHT -> {
                             return setMapper.toStrengthSetDTO((StrengthSet) set) ;
                         }
                         case CARDIO -> {

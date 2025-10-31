@@ -26,7 +26,7 @@ public class Exercise {
 
     @Column(unique = true, nullable = false, length = 50)
     private String name;
-    @Column(length = 100)
+    @Column(length = 400)
     private String description;
     @Builder.Default
     private ExerciseTypes type = ExerciseTypes.NOT_GIVEN;
@@ -55,7 +55,7 @@ public class Exercise {
             case RESISTANCE:
                 this.weightType = WeightType.FREE_WEIGHT;
                 break;
-            case BODYWEIGHT:
+            case BODY_WEIGHT:
                 this.weightType = WeightType.BODYWEIGHT;
                 break;
         }

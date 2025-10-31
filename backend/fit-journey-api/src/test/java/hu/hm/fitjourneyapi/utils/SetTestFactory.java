@@ -12,7 +12,7 @@ public class SetTestFactory {
 
         switch (exercise.getType())
         {
-            case NOT_GIVEN, RESISTANCE, BODYWEIGHT -> {
+            case NOT_GIVEN, RESISTANCE, BODY_WEIGHT -> {
                 return
                         StrengthSet.builder()
                                 .exercise(exercise)
@@ -42,7 +42,7 @@ public class SetTestFactory {
     public static AbstractSetDTO getSetDTO(long exerciseId, ExerciseTypes exerciseType) {
         switch (exerciseType)
         {
-            case NOT_GIVEN, RESISTANCE, BODYWEIGHT -> {
+            case NOT_GIVEN, RESISTANCE, BODY_WEIGHT -> {
                 return
                         StrengthSetDTO
                                 .builder()
