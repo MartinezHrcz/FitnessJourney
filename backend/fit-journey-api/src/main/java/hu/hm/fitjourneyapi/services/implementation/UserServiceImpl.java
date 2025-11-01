@@ -72,11 +72,11 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @Override
     public UserDTO updateUser(UUID id,UserUpdateDTO userUpdateDTO) {
-        log.debug("Attempting to update user with id {} email {}", userUpdateDTO.getId(), userUpdateDTO.getName());
+        log.debug("Attempting to update user with id {} email {}", id, userUpdateDTO.getName());
         User userToUpdate = userRepository.findById(id).orElseThrow(
                 () ->{
-                    log.warn("User not found with id: {}", userUpdateDTO.getId());
-                    return new UserNotFound("User not found with id:" + userUpdateDTO.getId());}
+                    log.warn("User not found with id: {}", id);
+                    return new UserNotFound("User not found with id: "+ id);}
         );
         userToUpdate.setName(userUpdateDTO.getName());
         userToUpdate.setEmail(userUpdateDTO.getEmail());
@@ -86,18 +86,18 @@ public class UserServiceImpl implements UserService {
         userToUpdate = userRepository.save(userToUpdate);
         UserDTO userDTO = userMapper.toUserDTO(userToUpdate);
         userDTO.setToken(jwtUtil.generateToken(userToUpdate.getId(),userToUpdate.getName(), List.of(userDTO.getRole().name())));
-        log.info("Updated user with id: " + userToUpdate.getId());
+        log.info("Updated user with id: " + id);
         return userDTO;
     }
 
     @Transactional
     @Override
-    public UserDTO updatePassword(UserPasswordUpdateDTO userPasswordUpdateDTO) {
-        log.debug("Attempting to update user password with id {} ", userPasswordUpdateDTO.getId());
-        User userToUpdate = userRepository.findById(userPasswordUpdateDTO.getId()).orElseThrow(
+    public UserDTO updatePassword(UUID id,UserPasswordUpdateDTO userPasswordUpdateDTO) {
+        log.debug("Attempting to update user password with id {} ", id);
+        User userToUpdate = userRepository.findById(id).orElseThrow(
                 () -> {
-                    log.warn("User not found with id: " + userPasswordUpdateDTO.getId());
-                    return new UserNotFound("User not found with id:" + userPasswordUpdateDTO.getId());}
+                    log.warn("User not found with id: " + id);
+                    return new UserNotFound("User not found with id:" + id);}
         );
 
         if (!passwordEncoder.matches(userToUpdate.getPassword(), userPasswordUpdateDTO.getPasswordOld())){
@@ -108,7 +108,9 @@ public class UserServiceImpl implements UserService {
         userToUpdate.setPassword(passwordEncoder.encode(userPasswordUpdateDTO.getPasswordNew()));
         userToUpdate = userRepository.save(userToUpdate);
         log.info("Updated password for user with id: " + userToUpdate.getId());
-        return userMapper.toUserDTO(userToUpdate);
+        UserDTO userDTO = userMapper.toUserDTO(userToUpdate);
+        userDTO.setToken(jwtUtil.generateToken(userToUpdate.getId(),userToUpdate.getName(), List.of(userDTO.getRole().name())));
+        return userDTO;
     }
 
     @Transactional(readOnly = true)

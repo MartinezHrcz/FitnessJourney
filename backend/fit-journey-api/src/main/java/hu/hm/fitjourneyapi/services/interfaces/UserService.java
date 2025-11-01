@@ -20,7 +20,7 @@ public interface UserService {
 
     UserDTO updateUser(UUID id,UserUpdateDTO userUpdateDTO);
 
-    UserDTO updatePassword(UserPasswordUpdateDTO userPasswordUpdateDTO);
+    UserDTO updatePassword(UUID id,UserPasswordUpdateDTO userPasswordUpdateDTO);
 
     UserDTO getUserById(UUID id);
 

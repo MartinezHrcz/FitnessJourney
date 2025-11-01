@@ -13,7 +13,6 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserPasswordUpdateDTO {
-    private UUID id;
     private String passwordOld;
     @NotBlank(message = "Password cannot be blank!")
     @Size(min = 8, max=40, message = "Password must be between ")

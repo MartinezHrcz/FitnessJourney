@@ -112,14 +112,13 @@ public class UserServiceTests {
     @Test
     void testUpdateUserPassword_success() {
         UserPasswordUpdateDTO updateDTO = UserPasswordUpdateDTO.builder()
-                .id(UUID.randomUUID())
                 .passwordNew("A123a!")
                 .passwordOld("EncodedPassword123!")
                 .build();
         when(userRepository.findById(any(UUID.class))).thenReturn(Optional.ofNullable(user));
         when(passwordEncoder.encode(anyString())).thenReturn("NewEncodedPassword123!");
         when(passwordEncoder.matches(updateDTO.getPasswordOld(), user.getPassword())).thenReturn(true);
-        UserDTO result = userService.updatePassword(updateDTO);
+        UserDTO result = userService.updatePassword(UUID.randomUUID(),updateDTO);
 
         assertNotNull(result);
         assertEquals(user.getName(), result.getName());

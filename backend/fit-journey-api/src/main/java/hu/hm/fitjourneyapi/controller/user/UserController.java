@@ -1,9 +1,8 @@
 package hu.hm.fitjourneyapi.controller.user;
 
-import hu.hm.fitjourneyapi.dto.user.UserCreateDTO;
-import hu.hm.fitjourneyapi.dto.user.UserDTO;
-import hu.hm.fitjourneyapi.dto.user.UserUpdateDTO;
+import hu.hm.fitjourneyapi.dto.user.*;
 import hu.hm.fitjourneyapi.exception.userExceptions.UserNotFound;
+import hu.hm.fitjourneyapi.model.User;
 import hu.hm.fitjourneyapi.services.interfaces.UserService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -49,6 +48,17 @@ public class UserController {
     public ResponseEntity<UserDTO> updateUser(@PathVariable UUID id, @RequestBody @Valid UserUpdateDTO dto) {
         try{
             UserDTO result = userService.updateUser(id,dto);
+            return ResponseEntity.ok(result);
+        }
+        catch (UserNotFound e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @PutMapping("/pwd/{id}")
+    public ResponseEntity<UserDTO> updatePassword(@PathVariable UUID id, @RequestBody @Valid UserPasswordUpdateDTO dto) {
+        try{
+            UserDTO result = userService.updatePassword(id, dto);
             return ResponseEntity.ok(result);
         }
         catch (UserNotFound e) {

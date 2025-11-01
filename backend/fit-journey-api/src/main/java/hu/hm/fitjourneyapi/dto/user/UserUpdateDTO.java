@@ -13,5 +13,4 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserUpdateDTO extends AbstractUserDTO {
-    private UUID id;
 }
