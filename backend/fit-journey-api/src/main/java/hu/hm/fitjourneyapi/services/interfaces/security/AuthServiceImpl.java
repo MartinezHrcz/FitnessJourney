@@ -6,6 +6,7 @@ import hu.hm.fitjourneyapi.dto.user.UserCreateDTO;
 import hu.hm.fitjourneyapi.dto.user.UserDTO;
 import hu.hm.fitjourneyapi.security.JwtUtil;
 import hu.hm.fitjourneyapi.services.interfaces.UserService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
+@Slf4j
 public class AuthServiceImpl implements AuthService {
 
     private final UserService userService;
@@ -34,11 +36,14 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public AuthResponse login(AuthRequest request) {
-        UserDTO user = userService.getUserByName(request.getUsername());
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
         );
+
+        UserDTO user = userService.getUserByName(request.getUsername());
+
         String token = jwtUtil.generateToken(user.getId(),user.getName(), List.of(user.getRole().name()));
+        log.info("logged in user {} ", request.getUsername());
         return new AuthResponse(user,token);
     }
 }
