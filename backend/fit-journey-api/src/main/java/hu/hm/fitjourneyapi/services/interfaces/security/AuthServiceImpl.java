@@ -29,7 +29,7 @@ public class AuthServiceImpl implements AuthService {
     public AuthResponse register(UserCreateDTO request) {
         UserDTO user = userService.createUser(request);
         String token = jwtUtil.generateToken(user.getId(),user.getName(), List.of(user.getRole().name()));
-        return new AuthResponse(token);
+        return new AuthResponse(user,token);
     }
 
     @Override
@@ -39,6 +39,6 @@ public class AuthServiceImpl implements AuthService {
                 new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
         );
         String token = jwtUtil.generateToken(user.getId(),user.getName(), List.of(user.getRole().name()));
-        return new AuthResponse(token);
+        return new AuthResponse(user,token);
     }
 }

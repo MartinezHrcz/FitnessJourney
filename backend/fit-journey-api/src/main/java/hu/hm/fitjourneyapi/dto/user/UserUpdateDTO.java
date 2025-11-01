@@ -10,7 +10,6 @@ import java.util.UUID;
 
 @Getter
 @SuperBuilder
-@NoArgsConstructor
 @AllArgsConstructor
 public class UserUpdateDTO extends AbstractUserDTO {
 }
