@@ -116,17 +116,17 @@ public class WorkoutServiceImpl implements WorkoutService {
     }
 
     @Override
-    public WorkoutDTO addExerciseToWorkout(long workoutId, AbstractExerciseDTO abstractExerciseDTO) {
+    public WorkoutDTO addExerciseToWorkout(long workoutId, long exerciseId) {
         Workout workout = workoutRepository.findById(workoutId).orElseThrow(
                 ()->{
                     log.warn("Workout with id {} not found", workoutId);
                     return new WorkoutNotFound("Workout not found with id " + workoutId);
                 }
         );
-        Exercise exercise = exerciseRepository.findById(abstractExerciseDTO.getId()).orElseThrow(
+        Exercise exercise = exerciseRepository.findById(exerciseId).orElseThrow(
                 () -> {
-                    log.warn("Exercise with id {} not found", abstractExerciseDTO.getId());
-                    return new ExerciseNotFound("Exercise not found with id " + abstractExerciseDTO.getId());
+                    log.warn("Exercise with id {} not found", exerciseId);
+                    return new ExerciseNotFound("Exercise not found with id " + exerciseId);
                 }
         );
         workout.AddExercise(exercise);

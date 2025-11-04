@@ -21,7 +21,7 @@ public interface WorkoutService {
 
     WorkoutDTO updateWorkout(long id, WorkoutUpdateDTO workoutUpdateDTO);
 
-    WorkoutDTO addExerciseToWorkout(long workoutId, AbstractExerciseDTO abstractExerciseDTO);
+    WorkoutDTO addExerciseToWorkout(long workoutId, long exerciseId);
 
     void deleteWorkoutById(long id);
 }

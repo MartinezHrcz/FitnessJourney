@@ -1,8 +1,10 @@
 package hu.hm.fitjourneyapi.controller.fitness;
 
+import hu.hm.fitjourneyapi.dto.fitness.excercise.AbstractExerciseDTO;
 import hu.hm.fitjourneyapi.dto.fitness.workout.WorkoutCreateDTO;
 import hu.hm.fitjourneyapi.dto.fitness.workout.WorkoutDTO;
 import hu.hm.fitjourneyapi.dto.fitness.workout.WorkoutUpdateDTO;
+import hu.hm.fitjourneyapi.exception.fitness.ExerciseNotFound;
 import hu.hm.fitjourneyapi.exception.fitness.WorkoutNotFound;
 import hu.hm.fitjourneyapi.exception.userExceptions.UserNotFound;
 import hu.hm.fitjourneyapi.services.interfaces.fitness.WorkoutService;
@@ -60,6 +62,16 @@ public class WorkoutController {
         }
         catch (UserNotFound ex) {
             return ResponseEntity.notFound().build();
+        }
+    }
+
+    @PutMapping("/addexc/{id}-{exerciseId}")
+    public ResponseEntity<WorkoutDTO> addExerciseToWorkout(@PathVariable long id, @PathVariable long exerciseId) {
+        try{
+            return ResponseEntity.ok(workoutService.addExerciseToWorkout(id, id));
+        }
+        catch (ExerciseNotFound WorkoutNotFound) {
+            return  ResponseEntity.notFound().build();
         }
     }
 
