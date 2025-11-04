@@ -2,17 +2,15 @@ package hu.hm.fitjourneyapi.controller.fitness;
 
 import hu.hm.fitjourneyapi.dto.fitness.workout.WorkoutCreateDTO;
 import hu.hm.fitjourneyapi.dto.fitness.workout.WorkoutDTO;
+import hu.hm.fitjourneyapi.exception.fitness.WorkoutNotFound;
 import hu.hm.fitjourneyapi.exception.userExceptions.UserNotFound;
 import hu.hm.fitjourneyapi.services.interfaces.fitness.WorkoutService;
-import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
+
 
 @RestController
 @RequestMapping("/api/workout")
@@ -32,4 +30,27 @@ public class WorkoutController {
             return ResponseEntity.notFound().build();
         }
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<WorkoutDTO> getWorkout(long id) {
+        return ResponseEntity.ok(workoutService.getWorkoutByWorkoutId(id));
+    }
+
+
+    @GetMapping
+    public ResponseEntity<List<WorkoutDTO>> getAllWorkouts() {
+        return ResponseEntity.ok(workoutService.getWorkouts());
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteWorkout(long id) {
+        try{
+            workoutService.deleteWorkoutById(id);
+            return ResponseEntity.ok("Workout with id " + id + " deleted");
+        }
+        catch (WorkoutNotFound ex) {
+            return  ResponseEntity.notFound().build();
+        }
+    }
+
 }
