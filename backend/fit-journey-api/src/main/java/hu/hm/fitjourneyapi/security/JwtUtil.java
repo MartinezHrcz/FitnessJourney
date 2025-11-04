@@ -63,6 +63,10 @@ public class JwtUtil {
         return extractClaim(token, Claims::getSubject);
     }
 
+    public String extractUsername(String token) {
+        return extractClaim(token, claims -> claims.get("username", String.class));
+    }
+
     public Date extractExpiration(String token) {
         return extractClaim(token, Claims::getExpiration);
     }
@@ -72,7 +76,7 @@ public class JwtUtil {
     }
 
     public boolean validateToken(String token, String id) {
-        final String tokenID = extractID(token);
+        final String tokenID = extractUsername(token);
         return (tokenID.equals(id) && ! isTokenExpired(token));
     }
 
