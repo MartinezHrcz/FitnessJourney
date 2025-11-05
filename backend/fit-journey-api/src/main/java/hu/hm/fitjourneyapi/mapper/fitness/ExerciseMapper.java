@@ -89,6 +89,11 @@ public interface ExerciseMapper {
     @Mapping(target="workout", expression="java(workout)")
     Exercise toExercise(AbstractExerciseDTO dto, Workout workout);
 
+    @Mapping(source ="dto.id", target = "id")
+    @Mapping(source="dto.name", target = "name")
+    @Mapping(source = "dto.description", target = "description")
+    Exercise toExercise(AbstractExerciseDTO dto);
+
     default List<Exercise> toExercises(List<AbstractExerciseDTO> exerciseDTOS, Workout workout){
         if (exerciseDTOS == null || exerciseDTOS.isEmpty()) return null;
         return exerciseDTOS.stream().map(dto -> toExercise(dto, workout)).collect(Collectors.toList());

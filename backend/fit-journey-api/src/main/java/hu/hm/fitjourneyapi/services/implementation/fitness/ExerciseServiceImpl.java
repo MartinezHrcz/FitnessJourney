@@ -13,6 +13,7 @@ import hu.hm.fitjourneyapi.exception.fitness.WorkoutNotFound;
 import hu.hm.fitjourneyapi.mapper.fitness.ExerciseMapper;
 import hu.hm.fitjourneyapi.mapper.fitness.SetMapper;
 import hu.hm.fitjourneyapi.model.User;
+import hu.hm.fitjourneyapi.model.enums.ExerciseTypes;
 import hu.hm.fitjourneyapi.model.fitness.Exercise;
 import hu.hm.fitjourneyapi.model.fitness.Workout;
 import hu.hm.fitjourneyapi.repository.UserRepository;
@@ -25,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Slf4j
@@ -100,6 +102,26 @@ public class ExerciseServiceImpl implements ExerciseService {
             case FLEXIBILITY -> exerciseMapper.toExerciseFlexibilitySetDTO(exercise);
             case CARDIO -> exerciseMapper.toExerciseCardioSetDTO(exercise);
         };
+    }
+
+    @Override
+    public AbstractExerciseDTO createExercise(AbstractExerciseDTO dto) throws NoSuchFieldException {
+        Exercise result = exerciseMapper.toExercise(dto);
+        result = exerciseRepository.save(result);
+        switch (dto.getType()) {
+            case RESISTANCE, NOT_GIVEN, BODY_WEIGHT -> {
+                return exerciseMapper.toExerciseStrengthSetDTO(result);
+            }
+            case CARDIO -> {
+                return exerciseMapper.toExerciseCardioSetDTO(result);
+            }
+            case  FLEXIBILITY -> {
+                return exerciseMapper.toExerciseFlexibilitySetDTO(result);
+            }
+            default -> {
+                throw new NoSuchFieldException("Exercise type ot found");
+            }
+        }
     }
 
     @Transactional

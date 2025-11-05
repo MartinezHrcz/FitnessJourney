@@ -4,6 +4,8 @@ import hu.hm.fitjourneyapi.dto.fitness.excercise.AbstractExerciseDTO;
 import hu.hm.fitjourneyapi.dto.fitness.excercise.ExerciseCardioSetDTO;
 import hu.hm.fitjourneyapi.dto.fitness.excercise.ExerciseFlexibilitySetDTO;
 import hu.hm.fitjourneyapi.dto.fitness.excercise.ExerciseStrengthSetDTO;
+import hu.hm.fitjourneyapi.model.enums.ExerciseTypes;
+import hu.hm.fitjourneyapi.model.fitness.Exercise;
 
 import java.util.List;
 import java.util.UUID;
@@ -18,6 +20,8 @@ public interface ExerciseService {
     List<AbstractExerciseDTO> getByName(String name);
 
     AbstractExerciseDTO getById(long id);
+
+    AbstractExerciseDTO createExercise(AbstractExerciseDTO dto) throws NoSuchFieldException;
 
     ExerciseStrengthSetDTO createExerciseStrengthSet(ExerciseStrengthSetDTO exerciseStrengthSetDTO);
 
