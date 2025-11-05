@@ -18,7 +18,9 @@ import lombok.experimental.SuperBuilder;
         visible = true
 )
 @JsonSubTypes({
-        @JsonSubTypes.Type(value = ExerciseStrengthSetDTO.class, name="RESISTANCE")
+        @JsonSubTypes.Type(value = ExerciseStrengthSetDTO.class, names={"RESISTANCE", "NOT_GIVEN", "BODY_WEIGHT"}),
+        @JsonSubTypes.Type(value = ExerciseCardioSetDTO.class, name="CARDIO"),
+        @JsonSubTypes.Type(value = ExerciseFlexibilitySetDTO.class, name="FLEXIBILITY")
 })
 public abstract class AbstractExerciseDTO {
     private long id;
