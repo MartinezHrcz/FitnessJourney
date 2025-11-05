@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface ExerciseMapper {
-
+    @Deprecated(forRemoval = true)
     default ExerciseStrengthSetDTO toExerciseStrengthSetDTO(Exercise exercise) {
         if (exercise == null || exercise.getSets() == null) return null;
         return ExerciseStrengthSetDTO.builder()
@@ -41,6 +41,7 @@ public interface ExerciseMapper {
                 ).collect(Collectors.toList())).build();
     }
 
+    @Deprecated(forRemoval = true)
     default ExerciseCardioSetDTO toExerciseCardioSetDTO(Exercise exercise) {
         if (exercise == null || exercise.getSets() == null) return null;
         return ExerciseCardioSetDTO.builder()
@@ -62,6 +63,7 @@ public interface ExerciseMapper {
                 ).collect(Collectors.toList())).build();
     }
 
+    @Deprecated(forRemoval = true)
     default ExerciseFlexibilitySetDTO toExerciseFlexibilitySetDTO(Exercise exercise) {
         if (exercise == null || exercise.getSets() == null) return null;
         return ExerciseFlexibilitySetDTO.builder()
@@ -82,6 +84,81 @@ public interface ExerciseMapper {
                 ).collect(Collectors.toList())).build();
     }
 
+    //Generic mapper test
+    //refactoring
+    @SuppressWarnings("unchecked")
+    default <T extends AbstractExerciseDTO> T toExerciseDTO(Exercise exercise) {
+        if (exercise == null) return null;
+
+        ExerciseTypes type = exercise.getType();
+
+        switch (type) {
+            case RESISTANCE, BODY_WEIGHT, NOT_GIVEN ->
+            {
+                return (T) ExerciseStrengthSetDTO.builder()
+                        .id(exercise.getId())
+                        .name(exercise.getName())
+                        .description(exercise.getDescription())
+                        .weightType(exercise.getWeightType())
+                        .sets(exercise.getSets().stream().map(
+                                set ->
+                                {
+                                    StrengthSet strengthSet = (StrengthSet) set;
+                                    return StrengthSetDTO.builder()
+                                            .id(strengthSet.getId())
+                                            .exerciseId(exercise.getId())
+                                            .reps(strengthSet.getReps())
+                                            .weight(strengthSet.getWeight())
+                                            .build();
+                                }
+                        ).collect(Collectors.toList())).build();
+            }
+
+            case CARDIO ->
+            {
+                return (T) ExerciseCardioSetDTO.builder()
+                        .id(exercise.getId())
+                        .name(exercise.getName())
+                        .description(exercise.getDescription())
+                        .weightType(exercise.getWeightType())
+                        .sets(exercise.getSets().stream().map(
+                                set ->
+                                {
+                                    CardioSet cardioSet = (CardioSet) set;
+
+                                    return CardioSetDTO.builder()
+                                            .id(cardioSet.getId())
+                                            .distanceInKilometers(cardioSet.getDistanceInKm())
+                                            .durationInSeconds(cardioSet.getDurationInSeconds())
+                                            .exerciseId(exercise.getId())
+                                            .build();
+                                }
+                        ).collect(Collectors.toList())).build();
+            }
+
+            case FLEXIBILITY -> {
+                return (T) ExerciseFlexibilitySetDTO.builder()
+                        .id(exercise.getId())
+                        .name(exercise.getName())
+                        .description(exercise.getDescription())
+                        .weightType(exercise.getWeightType())
+                        .sets(exercise.getSets().stream().map(
+                                set ->
+                                {
+                                    FlexibilitySet flexibilitySet = (FlexibilitySet) set;
+
+                                    return FlexibilitySetDTO.builder()
+                                            .id(flexibilitySet.getId())
+                                            .reps(flexibilitySet.getReps())
+                                            .exerciseId(exercise.getId())
+                                            .build();
+                                }
+                        ).collect(Collectors.toList())).build();
+            }
+            default -> throw new  InvalidSetType(exercise.getName());
+        }
+    }
+
 
     @Mapping(source ="dto.id", target = "id")
     @Mapping(source="dto.name", target = "name")
@@ -98,6 +175,8 @@ public interface ExerciseMapper {
         if (exerciseDTOS == null || exerciseDTOS.isEmpty()) return null;
         return exerciseDTOS.stream().map(dto -> toExercise(dto, workout)).collect(Collectors.toList());
     }
+
+
 
     default List<AbstractExerciseDTO> toExerciseDTOs(List<Exercise> exercises){
         if (exercises == null || exercises.isEmpty()) return null;
