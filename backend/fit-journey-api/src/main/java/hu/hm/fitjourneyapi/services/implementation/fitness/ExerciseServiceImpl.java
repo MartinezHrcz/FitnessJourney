@@ -108,21 +108,11 @@ public class ExerciseServiceImpl implements ExerciseService {
     public AbstractExerciseDTO createExercise(AbstractExerciseDTO dto) throws NoSuchFieldException {
         Exercise result = exerciseMapper.toExercise(dto);
         result = exerciseRepository.save(result);
-        switch (dto.getType()) {
-            case RESISTANCE, NOT_GIVEN, BODY_WEIGHT -> {
-                return exerciseMapper.toExerciseStrengthSetDTO(result);
-            }
-            case CARDIO -> {
-                return exerciseMapper.toExerciseCardioSetDTO(result);
-            }
-            case  FLEXIBILITY -> {
-                return exerciseMapper.toExerciseFlexibilitySetDTO(result);
-            }
-            default -> {
-                throw new NoSuchFieldException("Exercise type ot found");
-            }
-        }
+        return exerciseMapper.toExerciseDTO(result);
     }
+
+
+
 
     @Transactional
     @Override

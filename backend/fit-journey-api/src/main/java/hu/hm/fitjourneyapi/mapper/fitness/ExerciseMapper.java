@@ -100,6 +100,7 @@ public interface ExerciseMapper {
                         .name(exercise.getName())
                         .description(exercise.getDescription())
                         .weightType(exercise.getWeightType())
+                        .type(exercise.getType())
                         .sets(exercise.getSets().stream().map(
                                 set ->
                                 {
@@ -121,6 +122,7 @@ public interface ExerciseMapper {
                         .name(exercise.getName())
                         .description(exercise.getDescription())
                         .weightType(exercise.getWeightType())
+                        .type(exercise.getType())
                         .sets(exercise.getSets().stream().map(
                                 set ->
                                 {
@@ -142,6 +144,7 @@ public interface ExerciseMapper {
                         .name(exercise.getName())
                         .description(exercise.getDescription())
                         .weightType(exercise.getWeightType())
+                        .type(exercise.getType())
                         .sets(exercise.getSets().stream().map(
                                 set ->
                                 {
@@ -169,6 +172,7 @@ public interface ExerciseMapper {
     @Mapping(source ="dto.id", target = "id")
     @Mapping(source="dto.name", target = "name")
     @Mapping(source = "dto.description", target = "description")
+    @Mapping(source="dto.type", target = "type")
     Exercise toExercise(AbstractExerciseDTO dto);
 
     default List<Exercise> toExercises(List<AbstractExerciseDTO> exerciseDTOS, Workout workout){
