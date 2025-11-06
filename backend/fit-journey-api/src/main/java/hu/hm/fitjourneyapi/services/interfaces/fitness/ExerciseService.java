@@ -31,11 +31,5 @@ public interface ExerciseService {
 
     AbstractExerciseDTO updateExercise(long id, ExerciseUpdateDTO dto);
 
-    ExerciseStrengthSetDTO updateExerciseStrengthSet(ExerciseStrengthSetDTO dto);
-
-    ExerciseFlexibilitySetDTO updateExerciseFlexibilitySet(ExerciseFlexibilitySetDTO dto);
-
-    ExerciseCardioSetDTO updateExerciseCardioSet(ExerciseCardioSetDTO dto);
-
     void deleteExerciseById(long id);
 }

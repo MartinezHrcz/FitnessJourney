@@ -162,64 +162,6 @@ public class ExerciseServiceImpl implements ExerciseService {
 
     @Transactional
     @Override
-    public ExerciseStrengthSetDTO updateExerciseStrengthSet(ExerciseStrengthSetDTO dto) {
-        log.debug("Updating exercise strength set");
-        Exercise exercise = exerciseRepository.findById(dto.getId()).orElseThrow(
-                ()-> new ExerciseNotFound("Exercise not found by id")
-        );
-
-        for (StrengthSetDTO set : dto.getSets()){
-            exercise.getSets().add(setMapper.toStrengthSet(set,exercise));
-        }
-
-        exercise.setName(dto.getName());
-        exercise.setDescription(dto.getDescription());
-        exercise.setWeightType(dto.getWeightType());
-        exercise = exerciseRepository.save(exercise);
-        log.info("Updated exercise strength set with name {}", dto.getName());
-        return exerciseMapper.toExerciseStrengthSetDTO(exercise);
-    }
-
-    @Transactional
-    @Override
-    public ExerciseFlexibilitySetDTO updateExerciseFlexibilitySet(ExerciseFlexibilitySetDTO dto) {
-        log.debug("Updating exercise flexibility set");
-        Exercise exercise = exerciseRepository.findById(dto.getId()).orElseThrow(
-                ()-> new ExerciseNotFound("Exercise not found by id")
-        );
-
-        for (FlexibilitySetDTO set : dto.getSets()){
-            exercise.getSets().add(setMapper.toFlexibilitySet(set,exercise));
-        }
-
-        exercise.setName(dto.getName());
-        exercise.setDescription(dto.getDescription());
-        exercise = exerciseRepository.save(exercise);
-        log.info("Updated exercise flexibility set with name {}", dto.getName());
-        return exerciseMapper.toExerciseFlexibilitySetDTO(exercise);
-    }
-
-    @Transactional
-    @Override
-    public ExerciseCardioSetDTO updateExerciseCardioSet(ExerciseCardioSetDTO dto) {
-        log.debug("Updating exercise cardio set");
-        Exercise exercise = exerciseRepository.findById(dto.getId()).orElseThrow(
-                ()-> new ExerciseNotFound("Exercise not found by id")
-        );
-
-        for (CardioSetDTO set : dto.getSets()){
-            exercise.getSets().add(setMapper.toCardioSet(set,exercise));
-        }
-
-        exercise.setName(dto.getName());
-        exercise.setDescription(dto.getDescription());
-        exercise = exerciseRepository.save(exercise);
-        log.info("Updated exercise cardio set with name {}", dto.getName());
-        return exerciseMapper.toExerciseCardioSetDTO(exercise);
-    }
-
-    @Transactional
-    @Override
     public void deleteExerciseById(long id) {
         log.debug("Deleting exercise with id {}", id);
         Exercise exercise = exerciseRepository.findById(id).orElseThrow(
