@@ -94,11 +94,7 @@ public class ExerciseServiceImpl implements ExerciseService {
         log.debug("Fetching exercise by id {}", id);
         Exercise exercise = exerciseRepository.findById(id).orElseThrow(
                 ()-> new ExerciseNotFound("Exercise not found by id"));
-        return switch (exercise.getType()) {
-            case BODY_WEIGHT, RESISTANCE, NOT_GIVEN -> exerciseMapper.toExerciseStrengthSetDTO(exercise);
-            case FLEXIBILITY -> exerciseMapper.toExerciseFlexibilitySetDTO(exercise);
-            case CARDIO -> exerciseMapper.toExerciseCardioSetDTO(exercise);
-        };
+        return exerciseMapper.toExerciseDTO(exercise);
     }
 
     @Override
