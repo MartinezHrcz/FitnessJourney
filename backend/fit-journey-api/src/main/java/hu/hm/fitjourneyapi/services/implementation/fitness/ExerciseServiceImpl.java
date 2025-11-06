@@ -1,10 +1,7 @@
 package hu.hm.fitjourneyapi.services.implementation.fitness;
 
 
-import hu.hm.fitjourneyapi.dto.fitness.excercise.AbstractExerciseDTO;
-import hu.hm.fitjourneyapi.dto.fitness.excercise.ExerciseCardioSetDTO;
-import hu.hm.fitjourneyapi.dto.fitness.excercise.ExerciseFlexibilitySetDTO;
-import hu.hm.fitjourneyapi.dto.fitness.excercise.ExerciseStrengthSetDTO;
+import hu.hm.fitjourneyapi.dto.fitness.excercise.*;
 import hu.hm.fitjourneyapi.dto.fitness.set.CardioSetDTO;
 import hu.hm.fitjourneyapi.dto.fitness.set.FlexibilitySetDTO;
 import hu.hm.fitjourneyapi.dto.fitness.set.StrengthSetDTO;
@@ -149,6 +146,18 @@ public class ExerciseServiceImpl implements ExerciseService {
         exercise = exerciseRepository.save(exercise);
         log.info("Created exercise with cardio set");
         return exerciseMapper.toExerciseCardioSetDTO(exercise);
+    }
+
+    @Override
+    public AbstractExerciseDTO updateExercise(long id, ExerciseUpdateDTO dto) {
+        log.debug("Updating exercise by id {}", id);
+        Exercise exercise = exerciseRepository.findById(id).orElseThrow(
+                ()-> new ExerciseNotFound("Exercise not found by id")
+        );
+        exerciseMapper.updateExerciseFields(exercise, dto);
+        exercise = exerciseRepository.save(exercise);
+        log.info("Updated exercise by id {}", id);
+        return exerciseMapper.toExerciseDTO(exercise);
     }
 
     @Transactional

@@ -1,9 +1,6 @@
 package hu.hm.fitjourneyapi.services.interfaces.fitness;
 
-import hu.hm.fitjourneyapi.dto.fitness.excercise.AbstractExerciseDTO;
-import hu.hm.fitjourneyapi.dto.fitness.excercise.ExerciseCardioSetDTO;
-import hu.hm.fitjourneyapi.dto.fitness.excercise.ExerciseFlexibilitySetDTO;
-import hu.hm.fitjourneyapi.dto.fitness.excercise.ExerciseStrengthSetDTO;
+import hu.hm.fitjourneyapi.dto.fitness.excercise.*;
 import hu.hm.fitjourneyapi.model.enums.ExerciseTypes;
 import hu.hm.fitjourneyapi.model.fitness.Exercise;
 
@@ -31,6 +28,8 @@ public interface ExerciseService {
 
     @Deprecated(forRemoval = true)
     ExerciseCardioSetDTO createExerciseCardioSet(ExerciseCardioSetDTO cardioSetDTO);
+
+    AbstractExerciseDTO updateExercise(long id, ExerciseUpdateDTO dto);
 
     ExerciseStrengthSetDTO updateExerciseStrengthSet(ExerciseStrengthSetDTO dto);
 

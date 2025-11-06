@@ -96,7 +96,7 @@ public interface ExerciseMapper {
                         .id(exercise.getId())
                         .name(exercise.getName())
                         .description(exercise.getDescription())
-                        .workoutId(exercise.getWorkout().getId())
+                        .workoutId(exercise.getWorkout() ==  null ? 0 : exercise.getWorkout().getId())
                         .weightType(exercise.getWeightType())
                         .type(exercise.getType())
                         .sets(exercise.getSets().stream().map(
@@ -120,7 +120,7 @@ public interface ExerciseMapper {
                         .name(exercise.getName())
                         .description(exercise.getDescription())
                         .weightType(exercise.getWeightType())
-                        .workoutId(exercise.getWorkout().getId())
+                        .workoutId(exercise.getWorkout() ==  null ? 0 : exercise.getWorkout().getId())
                         .type(exercise.getType())
                         .sets(exercise.getSets().stream().map(
                                 set ->
@@ -142,7 +142,7 @@ public interface ExerciseMapper {
                         .id(exercise.getId())
                         .name(exercise.getName())
                         .description(exercise.getDescription())
-                        .workoutId(exercise.getWorkout().getId())
+                        .workoutId(exercise.getWorkout() ==  null ? 0 : exercise.getWorkout().getId())
                         .weightType(exercise.getWeightType())
                         .type(exercise.getType())
                         .sets(exercise.getSets().stream().map(

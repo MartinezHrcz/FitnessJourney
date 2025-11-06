@@ -1,6 +1,7 @@
 package hu.hm.fitjourneyapi.controller.fitness;
 
 import hu.hm.fitjourneyapi.dto.fitness.excercise.AbstractExerciseDTO;
+import hu.hm.fitjourneyapi.dto.fitness.excercise.ExerciseUpdateDTO;
 import hu.hm.fitjourneyapi.exception.fitness.ExerciseNotFound;
 import hu.hm.fitjourneyapi.services.interfaces.fitness.ExerciseService;
 import org.springframework.http.ResponseEntity;
@@ -65,4 +66,14 @@ public class ExerciseController {
         return ResponseEntity.noContent().build();
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<AbstractExerciseDTO> updateExercise(@PathVariable int id,@RequestBody ExerciseUpdateDTO exerciseDTO) {
+        try{
+            return ResponseEntity.ok(exerciseService.updateExercise(id, exerciseDTO));
+        }
+        catch (ExerciseNotFound ex)
+        {
+            return ResponseEntity.notFound().build();
+        }
+    }
 }

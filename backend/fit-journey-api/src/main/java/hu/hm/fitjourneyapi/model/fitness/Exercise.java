@@ -3,6 +3,7 @@ package hu.hm.fitjourneyapi.model.fitness;
 import hu.hm.fitjourneyapi.exception.fitness.setExceptions.InvalidSetType;
 import hu.hm.fitjourneyapi.model.enums.ExerciseTypes;
 import hu.hm.fitjourneyapi.model.enums.WeightType;
+import io.micrometer.common.lang.Nullable;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -33,6 +34,7 @@ public class Exercise {
 
     @ToString.Exclude
     @ManyToOne
+    @Nullable
     @JoinColumn(name="workout_id")
     private Workout workout;
 
