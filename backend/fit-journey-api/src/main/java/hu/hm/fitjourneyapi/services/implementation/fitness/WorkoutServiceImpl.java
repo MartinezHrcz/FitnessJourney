@@ -151,9 +151,11 @@ public class WorkoutServiceImpl implements WorkoutService {
                     return new ExerciseNotFound("Exercise not found with id " + exerciseId);
                 }
         );
+        if (!workout.getExercises().contains(exercise)) {
+            throw new IllegalStateException("Exercise does not belong to workout");
+        }
         exercise.setWorkout(null);
         workout.getExercises().remove(exercise);
-        workout = workoutRepository.save(workout);
         exerciseRepository.save(exercise);
         log.info("Removed {} to workout {} with id {}",exercise.getName(), workout.getName(), workout.getId());
         return workoutMapper.toDTO(workout);

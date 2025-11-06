@@ -83,6 +83,9 @@ public class WorkoutController {
         catch (ExerciseNotFound | WorkoutNotFound ex) {
             return  ResponseEntity.notFound().build();
         }
+        catch (IllegalStateException ex){
+            return  ResponseEntity.badRequest().build();
+        }
     }
 
     @DeleteMapping("/{id}")
