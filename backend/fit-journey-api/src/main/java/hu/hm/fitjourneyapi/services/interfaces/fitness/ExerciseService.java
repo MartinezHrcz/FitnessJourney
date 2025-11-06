@@ -23,10 +23,13 @@ public interface ExerciseService {
 
     AbstractExerciseDTO createExercise(AbstractExerciseDTO dto) throws NoSuchFieldException;
 
+    @Deprecated(forRemoval = true)
     ExerciseStrengthSetDTO createExerciseStrengthSet(ExerciseStrengthSetDTO exerciseStrengthSetDTO);
 
+    @Deprecated(forRemoval = true)
     ExerciseFlexibilitySetDTO createExerciseFlexibilitySet(ExerciseFlexibilitySetDTO flexibilitySetDTO);
 
+    @Deprecated(forRemoval = true)
     ExerciseCardioSetDTO createExerciseCardioSet(ExerciseCardioSetDTO cardioSetDTO);
 
     ExerciseStrengthSetDTO updateExerciseStrengthSet(ExerciseStrengthSetDTO dto);
