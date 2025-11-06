@@ -112,8 +112,6 @@ public class ExerciseServiceImpl implements ExerciseService {
     }
 
 
-
-
     @Transactional
     @Override
     public ExerciseStrengthSetDTO createExerciseStrengthSet(ExerciseStrengthSetDTO exerciseStrengthSetDTO) {

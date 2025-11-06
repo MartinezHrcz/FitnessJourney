@@ -1,9 +1,6 @@
 package hu.hm.fitjourneyapi.mapper.fitness;
 
-import hu.hm.fitjourneyapi.dto.fitness.excercise.AbstractExerciseDTO;
-import hu.hm.fitjourneyapi.dto.fitness.excercise.ExerciseCardioSetDTO;
-import hu.hm.fitjourneyapi.dto.fitness.excercise.ExerciseFlexibilitySetDTO;
-import hu.hm.fitjourneyapi.dto.fitness.excercise.ExerciseStrengthSetDTO;
+import hu.hm.fitjourneyapi.dto.fitness.excercise.*;
 import hu.hm.fitjourneyapi.dto.fitness.set.CardioSetDTO;
 import hu.hm.fitjourneyapi.dto.fitness.set.FlexibilitySetDTO;
 import hu.hm.fitjourneyapi.dto.fitness.set.StrengthSetDTO;
@@ -99,6 +96,7 @@ public interface ExerciseMapper {
                         .id(exercise.getId())
                         .name(exercise.getName())
                         .description(exercise.getDescription())
+                        .workoutId(exercise.getWorkout().getId())
                         .weightType(exercise.getWeightType())
                         .type(exercise.getType())
                         .sets(exercise.getSets().stream().map(
@@ -122,6 +120,7 @@ public interface ExerciseMapper {
                         .name(exercise.getName())
                         .description(exercise.getDescription())
                         .weightType(exercise.getWeightType())
+                        .workoutId(exercise.getWorkout().getId())
                         .type(exercise.getType())
                         .sets(exercise.getSets().stream().map(
                                 set ->
@@ -143,6 +142,7 @@ public interface ExerciseMapper {
                         .id(exercise.getId())
                         .name(exercise.getName())
                         .description(exercise.getDescription())
+                        .workoutId(exercise.getWorkout().getId())
                         .weightType(exercise.getWeightType())
                         .type(exercise.getType())
                         .sets(exercise.getSets().stream().map(
@@ -197,6 +197,13 @@ public interface ExerciseMapper {
                             }
                         }
                 ).collect(Collectors.toList());
+    }
+
+    default void updateExerciseFields(Exercise exercise, ExerciseUpdateDTO update) {
+        exercise.setName(update.getName());
+        exercise.setDescription(update.getDescription());
+        exercise.setWeightType(update.getWeightType());
+        exercise.setType(update.getType());
     }
 
 
