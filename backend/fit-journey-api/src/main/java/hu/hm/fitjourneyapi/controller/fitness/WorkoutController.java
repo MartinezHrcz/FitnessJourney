@@ -75,6 +75,16 @@ public class WorkoutController {
         }
     }
 
+    @DeleteMapping("/rmexc/{id}-{exerciseId}")
+    public ResponseEntity<WorkoutDTO> removeExerciseFromWorkout(@PathVariable long id, @PathVariable long exerciseId) {
+        try{
+            return ResponseEntity.ok(workoutService.removeExerciseFromWorkout(id, exerciseId));
+        }
+        catch (ExerciseNotFound | WorkoutNotFound ex) {
+            return  ResponseEntity.notFound().build();
+        }
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteWorkout(long id) {
         try{

@@ -137,6 +137,28 @@ public class WorkoutServiceImpl implements WorkoutService {
         return workoutMapper.toDTO(workout);
     }
 
+    @Override
+    public WorkoutDTO removeExerciseFromWorkout(long workoutId, long exerciseId) {
+        Workout workout = workoutRepository.findById(workoutId).orElseThrow(
+                ()->{
+                    log.warn("Workout with id {} not found", workoutId);
+                    return new WorkoutNotFound("Workout not found with id " + workoutId);
+                }
+        );
+        Exercise exercise = exerciseRepository.findById(exerciseId).orElseThrow(
+                () -> {
+                    log.warn("Exercise with id {} not found", exerciseId);
+                    return new ExerciseNotFound("Exercise not found with id " + exerciseId);
+                }
+        );
+        exercise.setWorkout(null);
+        workout.getExercises().remove(exercise);
+        workout = workoutRepository.save(workout);
+        exerciseRepository.save(exercise);
+        log.info("Removed {} to workout {} with id {}",exercise.getName(), workout.getName(), workout.getId());
+        return workoutMapper.toDTO(workout);
+    }
+
     @Transactional
     @Override
     public void deleteWorkoutById(long id) {
