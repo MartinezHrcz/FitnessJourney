@@ -68,9 +68,9 @@ public class WorkoutController {
     @PutMapping("/addexc/{id}-{exerciseId}")
     public ResponseEntity<WorkoutDTO> addExerciseToWorkout(@PathVariable long id, @PathVariable long exerciseId) {
         try{
-            return ResponseEntity.ok(workoutService.addExerciseToWorkout(id, id));
+            return ResponseEntity.ok(workoutService.addExerciseToWorkout(id, exerciseId));
         }
-        catch (ExerciseNotFound WorkoutNotFound) {
+        catch (ExerciseNotFound | WorkoutNotFound ex) {
             return  ResponseEntity.notFound().build();
         }
     }

@@ -41,12 +41,12 @@ public class Workout {
     private List<Exercise> exercises = new ArrayList<>();
 
     public void AddExercise(Exercise exercise) {
-        exercises.add(exercise);
+        this.exercises.add(exercise);
         exercise.setWorkout(this);
     }
 
     public void RemoveExercise(Exercise exercise) {
-        exercises.remove(exercise);
+        this.exercises.remove(exercise);
         exercise.setWorkout(null);
     }
 

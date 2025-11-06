@@ -129,8 +129,10 @@ public class WorkoutServiceImpl implements WorkoutService {
                     return new ExerciseNotFound("Exercise not found with id " + exerciseId);
                 }
         );
-        workout.AddExercise(exercise);
+        exercise.setWorkout(workout);
+        workout.getExercises().add(exercise);
         workout = workoutRepository.save(workout);
+        exerciseRepository.save(exercise);
         log.info("Added {} to workout {} with id {}",exercise.getName(), workout.getName(), workout.getId());
         return workoutMapper.toDTO(workout);
     }
