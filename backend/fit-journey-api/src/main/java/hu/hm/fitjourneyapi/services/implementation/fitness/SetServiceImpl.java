@@ -6,10 +6,12 @@ import hu.hm.fitjourneyapi.dto.fitness.set.FlexibilitySetDTO;
 import hu.hm.fitjourneyapi.dto.fitness.set.StrengthSetDTO;
 import hu.hm.fitjourneyapi.exception.fitness.ExerciseNotFound;
 import hu.hm.fitjourneyapi.exception.fitness.SetNotFound;
+import hu.hm.fitjourneyapi.exception.fitness.setExceptions.InvalidSetType;
 import hu.hm.fitjourneyapi.mapper.fitness.SetMapper;
 import hu.hm.fitjourneyapi.model.fitness.*;
 import hu.hm.fitjourneyapi.repository.UserRepository;
 import hu.hm.fitjourneyapi.repository.fitness.*;
+import hu.hm.fitjourneyapi.services.interfaces.fitness.ExerciseService;
 import hu.hm.fitjourneyapi.services.interfaces.fitness.SetService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -47,11 +49,7 @@ public class SetServiceImpl implements SetService {
                 () -> new SetNotFound("Set with id " + id + " not found")
         );
         log.debug("Fetched exercise by id {}", id);
-        return switch (set.getExercise().getType()){
-            case RESISTANCE, NOT_GIVEN, BODY_WEIGHT -> setMapper.toStrengthSetDTO((StrengthSet) set) ;
-            case CARDIO -> setMapper.toCardioSetDTO((CardioSet) set);
-            case FLEXIBILITY -> setMapper.toFlexibilitySetDTO((FlexibilitySet) set);
-        };
+        return setMapper.toDto(set,set.getExercise());
     }
 
     @Transactional(readOnly = true)
@@ -61,24 +59,21 @@ public class SetServiceImpl implements SetService {
         List<Set> sets = setRepository.findAll();
         log.debug("Fetched all sets");
         return sets.stream().map(
-                set-> {
-                    switch (set.getExercise().getType()){
-                        case RESISTANCE, NOT_GIVEN, BODY_WEIGHT -> {
-                            return setMapper.toStrengthSetDTO((StrengthSet) set) ;
-                        }
-                        case CARDIO -> {
-                            return setMapper.toCardioSetDTO((CardioSet) set);
-                        }
-                        case FLEXIBILITY -> {
-                            return setMapper.toFlexibilitySetDTO((FlexibilitySet) set);
-                        }
-                        default -> throw new SetNotFound("Set with type " + set.getExercise().getType() + " not found");
-                    }
-                }
+                set-> setMapper.toDto(set, set.getExercise())
         ).collect(Collectors.toList());
     }
 
+    @Override
+    public AbstractSetDTO createSet(AbstractSetDTO setDTO) {
+        Exercise exercise = exerciseRepository.findById(setDTO.getExerciseId()).orElseThrow(
+                ()-> new ExerciseNotFound("No exercise found with id " + setDTO.getExerciseId())
+        );
+        Set set = setMapper.toEntity(setDTO, exercise);
+        set = setRepository.save(set);
+        return setMapper.toDto(set,set.getExercise());
+    }
 
+    @Deprecated
     @Transactional
     @Override
     public StrengthSetDTO createStrengthSet(StrengthSetDTO strengthSetDTO) {
@@ -92,6 +87,7 @@ public class SetServiceImpl implements SetService {
         return setMapper.toStrengthSetDTO(set);
     }
 
+    @Deprecated
     @Transactional
     @Override
     public FlexibilitySetDTO createFlexibilitySet(FlexibilitySetDTO flexibilitySet) {
@@ -105,6 +101,7 @@ public class SetServiceImpl implements SetService {
         return setMapper.toFlexibilitySetDTO(set);
     }
 
+    @Deprecated
     @Transactional
     @Override
     public CardioSetDTO createCardioSet(CardioSetDTO cardioSet) {
@@ -116,6 +113,20 @@ public class SetServiceImpl implements SetService {
         setRepository.save(set);
         log.info("Created strength set with id: {}", set.getId());
         return setMapper.toCardioSetDTO(set);
+    }
+
+    @Override
+    public AbstractSetDTO updateSet(long id, AbstractSetDTO abstractSetDTO) {
+        Set set =  setRepository.findById(id).orElseThrow(
+                () -> new SetNotFound("Set with id " + id + " not found")
+        );
+
+        Set update = setMapper.toEntity(abstractSetDTO, set.getExercise());
+
+        if(set.getClass() != update.getClass()){
+            throw new InvalidSetType("Unsupported set type: " + set.getClass().getName());
+        }
+
     }
 
     @Transactional
