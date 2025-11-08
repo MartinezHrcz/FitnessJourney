@@ -1,45 +1,35 @@
 package hu.hm.fitjourneyapi.mapper.fitness;
 
+import hu.hm.fitjourneyapi.dto.fitness.set.AbstractSetDTO;
 import hu.hm.fitjourneyapi.dto.fitness.set.CardioSetDTO;
 import hu.hm.fitjourneyapi.dto.fitness.set.FlexibilitySetDTO;
 import hu.hm.fitjourneyapi.dto.fitness.set.StrengthSetDTO;
-import hu.hm.fitjourneyapi.model.fitness.CardioSet;
-import hu.hm.fitjourneyapi.model.fitness.Exercise;
-import hu.hm.fitjourneyapi.model.fitness.FlexibilitySet;
-import hu.hm.fitjourneyapi.model.fitness.StrengthSet;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.ReportingPolicy;
+import hu.hm.fitjourneyapi.exception.fitness.setExceptions.InvalidSetType;
+import hu.hm.fitjourneyapi.mapper.fitness.set.SetMapperInternal;
+import hu.hm.fitjourneyapi.model.fitness.*;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 
-import java.util.List;
+@Component
+@RequiredArgsConstructor
+public class SetMapper {
 
-@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
-public interface SetMapper {
-    @Mapping(source="dto.id", target = "id")
-    @Mapping(target = "exercise", expression = "java(exercise)")
-    StrengthSet toStrengthSet(StrengthSetDTO dto, Exercise exercise);
+    private final SetMapperInternal internal;
 
-    @Mapping(source="dto.id", target = "id")
-    @Mapping(target = "exercise", expression = "java(exercise)")
-    CardioSet toCardioSet(CardioSetDTO dto, Exercise exercise);
+    public <T extends AbstractSetDTO> Set toEntity(T dto, Exercise exercise){
+        if (dto instanceof StrengthSetDTO s) { return internal.toStrengthSet(s, exercise); }
+        if (dto instanceof CardioSetDTO s) { return internal.toCardioSet(s, exercise); }
+        if (dto instanceof FlexibilitySetDTO s) { return internal.toFlexibilitySet(s, exercise); }
 
-    @Mapping(source="dto.id", target = "id")
-    @Mapping(target = "exercise", expression = "java(exercise)")
-    FlexibilitySet toFlexibilitySet(FlexibilitySetDTO dto, Exercise exercise);
+        throw new InvalidSetType("Unsupported set type: " + dto.getClass().getName());
+    }
 
-    @Mapping(source="set.id", target = "id")
-    @Mapping(source = "exercise.id", target = "exerciseId")
-    StrengthSetDTO toStrengthSetDTO(StrengthSet set);
+    public <S extends Set> AbstractSetDTO toDto(S set, Exercise exercise){
+        if (set instanceof StrengthSet s) {return internal.toStrengthSetDTO(s);}
+        if (set instanceof CardioSet s) {return internal.toCardioSetDTO(s);}
+        if (set instanceof FlexibilitySet s) {return internal.toFlexibilitySetDTO(s);}
 
-    @Mapping(source="set.id", target = "id")
-    @Mapping(source = "exercise.id", target = "exerciseId")
-    CardioSetDTO toCardioSetDTO(CardioSet set);
+        throw new InvalidSetType("Unsupported set type: " + set.getClass().getName());
+    }
 
-    @Mapping(source="set.id", target = "id")
-    @Mapping(source = "exercise.id", target = "exerciseId")
-    FlexibilitySetDTO toFlexibilitySetDTO(FlexibilitySet set);
-
-    List<StrengthSetDTO> toStrengthSetDTOList(List<StrengthSet> sets);
-    List<CardioSetDTO> toCardioSetDTOList(List<CardioSet> sets);
-    List<FlexibilitySetDTO> toFlexibilitySetDTOList(List<FlexibilitySet> sets);
 }
