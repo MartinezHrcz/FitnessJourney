@@ -8,7 +8,9 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Entity
 @Table(name = "EXERCISES")
@@ -41,6 +43,15 @@ public class Exercise {
     @Builder.Default
     @OneToMany(mappedBy = "exercise", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Set> sets = new ArrayList<>();
+
+    private static final Map<ExerciseTypes, Class<? extends Set>> VALID_SET_TYPES =
+            Map.of(
+                    ExerciseTypes.RESISTANCE, StrengthSet.class,
+                    ExerciseTypes.BODY_WEIGHT, StrengthSet.class,
+                    ExerciseTypes.NOT_GIVEN, StrengthSet.class,
+                    ExerciseTypes.CARDIO, CardioSet.class,
+                    ExerciseTypes.FLEXIBILITY, FlexibilitySet.class
+            );
 
     public void addSet(Set set) {
         if (this.type == ExerciseTypes.RESISTANCE && !(set instanceof StrengthSet)) {

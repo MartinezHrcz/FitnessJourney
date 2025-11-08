@@ -2,6 +2,7 @@ package hu.hm.fitjourneyapi.services.implementation.fitness;
 
 
 import hu.hm.fitjourneyapi.dto.fitness.excercise.*;
+import hu.hm.fitjourneyapi.dto.fitness.set.AbstractSetDTO;
 import hu.hm.fitjourneyapi.dto.fitness.set.CardioSetDTO;
 import hu.hm.fitjourneyapi.dto.fitness.set.FlexibilitySetDTO;
 import hu.hm.fitjourneyapi.dto.fitness.set.StrengthSetDTO;
@@ -12,6 +13,7 @@ import hu.hm.fitjourneyapi.mapper.fitness.SetMapper;
 import hu.hm.fitjourneyapi.model.User;
 import hu.hm.fitjourneyapi.model.enums.ExerciseTypes;
 import hu.hm.fitjourneyapi.model.fitness.Exercise;
+import hu.hm.fitjourneyapi.model.fitness.Set;
 import hu.hm.fitjourneyapi.model.fitness.Workout;
 import hu.hm.fitjourneyapi.repository.UserRepository;
 import hu.hm.fitjourneyapi.repository.fitness.ExerciseRepository;
@@ -104,7 +106,7 @@ public class ExerciseServiceImpl implements ExerciseService {
         return exerciseMapper.toExerciseDTO(result);
     }
 
-
+    /*
     @Deprecated
     @Transactional
     @Override
@@ -146,6 +148,7 @@ public class ExerciseServiceImpl implements ExerciseService {
         log.info("Created exercise with cardio set");
         return exerciseMapper.toExerciseCardioSetDTO(exercise);
     }
+     */
 
     @Override
     public AbstractExerciseDTO updateExercise(long id, ExerciseUpdateDTO dto) {
@@ -157,6 +160,16 @@ public class ExerciseServiceImpl implements ExerciseService {
         exercise = exerciseRepository.save(exercise);
         log.info("Updated exercise by id {}", id);
         return exerciseMapper.toExerciseDTO(exercise);
+    }
+
+    @Override
+    public AbstractExerciseDTO addSetById(long id, AbstractSetDTO abstractSetDTO) {
+        log.debug("Adding set to exercise by id {}", id);
+        Exercise exercise = exerciseRepository.findById(id).orElseThrow(
+                ()-> new ExerciseNotFound("Exercise not found by id")
+        );
+        Set set = setMapper.
+        exercise.getSets().add();
     }
 
     @Transactional

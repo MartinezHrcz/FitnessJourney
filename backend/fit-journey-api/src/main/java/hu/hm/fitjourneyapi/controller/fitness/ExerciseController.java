@@ -2,11 +2,13 @@ package hu.hm.fitjourneyapi.controller.fitness;
 
 import hu.hm.fitjourneyapi.dto.fitness.excercise.AbstractExerciseDTO;
 import hu.hm.fitjourneyapi.dto.fitness.excercise.ExerciseUpdateDTO;
+import hu.hm.fitjourneyapi.dto.fitness.set.AbstractSetDTO;
 import hu.hm.fitjourneyapi.exception.fitness.ExerciseNotFound;
 import hu.hm.fitjourneyapi.services.interfaces.fitness.ExerciseService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.AbstractSet;
 import java.util.List;
 import java.util.UUID;
 
@@ -82,5 +84,10 @@ public class ExerciseController {
         {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    @PutMapping("/addset/{id}")
+    public ResponseEntity<AbstractExerciseDTO> addSet(@PathVariable int id, @RequestBody AbstractSetDTO abstractSetDTO) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }

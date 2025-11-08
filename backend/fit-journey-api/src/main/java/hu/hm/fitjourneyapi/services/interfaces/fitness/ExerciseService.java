@@ -1,6 +1,7 @@
 package hu.hm.fitjourneyapi.services.interfaces.fitness;
 
 import hu.hm.fitjourneyapi.dto.fitness.excercise.*;
+import hu.hm.fitjourneyapi.dto.fitness.set.AbstractSetDTO;
 import hu.hm.fitjourneyapi.model.enums.ExerciseTypes;
 import hu.hm.fitjourneyapi.model.fitness.Exercise;
 
@@ -20,6 +21,7 @@ public interface ExerciseService {
 
     AbstractExerciseDTO createExercise(AbstractExerciseDTO dto) throws NoSuchFieldException;
 
+    /*
     @Deprecated(forRemoval = true)
     ExerciseStrengthSetDTO createExerciseStrengthSet(ExerciseStrengthSetDTO exerciseStrengthSetDTO);
 
@@ -28,8 +30,10 @@ public interface ExerciseService {
 
     @Deprecated(forRemoval = true)
     ExerciseCardioSetDTO createExerciseCardioSet(ExerciseCardioSetDTO cardioSetDTO);
-
+    */
     AbstractExerciseDTO updateExercise(long id, ExerciseUpdateDTO dto);
+
+    AbstractExerciseDTO addSetById(long id, AbstractSetDTO abstractSetDTO);
 
     void deleteExerciseById(long id);
 }
