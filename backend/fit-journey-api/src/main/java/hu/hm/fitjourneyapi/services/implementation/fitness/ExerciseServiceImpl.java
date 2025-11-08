@@ -105,6 +105,7 @@ public class ExerciseServiceImpl implements ExerciseService {
     }
 
 
+    @Deprecated
     @Transactional
     @Override
     public ExerciseStrengthSetDTO createExerciseStrengthSet(ExerciseStrengthSetDTO exerciseStrengthSetDTO) {
@@ -118,6 +119,7 @@ public class ExerciseServiceImpl implements ExerciseService {
         return exerciseMapper.toExerciseStrengthSetDTO(exercise);
     }
 
+    @Deprecated
     @Transactional
     @Override
     public ExerciseFlexibilitySetDTO createExerciseFlexibilitySet(ExerciseFlexibilitySetDTO flexibilitySetDTO) {
@@ -131,6 +133,7 @@ public class ExerciseServiceImpl implements ExerciseService {
         return exerciseMapper.toExerciseFlexibilitySetDTO(exercise);
     }
 
+    @Deprecated
     @Transactional
     @Override
     public ExerciseCardioSetDTO createExerciseCardioSet(ExerciseCardioSetDTO cardioSetDTO) {
