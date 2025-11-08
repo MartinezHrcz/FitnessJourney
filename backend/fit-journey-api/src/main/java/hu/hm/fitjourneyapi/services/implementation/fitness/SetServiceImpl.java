@@ -14,6 +14,7 @@ import hu.hm.fitjourneyapi.repository.fitness.*;
 import hu.hm.fitjourneyapi.services.interfaces.fitness.ExerciseService;
 import hu.hm.fitjourneyapi.services.interfaces.fitness.SetService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -73,6 +74,7 @@ public class SetServiceImpl implements SetService {
         return setMapper.toDto(set,set.getExercise());
     }
 
+    /*
     @Deprecated
     @Transactional
     @Override
@@ -114,7 +116,7 @@ public class SetServiceImpl implements SetService {
         log.info("Created strength set with id: {}", set.getId());
         return setMapper.toCardioSetDTO(set);
     }
-
+*/
     @Override
     public AbstractSetDTO updateSet(long id, AbstractSetDTO abstractSetDTO) {
         Set set =  setRepository.findById(id).orElseThrow(
@@ -123,12 +125,18 @@ public class SetServiceImpl implements SetService {
 
         Set update = setMapper.toEntity(abstractSetDTO, set.getExercise());
 
-        if(set.getClass() != update.getClass()){
+        if(!set.getClass().equals(update.getClass())){
             throw new InvalidSetType("Unsupported set type: " + set.getClass().getName());
         }
 
+        BeanUtils.copyProperties(set,update);
+
+        set = setRepository.save(set);
+        log.info("Updated set with id: {}", id);
+        return setMapper.toDto(set,set.getExercise());
     }
 
+    /*
     @Transactional
     @Override
     public StrengthSetDTO updateStrengthSet(StrengthSetDTO strengthSetDTO) {
@@ -170,6 +178,7 @@ public class SetServiceImpl implements SetService {
         log.info("Updated cardio set with id: {}", set.getId());
         return setMapper.toCardioSetDTO(set);
     }
+     */
 
     @Transactional
     @Override

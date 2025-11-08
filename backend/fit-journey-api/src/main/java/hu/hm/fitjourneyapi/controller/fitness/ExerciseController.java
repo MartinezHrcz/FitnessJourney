@@ -87,7 +87,12 @@ public class ExerciseController {
     }
 
     @PutMapping("/addset/{id}")
-    public ResponseEntity<AbstractExerciseDTO> addSet(@PathVariable int id, @RequestBody AbstractSetDTO abstractSetDTO) {
+    public ResponseEntity<AbstractExerciseDTO> addSet(@PathVariable long id, @RequestBody AbstractSetDTO abstractSetDTO) {
+        return ResponseEntity.ok(exerciseService.addSetById(id, abstractSetDTO));
+    }
+
+    @DeleteMapping("/removeset/{id}-{setid}")
+    public ResponseEntity<AbstractExerciseDTO> removeSet(@PathVariable long id, @PathVariable long setid) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 }

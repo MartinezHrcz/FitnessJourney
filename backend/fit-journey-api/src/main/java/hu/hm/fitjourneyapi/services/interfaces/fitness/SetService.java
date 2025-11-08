@@ -13,16 +13,16 @@ public interface SetService {
     List<AbstractSetDTO> getSets();
 
     AbstractSetDTO createSet(AbstractSetDTO abstractSetDTO);
-
+/*
     StrengthSetDTO createStrengthSet(StrengthSetDTO strengthSetDTO);
     FlexibilitySetDTO createFlexibilitySet(FlexibilitySetDTO flexibilitySet);
     CardioSetDTO createCardioSet(CardioSetDTO cardioSet);
-
+*/
     AbstractSetDTO updateSet(long id,AbstractSetDTO abstractSetDTO);
-
+/*
     StrengthSetDTO updateStrengthSet(StrengthSetDTO strengthSetDTO);
     FlexibilitySetDTO updateFlexibilitySet(FlexibilitySetDTO flexibilitySet);
     CardioSetDTO updateCardioSet(CardioSetDTO cardioSet);
-
+*/
     void deleteSetById(long id);
 }

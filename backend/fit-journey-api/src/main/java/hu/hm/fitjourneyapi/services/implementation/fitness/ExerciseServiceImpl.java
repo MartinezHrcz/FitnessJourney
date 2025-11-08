@@ -17,6 +17,7 @@ import hu.hm.fitjourneyapi.model.fitness.Set;
 import hu.hm.fitjourneyapi.model.fitness.Workout;
 import hu.hm.fitjourneyapi.repository.UserRepository;
 import hu.hm.fitjourneyapi.repository.fitness.ExerciseRepository;
+import hu.hm.fitjourneyapi.repository.fitness.SetRepository;
 import hu.hm.fitjourneyapi.repository.fitness.WorkoutRepository;
 import hu.hm.fitjourneyapi.services.interfaces.fitness.ExerciseService;
 import lombok.extern.slf4j.Slf4j;
@@ -37,13 +38,15 @@ public class ExerciseServiceImpl implements ExerciseService {
     private final ExerciseMapper exerciseMapper;
     private final SetMapper setMapper;
     private final UserRepository userRepository;
+    private final SetRepository setRepository;
 
-    public ExerciseServiceImpl(ExerciseRepository exerciseRepository, WorkoutRepository workoutRepository, ExerciseMapper exerciseMapper, SetMapper setMapper, UserRepository userRepository) {
+    public ExerciseServiceImpl(ExerciseRepository exerciseRepository, WorkoutRepository workoutRepository, ExerciseMapper exerciseMapper, SetMapper setMapper, UserRepository userRepository, SetRepository setRepository) {
         this.exerciseRepository = exerciseRepository;
         this.workoutRepository = workoutRepository;
         this.exerciseMapper = exerciseMapper;
         this.setMapper = setMapper;
         this.userRepository = userRepository;
+        this.setRepository = setRepository;
     }
 
     @Transactional(readOnly = true)
@@ -168,8 +171,12 @@ public class ExerciseServiceImpl implements ExerciseService {
         Exercise exercise = exerciseRepository.findById(id).orElseThrow(
                 ()-> new ExerciseNotFound("Exercise not found by id")
         );
-        Set set = setMapper.
-        exercise.getSets().add();
+        Set set = setMapper.toEntity(abstractSetDTO, exercise);
+        exercise.addSet(set);
+        exerciseRepository.save(exercise);
+        setRepository.save(set);
+        log.info("Added set to exercise by id {}", id);
+        return exerciseMapper.toExerciseDTO(exercise);
     }
 
     @Transactional
