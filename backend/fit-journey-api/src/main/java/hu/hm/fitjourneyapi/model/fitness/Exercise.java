@@ -54,15 +54,17 @@ public class Exercise {
             );
 
     public void addSet(Set set) {
-        if (this.type == ExerciseTypes.RESISTANCE && !(set instanceof StrengthSet)) {
-            throw new InvalidSetType("Resistance exercise can only be used with strength sets");
+
+        Class<? extends Set> expectedType = VALID_SET_TYPES.get(this.type);
+
+        if (expectedType == null) {
+            throw new InvalidSetType("Unsupported exercise type: " + this.type);
         }
-        if (this.type == ExerciseTypes.CARDIO && !(set instanceof CardioSet)) {
-            throw new InvalidSetType("Cardio exercise can only be used with cardio sets");
+
+        if (!expectedType.isAssignableFrom(set.getClass())) {
+            throw new InvalidSetType("Invalid exercise type: " + this.type);
         }
-        if (this.type == ExerciseTypes.FLEXIBILITY && !(set instanceof FlexibilitySet)) {
-            throw new InvalidSetType("Flexibility exercise can only be used with flexibility sets");
-        }
+
         switch (this.type)
         {
             case RESISTANCE:
@@ -72,15 +74,10 @@ public class Exercise {
                 this.weightType = WeightType.BODYWEIGHT;
                 break;
         }
-        sets.add(set);
-        set.setExercise(this);
-    }
 
-    /*public void AddSet(Set set) {
         sets.add(set);
         set.setExercise(this);
     }
-     */
 
     public void removeSet(Set set) {
         sets.remove(set);
