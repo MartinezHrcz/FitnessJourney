@@ -169,7 +169,6 @@ public class ExerciseServiceImpl implements ExerciseService {
         Set set = setMapper.toEntity(abstractSetDTO, exercise);
         exercise.addSet(set);
         exerciseRepository.save(exercise);
-        setRepository.save(set);
         log.info("Added set to exercise by id {}", id);
         return exerciseMapper.toExerciseDTO(exercise);
     }
