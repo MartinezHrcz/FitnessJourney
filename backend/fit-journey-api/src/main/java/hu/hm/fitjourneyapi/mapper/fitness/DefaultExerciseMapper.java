@@ -1,6 +1,6 @@
 package hu.hm.fitjourneyapi.mapper.fitness;
 
-import hu.hm.fitjourneyapi.dto.fitness.premadeExercises.DefaultExerciseDTO;
+import hu.hm.fitjourneyapi.dto.fitness.exerciseTemplates.DefaultExerciseDTO;
 import hu.hm.fitjourneyapi.model.fitness.DefaultExercise;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;

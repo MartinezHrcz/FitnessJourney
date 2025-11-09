@@ -1,6 +1,6 @@
 package hu.hm.fitjourneyapi.controller.fitness;
 
-import hu.hm.fitjourneyapi.dto.fitness.premadeExercises.DefaultExerciseDTO;
+import hu.hm.fitjourneyapi.dto.fitness.exerciseTemplates.DefaultExerciseDTO;
 import hu.hm.fitjourneyapi.services.interfaces.fitness.DefaultExerciseService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

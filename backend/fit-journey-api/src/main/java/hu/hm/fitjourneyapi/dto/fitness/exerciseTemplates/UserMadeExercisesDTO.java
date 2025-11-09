@@ -1,4 +1,4 @@
-package hu.hm.fitjourneyapi.dto.fitness.premadeExercises;
+package hu.hm.fitjourneyapi.dto.fitness.exerciseTemplates;
 
 import hu.hm.fitjourneyapi.model.enums.ExerciseTypes;
 import hu.hm.fitjourneyapi.model.enums.WeightType;
@@ -9,7 +9,7 @@ import lombok.Setter;
 @Data
 @Getter
 @Setter
-public class DefaultExerciseDTO {
+public class UserMadeExercisesDTO {
     long id;
     String name;
     String description;
