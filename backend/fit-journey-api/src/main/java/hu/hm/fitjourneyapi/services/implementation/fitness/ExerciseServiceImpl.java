@@ -175,12 +175,12 @@ public class ExerciseServiceImpl implements ExerciseService {
     }
 
     @Override
-    public AbstractExerciseDTO removeSetById(long id, long setId) {
+    public AbstractExerciseDTO removeSetById(long id, long setid) {
         log.debug("Removing set from exercise by id {}", id);
         Exercise exercise = exerciseRepository.findById(id).orElseThrow(
                 ()-> new ExerciseNotFound("Exercise not found by id")
         );
-        Set set = setRepository.findById(setId).orElseThrow(
+        Set set = setRepository.findById(setid).orElseThrow(
                 ()-> new SetNotFound("Set not found by id")
         );
 

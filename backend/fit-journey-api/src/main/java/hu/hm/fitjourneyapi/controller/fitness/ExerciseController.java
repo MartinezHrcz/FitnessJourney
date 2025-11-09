@@ -93,6 +93,6 @@ public class ExerciseController {
 
     @DeleteMapping("/removeset/{id}-{setid}")
     public ResponseEntity<AbstractExerciseDTO> removeSet(@PathVariable long id, @PathVariable long setid) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return ResponseEntity.ok(exerciseService.removeSetById(id, setid));
     }
 }
