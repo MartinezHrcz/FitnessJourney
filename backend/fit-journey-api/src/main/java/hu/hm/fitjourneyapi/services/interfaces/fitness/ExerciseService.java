@@ -35,5 +35,7 @@ public interface ExerciseService {
 
     AbstractExerciseDTO addSetById(long id, AbstractSetDTO abstractSetDTO);
 
+    AbstractExerciseDTO removeSetById(long id, long setId);
+
     void deleteExerciseById(long id);
 }

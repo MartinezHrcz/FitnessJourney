@@ -3,15 +3,11 @@ package hu.hm.fitjourneyapi.services.implementation.fitness;
 
 import hu.hm.fitjourneyapi.dto.fitness.excercise.*;
 import hu.hm.fitjourneyapi.dto.fitness.set.AbstractSetDTO;
-import hu.hm.fitjourneyapi.dto.fitness.set.CardioSetDTO;
-import hu.hm.fitjourneyapi.dto.fitness.set.FlexibilitySetDTO;
-import hu.hm.fitjourneyapi.dto.fitness.set.StrengthSetDTO;
 import hu.hm.fitjourneyapi.exception.fitness.ExerciseNotFound;
-import hu.hm.fitjourneyapi.exception.fitness.WorkoutNotFound;
+import hu.hm.fitjourneyapi.exception.fitness.SetNotFound;
 import hu.hm.fitjourneyapi.mapper.fitness.ExerciseMapper;
 import hu.hm.fitjourneyapi.mapper.fitness.SetMapper;
 import hu.hm.fitjourneyapi.model.User;
-import hu.hm.fitjourneyapi.model.enums.ExerciseTypes;
 import hu.hm.fitjourneyapi.model.fitness.Exercise;
 import hu.hm.fitjourneyapi.model.fitness.Set;
 import hu.hm.fitjourneyapi.model.fitness.Workout;
@@ -26,7 +22,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Slf4j
@@ -176,6 +171,23 @@ public class ExerciseServiceImpl implements ExerciseService {
         exerciseRepository.save(exercise);
         setRepository.save(set);
         log.info("Added set to exercise by id {}", id);
+        return exerciseMapper.toExerciseDTO(exercise);
+    }
+
+    @Override
+    public AbstractExerciseDTO removeSetById(long id, long setId) {
+        log.debug("Removing set from exercise by id {}", id);
+        Exercise exercise = exerciseRepository.findById(id).orElseThrow(
+                ()-> new ExerciseNotFound("Exercise not found by id")
+        );
+        Set set = setRepository.findById(setId).orElseThrow(
+                ()-> new SetNotFound("Set not found by id")
+        );
+
+        exercise.removeSet(set);
+        setRepository.delete(set);
+        exercise = exerciseRepository.save(exercise);
+        log.info("Removed set from exercise by id {}", id);
         return exerciseMapper.toExerciseDTO(exercise);
     }
 
