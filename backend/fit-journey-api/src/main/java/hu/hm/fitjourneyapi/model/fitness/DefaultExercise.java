@@ -11,7 +11,7 @@ import lombok.*;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class DefaultExercises {
+public class DefaultExercise {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
