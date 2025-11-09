@@ -4,11 +4,10 @@ import hu.hm.fitjourneyapi.dto.fitness.excercise.AbstractExerciseDTO;
 import hu.hm.fitjourneyapi.dto.fitness.excercise.ExerciseUpdateDTO;
 import hu.hm.fitjourneyapi.dto.fitness.set.AbstractSetDTO;
 import hu.hm.fitjourneyapi.exception.fitness.ExerciseNotFound;
+import hu.hm.fitjourneyapi.exception.fitness.SetNotFound;
 import hu.hm.fitjourneyapi.services.interfaces.fitness.ExerciseService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.AbstractSet;
 import java.util.List;
 import java.util.UUID;
 
@@ -88,11 +87,25 @@ public class ExerciseController {
 
     @PutMapping("/addset/{id}")
     public ResponseEntity<AbstractExerciseDTO> addSet(@PathVariable long id, @RequestBody AbstractSetDTO abstractSetDTO) {
-        return ResponseEntity.ok(exerciseService.addSetById(id, abstractSetDTO));
+        try{
+            return ResponseEntity.ok(exerciseService.addSetById(id, abstractSetDTO));
+        }
+        catch (ExerciseNotFound ex)
+        {
+            return ResponseEntity.notFound().build();
+        }
+
     }
 
     @DeleteMapping("/removeset/{id}-{setid}")
     public ResponseEntity<AbstractExerciseDTO> removeSet(@PathVariable long id, @PathVariable long setid) {
-        return ResponseEntity.ok(exerciseService.removeSetById(id, setid));
+        try
+        {
+            return ResponseEntity.ok(exerciseService.removeSetById(id, setid));
+        }
+        catch (ExerciseNotFound | SetNotFound ex)
+        {
+            return ResponseEntity.notFound().build();
+        }
     }
 }
