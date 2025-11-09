@@ -20,7 +20,6 @@ public interface ExerciseService {
     AbstractExerciseDTO getById(long id);
 
     AbstractExerciseDTO createExercise(AbstractExerciseDTO dto) throws NoSuchFieldException;
-
     /*
     @Deprecated(forRemoval = true)
     ExerciseStrengthSetDTO createExerciseStrengthSet(ExerciseStrengthSetDTO exerciseStrengthSetDTO);

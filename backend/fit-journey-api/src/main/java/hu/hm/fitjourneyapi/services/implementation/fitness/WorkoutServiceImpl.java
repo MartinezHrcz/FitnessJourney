@@ -9,9 +9,11 @@ import hu.hm.fitjourneyapi.exception.fitness.WorkoutNotFound;
 import hu.hm.fitjourneyapi.exception.userExceptions.UserNotFound;
 import hu.hm.fitjourneyapi.mapper.fitness.WorkoutMapper;
 import hu.hm.fitjourneyapi.model.User;
+import hu.hm.fitjourneyapi.model.fitness.DefaultExercise;
 import hu.hm.fitjourneyapi.model.fitness.Exercise;
 import hu.hm.fitjourneyapi.model.fitness.Workout;
 import hu.hm.fitjourneyapi.repository.UserRepository;
+import hu.hm.fitjourneyapi.repository.fitness.DefaultExercisesRepository;
 import hu.hm.fitjourneyapi.repository.fitness.ExerciseRepository;
 import hu.hm.fitjourneyapi.repository.fitness.WorkoutRepository;
 import hu.hm.fitjourneyapi.services.interfaces.fitness.WorkoutService;
@@ -29,12 +31,14 @@ public class WorkoutServiceImpl implements WorkoutService {
     private final UserRepository userRepository;
     private final WorkoutRepository workoutRepository;
     private final ExerciseRepository exerciseRepository;
+    private final DefaultExercisesRepository defaultExerciseRepository;
     private final WorkoutMapper workoutMapper;
 
-    public WorkoutServiceImpl(UserRepository userRepository, WorkoutRepository workoutRepository, ExerciseRepository exerciseRepository, WorkoutMapper workoutMapper) {
+    public WorkoutServiceImpl(UserRepository userRepository, WorkoutRepository workoutRepository, ExerciseRepository exerciseRepository, DefaultExercisesRepository defaultExerciseRepository, WorkoutMapper workoutMapper) {
         this.userRepository = userRepository;
         this.workoutRepository = workoutRepository;
         this.exerciseRepository = exerciseRepository;
+        this.defaultExerciseRepository = defaultExerciseRepository;
         this.workoutMapper = workoutMapper;
     }
 
@@ -112,6 +116,37 @@ public class WorkoutServiceImpl implements WorkoutService {
         workout.setUser(user);
         workout = workoutRepository.save(workout);
         log.info("Updated workout {} with id {}", workoutUpdateDTO.getName(), workoutUpdateDTO.getId());
+        return workoutMapper.toDTO(workout);
+    }
+
+    @Override
+    public WorkoutDTO addDefaultExerciseToWorkout(long workoutId, long templateId) {
+        Workout workout =  workoutRepository.findById(workoutId).orElseThrow(
+                () -> {
+                    log.warn("Workout with id {} not found", workoutId);
+                    return new WorkoutNotFound("Workout not found with id " + workoutId);
+                }
+        );
+
+        DefaultExercise template = defaultExerciseRepository.findById(templateId).orElseThrow(
+                () -> {
+                    log.warn("Exercise with id {} not found", templateId);
+                    return new ExerciseNotFound("Exercise not found with id " + templateId);
+                }
+        );
+
+        Exercise exercise = Exercise.builder()
+                .name(template.getName())
+                .description(template.getDescription())
+                .type(template.getType())
+                .weightType(template.getWeightType())
+                .workout(workout).build();
+
+        exercise = exerciseRepository.save(exercise);
+        workout.getExercises().add(exercise);
+        workout = workoutRepository.save(workout);
+        log.info("Add exercise to workout {} with id {}", workout.getName(), workout.getId());
+
         return workoutMapper.toDTO(workout);
     }
 
