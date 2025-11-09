@@ -8,4 +8,5 @@ import java.util.List;
 public interface DefaultExercisesRepository extends JpaRepository<DefaultExercise, Long> {
 
     List<DefaultExercise> findAllByNameContainingIgnoreCase(String name);
+    boolean existsByNameIgnoreCase(String name);
 }

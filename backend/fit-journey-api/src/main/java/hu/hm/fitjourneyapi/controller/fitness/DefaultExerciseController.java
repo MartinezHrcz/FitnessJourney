@@ -2,6 +2,7 @@ package hu.hm.fitjourneyapi.controller.fitness;
 
 import hu.hm.fitjourneyapi.dto.fitness.premadeExercises.DefaultExerciseDTO;
 import hu.hm.fitjourneyapi.services.interfaces.fitness.DefaultExerciseService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,17 +20,17 @@ public class DefaultExerciseController {
     }
 
     @GetMapping
-    public List<DefaultExerciseDTO> getDefaultExercises() {
-        return defaultExerciseService.getDefaultExercises();
+    public ResponseEntity<List<DefaultExerciseDTO>> getDefaultExercises() {
+        return ResponseEntity.ok(defaultExerciseService.getDefaultExercises());
     }
 
     @GetMapping("/{id}")
-    public DefaultExerciseDTO getDefaultExercise(@PathVariable long id) {
-        return defaultExerciseService.getDefaultExercise(id);
+    public ResponseEntity<DefaultExerciseDTO> getDefaultExercise(@PathVariable long id) {
+        return ResponseEntity.ok(defaultExerciseService.getDefaultExercise(id));
     }
 
     @GetMapping("/byname/{name}")
-    public  List<DefaultExerciseDTO> getDefaultExercisesByName(@PathVariable String name) {
-        return defaultExerciseService.getDefaultExercisesByName(name);
+    public ResponseEntity<List<DefaultExerciseDTO>> getDefaultExercisesByName(@PathVariable String name) {
+        return ResponseEntity.ok(defaultExerciseService.getDefaultExercisesByName(name));
     }
 }

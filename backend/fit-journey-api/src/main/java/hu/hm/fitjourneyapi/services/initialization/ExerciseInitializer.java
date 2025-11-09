@@ -4,7 +4,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import hu.hm.fitjourneyapi.model.enums.ExerciseTypes;
 import hu.hm.fitjourneyapi.model.enums.WeightType;
+import hu.hm.fitjourneyapi.model.fitness.DefaultExercise;
 import hu.hm.fitjourneyapi.model.fitness.Exercise;
+import hu.hm.fitjourneyapi.repository.fitness.DefaultExercisesRepository;
 import hu.hm.fitjourneyapi.repository.fitness.ExerciseRepository;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
@@ -16,10 +18,10 @@ import java.io.InputStream;
 @Service
 @Slf4j
 public class ExerciseInitializer {
-    private final ExerciseRepository exerciseRepository;
+    private final DefaultExercisesRepository exerciseRepository;
     private final ObjectMapper objectMapper;
 
-    public ExerciseInitializer(ExerciseRepository exerciseRepository, ObjectMapper objectMapper) {
+    public ExerciseInitializer(DefaultExercisesRepository exerciseRepository, ObjectMapper objectMapper) {
         this.exerciseRepository = exerciseRepository;
         this.objectMapper = objectMapper;
     }
@@ -31,8 +33,8 @@ public class ExerciseInitializer {
             JsonNode defaultExercises = objectMapper.readTree(is).get("exercises");
             for(JsonNode exercise: defaultExercises){
                 String name = exercise.get("name").asText();
-                if (!exerciseRepository.getExercisesByName(name).isEmpty()) continue;
-                Exercise initialExercise = Exercise.builder()
+                if (exerciseRepository.existsByNameIgnoreCase(name)) continue;
+                DefaultExercise initialExercise = DefaultExercise.builder()
                         .name(name)
                         .description(exercise.get("description").asText())
                         .weightType(WeightType.valueOf(exercise.get("weightType").asText()))
