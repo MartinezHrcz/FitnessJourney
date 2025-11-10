@@ -1,4 +1,4 @@
-package hu.hm.fitjourneyapi.services.implementation;
+package hu.hm.fitjourneyapi.services.implementation.fitness.exerciseTemplates;
 
 import hu.hm.fitjourneyapi.dto.fitness.exerciseTemplates.DefaultExerciseDTO;
 import hu.hm.fitjourneyapi.mapper.fitness.DefaultExerciseMapper;
