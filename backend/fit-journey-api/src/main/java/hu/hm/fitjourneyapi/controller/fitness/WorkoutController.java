@@ -74,13 +74,24 @@ public class WorkoutController {
         }
     }
 
-    @PutMapping("addexc/template/{id}-{templateId}")
+    @PutMapping("addexc/template/default/{id}-{templateId}")
     public ResponseEntity<WorkoutDTO> addDefaultExerciseToWorkout(@PathVariable long id, @PathVariable long templateId) {
         try{
             return ResponseEntity.ok(workoutService.addDefaultExerciseToWorkout(id, templateId));
         }
         catch (ExerciseNotFound | WorkoutNotFound ex) {
-            return  ResponseEntity.notFound().build();
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @PutMapping("addexc/template/usermade/{id}-{template}")
+    public ResponseEntity<WorkoutDTO> addUserExerciseToWorkout(@PathVariable long id, @PathVariable long template) {
+        try
+        {
+            return ResponseEntity.ok(workoutService.addUserExerciseToWorkout(id, template));
+        }
+        catch (ExerciseNotFound | WorkoutNotFound ex) {
+            return ResponseEntity.notFound().build();
         }
     }
 
