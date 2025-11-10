@@ -25,6 +25,8 @@ public interface WorkoutService {
 
     WorkoutDTO addDefaultExerciseToWorkout(long workoutId, long templateId);
 
+    WorkoutDTO addUserExerciseToWorkout(long workoutId, long templateId);
+
     WorkoutDTO removeExerciseFromWorkout(long workoutId, long exerciseId);
 
     void deleteWorkoutById(long id);

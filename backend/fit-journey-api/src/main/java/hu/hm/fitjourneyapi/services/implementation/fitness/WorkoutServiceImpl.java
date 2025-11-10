@@ -11,10 +11,12 @@ import hu.hm.fitjourneyapi.mapper.fitness.WorkoutMapper;
 import hu.hm.fitjourneyapi.model.User;
 import hu.hm.fitjourneyapi.model.fitness.DefaultExercise;
 import hu.hm.fitjourneyapi.model.fitness.Exercise;
+import hu.hm.fitjourneyapi.model.fitness.UserMadeTemplates;
 import hu.hm.fitjourneyapi.model.fitness.Workout;
 import hu.hm.fitjourneyapi.repository.UserRepository;
 import hu.hm.fitjourneyapi.repository.fitness.DefaultExercisesRepository;
 import hu.hm.fitjourneyapi.repository.fitness.ExerciseRepository;
+import hu.hm.fitjourneyapi.repository.fitness.UserMadeTemplateRepository;
 import hu.hm.fitjourneyapi.repository.fitness.WorkoutRepository;
 import hu.hm.fitjourneyapi.services.interfaces.fitness.WorkoutService;
 import lombok.extern.slf4j.Slf4j;
@@ -32,13 +34,15 @@ public class WorkoutServiceImpl implements WorkoutService {
     private final WorkoutRepository workoutRepository;
     private final ExerciseRepository exerciseRepository;
     private final DefaultExercisesRepository defaultExerciseRepository;
+    private final UserMadeTemplateRepository userTemplateRepository;
     private final WorkoutMapper workoutMapper;
 
-    public WorkoutServiceImpl(UserRepository userRepository, WorkoutRepository workoutRepository, ExerciseRepository exerciseRepository, DefaultExercisesRepository defaultExerciseRepository, WorkoutMapper workoutMapper) {
+    public WorkoutServiceImpl(UserRepository userRepository, WorkoutRepository workoutRepository, ExerciseRepository exerciseRepository, DefaultExercisesRepository defaultExerciseRepository, UserMadeTemplateRepository userTemplateRepository, WorkoutMapper workoutMapper) {
         this.userRepository = userRepository;
         this.workoutRepository = workoutRepository;
         this.exerciseRepository = exerciseRepository;
         this.defaultExerciseRepository = defaultExerciseRepository;
+        this.userTemplateRepository = userTemplateRepository;
         this.workoutMapper = workoutMapper;
     }
 
@@ -147,6 +151,30 @@ public class WorkoutServiceImpl implements WorkoutService {
         workout = workoutRepository.save(workout);
         log.info("Add exercise to workout {} with id {}", workout.getName(), workout.getId());
 
+        return workoutMapper.toDTO(workout);
+    }
+
+    @Override
+    public WorkoutDTO addUserExerciseToWorkout(long workoutId, long templateId) {
+        Workout workout = workoutRepository.findById(workoutId).orElseThrow(
+                ()-> new WorkoutNotFound("Workout not found with id: " + workoutId)
+        );
+
+        UserMadeTemplates template = userTemplateRepository.findById(templateId).orElseThrow(
+                ()-> new UserNotFound("User not found with id: " + templateId)
+        );
+
+        Exercise exercise = Exercise.builder()
+                .name(template.getName())
+                .description(template.getDescription())
+                .type(template.getType())
+                .weightType(template.getWeightType())
+                .workout(workout).build();
+
+        exercise = exerciseRepository.save(exercise);
+        workout.getExercises().add(exercise);
+        workout = workoutRepository.save(workout);
+        log.info("Add exercise to workout {} with id {}", workout.getName(), workout.getId());
         return workoutMapper.toDTO(workout);
     }
 
