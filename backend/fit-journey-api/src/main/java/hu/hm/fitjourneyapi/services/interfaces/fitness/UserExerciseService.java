@@ -9,7 +9,7 @@ public interface UserExerciseService {
     List<UserMadeExercisesDTO>  getUserMadeExercises(long id);
     List<UserMadeExercisesDTO> getUserMadeExercisesByName(String name);
     UserMadeExercisesDTO getUserMadeExercise(long id);
-    UserMadeExercisesDTO createUserMadeExercise(UserMadeExercisesDTO dto);
+    UserMadeExercisesDTO createUserMadeExercise(UserExerciseUpdateDto dto);
     UserMadeExercisesDTO updateUserMadeExercise(long id, UserExerciseUpdateDto dto);
     void deleteUserMadeExercise(long id);
 }

@@ -1,5 +1,6 @@
 package hu.hm.fitjourneyapi.mapper.fitness;
 
+import hu.hm.fitjourneyapi.dto.fitness.exerciseTemplates.UserExerciseUpdateDto;
 import hu.hm.fitjourneyapi.dto.fitness.exerciseTemplates.UserMadeExercisesDTO;
 import hu.hm.fitjourneyapi.model.fitness.UserMadeTemplates;
 import org.mapstruct.Mapper;
@@ -17,4 +18,6 @@ public interface UserMadeExercisesMapper {
     List<UserMadeExercisesDTO> toDto(List<UserMadeTemplates> entity);
 
     List<UserMadeTemplates> toEntity(List<UserMadeExercisesDTO> dto);
+
+    UserMadeTemplates toEntity(UserExerciseUpdateDto dto);
 }

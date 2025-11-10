@@ -49,8 +49,12 @@ public class UserExerciseServiceImpl implements UserExerciseService {
     }
 
     @Override
-    public UserMadeExercisesDTO createUserMadeExercise(UserMadeExercisesDTO dto) {
-        return null;
+    public UserMadeExercisesDTO createUserMadeExercise(UserExerciseUpdateDto dto) {
+        log.debug("Attempting to create user template");
+        UserMadeTemplates template = mapper.toEntity(dto);
+        template = repository.save(template);
+        log.info("Created user made exercise by id: " + template.getId());
+        return  mapper.toDto(template);
     }
 
     @Override
