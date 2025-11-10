@@ -77,6 +77,9 @@ public class UserExerciseServiceImpl implements UserExerciseService {
 
     @Override
     public void deleteUserMadeExercise(long id) {
-
+        log.debug("Attempting to delete user template");
+        UserMadeTemplates template = repository.findById(id).orElseThrow(
+                () -> new ExerciseNotFound("Exercise not found by id: " + id));
+        repository.delete(template);
     }
 }
