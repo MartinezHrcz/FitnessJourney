@@ -4,6 +4,7 @@ import hu.hm.fitjourneyapi.dto.fitness.exerciseTemplates.UserExerciseUpdateDto;
 import hu.hm.fitjourneyapi.dto.fitness.exerciseTemplates.UserMadeExercisesDTO;
 import hu.hm.fitjourneyapi.exception.fitness.ExerciseNotFound;
 import hu.hm.fitjourneyapi.mapper.fitness.UserMadeExercisesMapper;
+import hu.hm.fitjourneyapi.model.User;
 import hu.hm.fitjourneyapi.model.fitness.UserMadeTemplates;
 import hu.hm.fitjourneyapi.repository.fitness.UserMadeTemplateRepository;
 import hu.hm.fitjourneyapi.services.interfaces.fitness.UserExerciseService;
@@ -59,7 +60,19 @@ public class UserExerciseServiceImpl implements UserExerciseService {
 
     @Override
     public UserMadeExercisesDTO updateUserMadeExercise(long id, UserExerciseUpdateDto dto) {
-        return null;
+        log.debug("Attempting to update user template");
+        UserMadeTemplates template =  repository.findById(id).orElseThrow(
+                () -> new ExerciseNotFound("Exercise not found by id: " + id)
+        );
+        template.setDescription(dto.getDescription());
+        template.setName(dto.getName());
+        template.setType(dto.getType());
+        template.setWeightType(dto.getWeightType());
+
+        template =  repository.save(template);
+        log.info("Updated user made exercise by id: " + template.getId());
+
+        return mapper.toDto(template);
     }
 
     @Override
