@@ -4,7 +4,6 @@ import hu.hm.fitjourneyapi.dto.fitness.exerciseTemplates.UserExerciseUpdateDto;
 import hu.hm.fitjourneyapi.dto.fitness.exerciseTemplates.UserMadeExercisesDTO;
 import hu.hm.fitjourneyapi.exception.fitness.ExerciseNotFound;
 import hu.hm.fitjourneyapi.mapper.fitness.UserMadeExercisesMapper;
-import hu.hm.fitjourneyapi.model.User;
 import hu.hm.fitjourneyapi.model.fitness.UserMadeTemplates;
 import hu.hm.fitjourneyapi.repository.fitness.UserMadeTemplateRepository;
 import hu.hm.fitjourneyapi.services.interfaces.fitness.UserExerciseService;
@@ -12,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @Slf4j
@@ -47,6 +47,12 @@ public class UserExerciseServiceImpl implements UserExerciseService {
 
         log.info("Got user made template");
         return mapper.toDto(template);
+    }
+
+    @Override
+    public List<UserMadeExercisesDTO> getUserMadeExercisesByUser(UUID userId) {
+        List<UserMadeTemplates> templates = repository.findAllByUserId(userId);
+        return mapper.toDto(templates);
     }
 
     @Override

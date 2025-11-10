@@ -10,4 +10,6 @@ import java.util.UUID;
 public interface UserMadeTemplateRepository extends JpaRepository<UserMadeTemplates, Long> {
     List<UserMadeTemplates> findAllByNameContainingIgnoreCase(String name);
     boolean existsByNameIgnoreCase(String name);
+
+    List<UserMadeTemplates> findAllByUserId(UUID userId);
 }
