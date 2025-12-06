@@ -44,7 +44,7 @@ public class UserExerciseServiceImpl implements UserExerciseService {
     }
 
     @Override
-    public UserMadeExercisesDTO getUserMadeExercise(long id) {
+    public UserMadeExercisesDTO getUserMadeExercise(UUID id) {
         log.debug("Getting user made exercise by id");
         UserMadeTemplates template = repository.findById(id).orElseThrow(
                 () -> new ExerciseNotFound("Exercise not found by id: " + id)
@@ -74,7 +74,7 @@ public class UserExerciseServiceImpl implements UserExerciseService {
     }
 
     @Override
-    public UserMadeExercisesDTO updateUserMadeExercise(long id, UserExerciseUpdateDto dto) {
+    public UserMadeExercisesDTO updateUserMadeExercise(UUID id, UserExerciseUpdateDto dto) {
         log.debug("Attempting to update user template");
         UserMadeTemplates template =  repository.findById(id).orElseThrow(
                 () -> new ExerciseNotFound("Exercise not found by id: " + id)
@@ -91,7 +91,7 @@ public class UserExerciseServiceImpl implements UserExerciseService {
     }
 
     @Override
-    public void deleteUserMadeExercise(long id) {
+    public void deleteUserMadeExercise(UUID id) {
         log.debug("Attempting to delete user template");
         UserMadeTemplates template = repository.findById(id).orElseThrow(
                 () -> new ExerciseNotFound("Exercise not found by id: " + id));

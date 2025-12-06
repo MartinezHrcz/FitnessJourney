@@ -9,15 +9,15 @@ import java.util.List;
 import java.util.UUID;
 
 public interface PostService {
-    PostDTO getPostById(long id);
+    PostDTO getPostById(UUID id);
 
     List<PostDTO> getPosts();
 
     List<PostDTO> getPostsByUserId(UUID id);
 
-    PostDTO updatePost(long id,PostUpdateDTO postUpdateDTO);
+    PostDTO updatePost(UUID id,PostUpdateDTO postUpdateDTO);
 
     PostDTO createPost(PostCreateDTO postCreateDTO);
 
-    void deletePostById(long id);
+    void deletePostById(UUID id);
 }

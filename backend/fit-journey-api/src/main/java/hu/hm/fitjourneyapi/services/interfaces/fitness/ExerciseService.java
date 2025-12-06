@@ -11,13 +11,13 @@ import java.util.UUID;
 public interface ExerciseService {
     List<AbstractExerciseDTO> getExercises();
 
-    List<AbstractExerciseDTO> getByWorkoutId(long id);
+    List<AbstractExerciseDTO> getByWorkoutId(UUID id);
 
     List<AbstractExerciseDTO> getByUserId(UUID id);
 
     List<AbstractExerciseDTO> getByName(String name);
 
-    AbstractExerciseDTO getById(long id);
+    AbstractExerciseDTO getById(UUID id);
 
     AbstractExerciseDTO createExercise(AbstractExerciseDTO dto) throws NoSuchFieldException;
     /*
@@ -30,11 +30,11 @@ public interface ExerciseService {
     @Deprecated(forRemoval = true)
     ExerciseCardioSetDTO createExerciseCardioSet(ExerciseCardioSetDTO cardioSetDTO);
     */
-    AbstractExerciseDTO updateExercise(long id, ExerciseUpdateDTO dto);
+    AbstractExerciseDTO updateExercise(UUID id, ExerciseUpdateDTO dto);
 
-    AbstractExerciseDTO addSetById(long id, AbstractSetDTO abstractSetDTO);
+    AbstractExerciseDTO addSetById(UUID id, AbstractSetDTO abstractSetDTO);
 
-    AbstractExerciseDTO removeSetById(long id, long setId);
+    AbstractExerciseDTO removeSetById(UUID id, long setId);
 
-    void deleteExerciseById(long id);
+    void deleteExerciseById(UUID id);
 }

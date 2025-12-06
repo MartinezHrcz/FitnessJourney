@@ -11,6 +11,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
+import java.util.UUID;
+
 @Getter
 @SuperBuilder
 @NoArgsConstructor
@@ -27,6 +29,6 @@ import lombok.experimental.SuperBuilder;
 })
 public abstract class AbstractSetDTO {
     private long id;
-    private long exerciseId;
+    private UUID exerciseId;
     public abstract SetType getType();
 }

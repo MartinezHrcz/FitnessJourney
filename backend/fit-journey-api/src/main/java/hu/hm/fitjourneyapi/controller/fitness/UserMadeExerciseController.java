@@ -28,7 +28,7 @@ public class UserMadeExerciseController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<UserMadeExercisesDTO> getById(@PathVariable long id){
+    public ResponseEntity<UserMadeExercisesDTO> getById(@PathVariable UUID id){
         try{
             return ResponseEntity.ok(userExerciseService.getUserMadeExercise(id));
         }
@@ -64,7 +64,7 @@ public class UserMadeExerciseController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<UserMadeExercisesDTO> updateUserTemplate(@PathVariable long id, @RequestBody UserExerciseUpdateDto dto){
+    public ResponseEntity<UserMadeExercisesDTO> updateUserTemplate(@PathVariable UUID id, @RequestBody UserExerciseUpdateDto dto){
         try{
             return ResponseEntity.ok(userExerciseService.updateUserMadeExercise(id, dto));
         }
@@ -75,7 +75,7 @@ public class UserMadeExerciseController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteUserTemplate(@PathVariable long id){
+    public ResponseEntity<String> deleteUserTemplate(@PathVariable UUID id){
         try{
             userExerciseService.deleteUserMadeExercise(id);
             return ResponseEntity.ok("Exercise template deleted");

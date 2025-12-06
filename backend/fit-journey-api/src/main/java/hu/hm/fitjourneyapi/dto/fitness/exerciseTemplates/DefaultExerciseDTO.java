@@ -6,11 +6,13 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.UUID;
+
 @Data
 @Getter
 @Setter
 public class DefaultExerciseDTO {
-    long id;
+    UUID id;
     String name;
     String description;
     WeightType weightType;

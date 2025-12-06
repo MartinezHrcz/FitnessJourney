@@ -13,7 +13,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PostDTO {
-    private long id;
+    private UUID id;
     private String title;
     private String content;
     private UUID userId;

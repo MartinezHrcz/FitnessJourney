@@ -6,12 +6,13 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import java.util.List;
+import java.util.UUID;
 
 @Getter
 @SuperBuilder
 @NoArgsConstructor
 public class WorkoutDTO extends AbstractWorkoutDTO {
-    private long id;
+    private UUID id;
     private int lengthInMins;
     private List<AbstractExerciseDTO> exercises;
 }

@@ -5,13 +5,14 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
-public interface ExerciseRepository extends JpaRepository<Exercise, Long> {
+public interface ExerciseRepository extends JpaRepository<Exercise, UUID> {
     Optional<Object> findByName(String name);
 
     List<Exercise> getExercisesByName(String name);
 
-    List<Exercise> getAllById(long id);
+    List<Exercise> getAllById(UUID id);
 
-    List<Exercise> getExerciseById(long id);
+    List<Exercise> getExerciseById(UUID id);
 }

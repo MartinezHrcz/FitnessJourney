@@ -34,7 +34,7 @@ public class WorkoutController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<WorkoutDTO> getWorkout(long id) {
+    public ResponseEntity<WorkoutDTO> getWorkout(UUID id) {
         return ResponseEntity.ok(workoutService.getWorkoutByWorkoutId(id));
     }
 
@@ -55,7 +55,7 @@ public class WorkoutController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<WorkoutDTO> updateWorkout(@PathVariable long id, @RequestBody WorkoutUpdateDTO workoutUpdateDTO) {
+    public ResponseEntity<WorkoutDTO> updateWorkout(@PathVariable UUID id, @RequestBody WorkoutUpdateDTO workoutUpdateDTO) {
         try{
             return ResponseEntity.ok(workoutService.updateWorkout(id, workoutUpdateDTO));
         }
@@ -65,7 +65,7 @@ public class WorkoutController {
     }
 
     @PutMapping("/addexc/{id}-{exerciseId}")
-    public ResponseEntity<WorkoutDTO> addExerciseToWorkout(@PathVariable long id, @PathVariable long exerciseId) {
+    public ResponseEntity<WorkoutDTO> addExerciseToWorkout(@PathVariable UUID id, @PathVariable UUID exerciseId) {
         try{
             return ResponseEntity.ok(workoutService.addExerciseToWorkout(id, exerciseId));
         }
@@ -75,7 +75,7 @@ public class WorkoutController {
     }
 
     @PutMapping("addexc/template/default/{id}-{templateId}")
-    public ResponseEntity<WorkoutDTO> addDefaultExerciseToWorkout(@PathVariable long id, @PathVariable long templateId) {
+    public ResponseEntity<WorkoutDTO> addDefaultExerciseToWorkout(@PathVariable UUID id, @PathVariable UUID templateId) {
         try{
             return ResponseEntity.ok(workoutService.addDefaultExerciseToWorkout(id, templateId));
         }
@@ -85,7 +85,7 @@ public class WorkoutController {
     }
 
     @PutMapping("addexc/template/usermade/{id}-{template}")
-    public ResponseEntity<WorkoutDTO> addUserExerciseToWorkout(@PathVariable long id, @PathVariable long template) {
+    public ResponseEntity<WorkoutDTO> addUserExerciseToWorkout(@PathVariable UUID id, @PathVariable UUID template) {
         try
         {
             return ResponseEntity.ok(workoutService.addUserExerciseToWorkout(id, template));
@@ -96,7 +96,7 @@ public class WorkoutController {
     }
 
     @DeleteMapping("/rmexc/{id}-{exerciseId}")
-    public ResponseEntity<WorkoutDTO> removeExerciseFromWorkout(@PathVariable long id, @PathVariable long exerciseId) {
+    public ResponseEntity<WorkoutDTO> removeExerciseFromWorkout(@PathVariable UUID id, @PathVariable UUID exerciseId) {
         try{
             return ResponseEntity.ok(workoutService.removeExerciseFromWorkout(id, exerciseId));
         }
@@ -109,7 +109,7 @@ public class WorkoutController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteWorkout(long id) {
+    public ResponseEntity<String> deleteWorkout(UUID id) {
         try{
             workoutService.deleteWorkoutById(id);
             return ResponseEntity.ok("Workout with id " + id + " deleted");

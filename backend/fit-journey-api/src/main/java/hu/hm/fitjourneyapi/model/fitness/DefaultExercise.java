@@ -5,6 +5,8 @@ import hu.hm.fitjourneyapi.model.enums.WeightType;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.UUID;
+
 @Entity
 @Table(name = "DEFAULT_EXERCISES")
 @Builder
@@ -13,8 +15,7 @@ import lombok.*;
 @NoArgsConstructor
 public class DefaultExercise {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private UUID id;
 
     @Column(unique = true, nullable = false, length = 50)
     private String name;
@@ -27,4 +28,9 @@ public class DefaultExercise {
 
     @Enumerated(EnumType.STRING)
     private ExerciseTypes type;
+
+    @PrePersist
+    public void generateId() {
+        this.id = UUID.randomUUID();
+    }
 }

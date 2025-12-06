@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 import java.util.UUID;
 
-public interface UserMadeTemplateRepository extends JpaRepository<UserMadeTemplates, Long> {
+public interface UserMadeTemplateRepository extends JpaRepository<UserMadeTemplates, UUID> {
     List<UserMadeTemplates> findAllByNameContainingIgnoreCase(String name);
     boolean existsByNameIgnoreCase(String name);
 

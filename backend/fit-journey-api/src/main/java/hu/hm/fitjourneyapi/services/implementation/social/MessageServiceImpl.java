@@ -42,7 +42,7 @@ public class MessageServiceImpl implements MessageService {
 
     @Transactional(readOnly = true)
     @Override
-    public MessageDTO getMessageById(long id) {
+    public MessageDTO getMessageById(UUID id) {
         log.debug("Getting message with id {}", id);
         Message message = messageRepository.findById(id).orElseThrow(
                 () -> {
@@ -99,7 +99,7 @@ public class MessageServiceImpl implements MessageService {
 
     @Transactional
     @Override
-    public MessageDTO updateMessage(long id, MessageDTO messageDTO) {
+    public MessageDTO updateMessage(UUID id, MessageDTO messageDTO) {
         log.debug("Attempting to update message");
         Message message = messageRepository.findById(id).orElseThrow(
                 ()-> {
@@ -114,7 +114,7 @@ public class MessageServiceImpl implements MessageService {
 
     @Transactional
     @Override
-    public void deleteMessage(long id) {
+    public void deleteMessage(UUID id) {
         log.debug("Attempting to delete message");
         Message message = messageRepository.findById(id).orElseThrow(
                 ()->{

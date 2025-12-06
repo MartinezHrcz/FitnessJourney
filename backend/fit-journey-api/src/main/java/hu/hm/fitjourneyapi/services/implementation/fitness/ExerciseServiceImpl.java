@@ -56,7 +56,7 @@ public class ExerciseServiceImpl implements ExerciseService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<AbstractExerciseDTO> getByWorkoutId(long id) {
+    public List<AbstractExerciseDTO> getByWorkoutId(UUID id) {
         log.debug("Fetching exercise by workout id {}", id);
         Workout workout = workoutRepository.getReferenceById(id);
         List<Exercise> exercises = workout.getExercises();
@@ -90,7 +90,7 @@ public class ExerciseServiceImpl implements ExerciseService {
 
     @Transactional(readOnly = true)
     @Override
-    public AbstractExerciseDTO getById(long id) {
+    public AbstractExerciseDTO getById(UUID id) {
         log.debug("Fetching exercise by id {}", id);
         Exercise exercise = exerciseRepository.findById(id).orElseThrow(
                 ()-> new ExerciseNotFound("Exercise not found by id"));
@@ -149,7 +149,7 @@ public class ExerciseServiceImpl implements ExerciseService {
      */
 
     @Override
-    public AbstractExerciseDTO updateExercise(long id, ExerciseUpdateDTO dto) {
+    public AbstractExerciseDTO updateExercise(UUID id, ExerciseUpdateDTO dto) {
         log.debug("Updating exercise by id {}", id);
         Exercise exercise = exerciseRepository.findById(id).orElseThrow(
                 ()-> new ExerciseNotFound("Exercise not found by id")
@@ -161,7 +161,7 @@ public class ExerciseServiceImpl implements ExerciseService {
     }
 
     @Override
-    public AbstractExerciseDTO addSetById(long id, AbstractSetDTO abstractSetDTO) {
+    public AbstractExerciseDTO addSetById(UUID id, AbstractSetDTO abstractSetDTO) {
         log.debug("Adding set to exercise by id {}", id);
         Exercise exercise = exerciseRepository.findById(id).orElseThrow(
                 ()-> new ExerciseNotFound("Exercise not found by id")
@@ -174,7 +174,7 @@ public class ExerciseServiceImpl implements ExerciseService {
     }
 
     @Override
-    public AbstractExerciseDTO removeSetById(long id, long setid) {
+    public AbstractExerciseDTO removeSetById(UUID id, long setid) {
         log.debug("Removing set from exercise by id {}", id);
         Exercise exercise = exerciseRepository.findById(id).orElseThrow(
                 ()-> new ExerciseNotFound("Exercise not found by id")
@@ -192,7 +192,7 @@ public class ExerciseServiceImpl implements ExerciseService {
 
     @Transactional
     @Override
-    public void deleteExerciseById(long id) {
+    public void deleteExerciseById(UUID id) {
         log.debug("Deleting exercise with id {}", id);
         Exercise exercise = exerciseRepository.findById(id).orElseThrow(
                 ()-> new ExerciseNotFound("Exercise not found by id")

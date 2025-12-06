@@ -13,21 +13,21 @@ import java.util.UUID;
 public interface WorkoutService {
     WorkoutDTO createWorkout(WorkoutCreateDTO workoutCreateDTO);
 
-    WorkoutDTO getWorkoutByWorkoutId(long id);
+    WorkoutDTO getWorkoutByWorkoutId(UUID id);
 
     List<WorkoutDTO> getWorkouts();
 
     List<WorkoutDTO> getWorkoutByUserId(UUID id);
 
-    WorkoutDTO updateWorkout(long id, WorkoutUpdateDTO workoutUpdateDTO);
+    WorkoutDTO updateWorkout(UUID id, WorkoutUpdateDTO workoutUpdateDTO);
 
-    WorkoutDTO addExerciseToWorkout(long workoutId, long exerciseId);
+    WorkoutDTO addExerciseToWorkout(UUID workoutId, UUID exerciseId);
 
-    WorkoutDTO addDefaultExerciseToWorkout(long workoutId, long templateId);
+    WorkoutDTO addDefaultExerciseToWorkout(UUID workoutId, UUID templateId);
 
-    WorkoutDTO addUserExerciseToWorkout(long workoutId, long templateId);
+    WorkoutDTO addUserExerciseToWorkout(UUID workoutId, UUID templateId);
 
-    WorkoutDTO removeExerciseFromWorkout(long workoutId, long exerciseId);
+    WorkoutDTO removeExerciseFromWorkout(UUID workoutId, UUID exerciseId);
 
-    void deleteWorkoutById(long id);
+    void deleteWorkoutById(UUID id);
 }

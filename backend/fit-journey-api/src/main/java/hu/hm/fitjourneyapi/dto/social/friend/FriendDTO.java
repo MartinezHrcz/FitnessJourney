@@ -15,7 +15,7 @@ import java.util.UUID;
 @Builder
 @AllArgsConstructor
 public class FriendDTO {
-    private long id;
+    private UUID id;
     private UUID userId;
     private UUID friendId;
     private FriendStatus status;

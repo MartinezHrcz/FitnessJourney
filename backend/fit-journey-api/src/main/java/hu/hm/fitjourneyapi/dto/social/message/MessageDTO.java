@@ -11,7 +11,7 @@ import java.util.UUID;
 @Getter
 @Builder
 public class MessageDTO {
-    private long id;
+    private UUID id;
     private UUID senderId;
     private UUID recipientId;
     private String content;

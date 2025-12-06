@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/default/exercise")
@@ -25,7 +26,7 @@ public class DefaultExerciseController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<DefaultExerciseDTO> getDefaultExercise(@PathVariable long id) {
+    public ResponseEntity<DefaultExerciseDTO> getDefaultExercise(@PathVariable UUID id) {
         return ResponseEntity.ok(defaultExerciseService.getDefaultExercise(id));
     }
 

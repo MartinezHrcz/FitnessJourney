@@ -12,7 +12,7 @@ import java.util.UUID;
 @Getter
 @Setter
 public class UserMadeExercisesDTO {
-    long id;
+    UUID id;
     String name;
     String description;
     WeightType weightType;

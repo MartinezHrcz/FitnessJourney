@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.UUID;
 
 public interface FriendService {
-    FriendDTO getFriendById(long id);
+    FriendDTO getFriendById(UUID id);
 
     List<FriendDTO> getFriends();
 
@@ -14,9 +14,9 @@ public interface FriendService {
 
     List<FriendDTO> getFriendsByUserIdAndRecipientName(UUID id, String recipientName);
 
-    FriendDTO updateFriend(long id,FriendDTO friendDTO);
+    FriendDTO updateFriend(UUID id,FriendDTO friendDTO);
 
     FriendDTO createFriend(FriendDTO friendDTO);
 
-    void deleteFriend(long id);
+    void deleteFriend(UUID id);
 }

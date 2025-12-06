@@ -9,9 +9,9 @@ import java.util.UUID;
 public interface UserExerciseService {
     List<UserMadeExercisesDTO>  getUserMadeExercises();
     List<UserMadeExercisesDTO> getUserMadeExercisesByName(String name);
-    UserMadeExercisesDTO getUserMadeExercise(long id);
+    UserMadeExercisesDTO getUserMadeExercise(UUID id);
     List<UserMadeExercisesDTO> getUserMadeExercisesByUser(UUID userId);
     UserMadeExercisesDTO createUserMadeExercise(UUID user,UserExerciseUpdateDto dto);
-    UserMadeExercisesDTO updateUserMadeExercise(long id, UserExerciseUpdateDto dto);
-    void deleteUserMadeExercise(long id);
+    UserMadeExercisesDTO updateUserMadeExercise(UUID id, UserExerciseUpdateDto dto);
+    void deleteUserMadeExercise(UUID id);
 }

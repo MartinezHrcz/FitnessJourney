@@ -8,7 +8,7 @@ import java.util.UUID;
 public interface MessageService {
     List<MessageDTO> getMessages();
 
-    MessageDTO getMessageById(long id);
+    MessageDTO getMessageById(UUID id);
 
     List<MessageDTO> getMessagesBySenderId(UUID id);
 
@@ -16,7 +16,7 @@ public interface MessageService {
 
     MessageDTO createMessage(MessageDTO messageDTO);
 
-    MessageDTO updateMessage(long id,MessageDTO messageDTO);
+    MessageDTO updateMessage(UUID id,MessageDTO messageDTO);
 
-    void deleteMessage(long id);
+    void deleteMessage(UUID id);
 }

@@ -37,7 +37,7 @@ public class ExerciseController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<AbstractExerciseDTO> getExercise(@PathVariable long id) {
+    public ResponseEntity<AbstractExerciseDTO> getExercise(@PathVariable UUID id) {
         try{
             return ResponseEntity.ok(exerciseService.getById(id));
         }
@@ -58,12 +58,12 @@ public class ExerciseController {
     }
 
     @GetMapping("/byworkout/{id}")
-    public ResponseEntity<List<AbstractExerciseDTO>> getExercisesByWorkout(@PathVariable long id) {
+    public ResponseEntity<List<AbstractExerciseDTO>> getExercisesByWorkout(@PathVariable UUID id) {
         return ResponseEntity.ok(exerciseService.getByWorkoutId(id));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteExercise(@PathVariable long id) {
+    public ResponseEntity<Void> deleteExercise(@PathVariable UUID id) {
         try
         {
             exerciseService.deleteExerciseById(id);
@@ -75,7 +75,7 @@ public class ExerciseController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<AbstractExerciseDTO> updateExercise(@PathVariable int id,@RequestBody ExerciseUpdateDTO exerciseDTO) {
+    public ResponseEntity<AbstractExerciseDTO> updateExercise(@PathVariable UUID id,@RequestBody ExerciseUpdateDTO exerciseDTO) {
         try{
             return ResponseEntity.ok(exerciseService.updateExercise(id, exerciseDTO));
         }
@@ -86,7 +86,7 @@ public class ExerciseController {
     }
 
     @PutMapping("/addset/{id}")
-    public ResponseEntity<AbstractExerciseDTO> addSet(@PathVariable long id, @RequestBody AbstractSetDTO abstractSetDTO) {
+    public ResponseEntity<AbstractExerciseDTO> addSet(@PathVariable UUID id, @RequestBody AbstractSetDTO abstractSetDTO) {
         try{
             return ResponseEntity.ok(exerciseService.addSetById(id, abstractSetDTO));
         }
@@ -98,7 +98,7 @@ public class ExerciseController {
     }
 
     @DeleteMapping("/removeset/{id}-{setid}")
-    public ResponseEntity<AbstractExerciseDTO> removeSet(@PathVariable long id, @PathVariable long setid) {
+    public ResponseEntity<AbstractExerciseDTO> removeSet(@PathVariable UUID id, @PathVariable long setid) {
         try
         {
             return ResponseEntity.ok(exerciseService.removeSetById(id, setid));

@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.UUID;
 
 @Service
 @Slf4j
@@ -30,7 +31,7 @@ public class DefaultExercisesServiceImpl implements DefaultExerciseService {
     }
 
     @Override
-    public DefaultExerciseDTO getDefaultExercise(long id) {
+    public DefaultExerciseDTO getDefaultExercise(UUID id) {
         DefaultExercise exercise = defaultExcRepo.findById(id).orElseThrow(
                 ()-> new NoSuchElementException("Exercise with id " + id + " not found")
         );

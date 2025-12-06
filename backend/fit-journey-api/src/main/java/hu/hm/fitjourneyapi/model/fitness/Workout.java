@@ -9,6 +9,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Table(name = "WORKOUTS")
@@ -19,8 +20,7 @@ import java.util.List;
 @EntityListeners(AuditingEntityListener.class)
 public class Workout {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private UUID id;
     @Column(nullable = false, length = 50)
     private String name;
 
@@ -50,5 +50,9 @@ public class Workout {
         exercise.setWorkout(null);
     }
 
+    @PrePersist
+    public void generateId() {
+        this.id = UUID.randomUUID();
+    }
 
 }

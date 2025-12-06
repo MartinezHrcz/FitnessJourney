@@ -28,7 +28,6 @@ import java.util.UUID;
 @EntityListeners(AuditingEntityListener.class)
 public class User {
     @Id
-    @GeneratedValue
     private UUID id;
     @Column(nullable = false, length = 100, unique = true)
     private String name;
@@ -95,6 +94,11 @@ public class User {
     public void removeWorkout(Workout workout) {
         this.workouts.remove(workout);
         workout.setUser(null);
+    }
+
+    @PrePersist
+    public void generateId() {
+        this.id = UUID.randomUUID();
     }
 
 }

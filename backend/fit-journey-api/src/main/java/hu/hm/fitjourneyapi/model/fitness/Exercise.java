@@ -7,10 +7,7 @@ import io.micrometer.common.lang.Nullable;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Entity
 @Table(name = "EXERCISES")
@@ -20,8 +17,7 @@ import java.util.Map;
 @NoArgsConstructor
 public class Exercise {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private UUID id;
 
     @Builder.Default
     @Enumerated(EnumType.STRING)
@@ -82,5 +78,10 @@ public class Exercise {
     public void removeSet(Set set) {
         sets.remove(set);
         set.setExercise(null);
+    }
+
+    @PrePersist
+    public void generateId() {
+        this.id = UUID.randomUUID();
     }
 }

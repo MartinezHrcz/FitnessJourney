@@ -8,6 +8,8 @@ import io.swagger.v3.core.util.Json;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
+import java.util.UUID;
+
 @Getter
 @SuperBuilder
 @NoArgsConstructor
@@ -23,10 +25,10 @@ import lombok.experimental.SuperBuilder;
         @JsonSubTypes.Type(value = ExerciseFlexibilitySetDTO.class, name="FLEXIBILITY")
 })
 public abstract class AbstractExerciseDTO {
-    private long id;
+    private UUID id;
     private String name;
     private String description;
-    private long workoutId;
+    private UUID workoutId;
     private WeightType weightType;
     private ExerciseTypes type;
 }

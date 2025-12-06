@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 import java.util.UUID;
 
-public interface MessageRepository extends JpaRepository<Message, Long> {
+public interface MessageRepository extends JpaRepository<Message, UUID> {
     List<Message> findAllBySender_Id(UUID senderId);
 
     List<Message> findAllByRecipient_Id(UUID recipientId);

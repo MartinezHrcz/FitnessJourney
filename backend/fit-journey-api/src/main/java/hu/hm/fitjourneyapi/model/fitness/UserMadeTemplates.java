@@ -17,8 +17,7 @@ import java.util.UUID;
 @AllArgsConstructor
 public class UserMadeTemplates {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private UUID id;
 
     @Column(unique = true, nullable = false, length = 50)
     private String name;
@@ -35,4 +34,9 @@ public class UserMadeTemplates {
     @ManyToOne
     @JoinColumn(name="user_id", nullable = false)
     private User user;
+
+    @PrePersist
+    public void generateId() {
+        this.id = UUID.randomUUID();
+    }
 }

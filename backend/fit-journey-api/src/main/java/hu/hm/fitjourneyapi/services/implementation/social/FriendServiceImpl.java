@@ -32,7 +32,7 @@ public class FriendServiceImpl implements FriendService {
     }
 
     @Override
-    public FriendDTO getFriendById(long id) {
+    public FriendDTO getFriendById(UUID id) {
         log.debug("Fetching friend with id {} ", id);
         Friend friend = friendRepository.findById(id).orElseThrow(
                 ()-> {
@@ -69,7 +69,7 @@ public class FriendServiceImpl implements FriendService {
     }
 
     @Override
-    public FriendDTO updateFriend(long id, FriendDTO friendDTO) {
+    public FriendDTO updateFriend(UUID id, FriendDTO friendDTO) {
         log.debug("Attempting to update friend with id {} ", friendDTO.getId());
         Friend friend = friendRepository.findById(friendDTO.getId()).orElseThrow(
                 ()->{
@@ -110,7 +110,7 @@ public class FriendServiceImpl implements FriendService {
     }
 
     @Override
-    public void deleteFriend(long id) {
+    public void deleteFriend(UUID id) {
         Friend friend = friendRepository.findById(id).orElseThrow(
                 ()->{
                     log.warn("Friend with id {} not found", id);

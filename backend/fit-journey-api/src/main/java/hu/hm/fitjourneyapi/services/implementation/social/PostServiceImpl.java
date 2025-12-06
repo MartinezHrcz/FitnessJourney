@@ -35,7 +35,7 @@ public class PostServiceImpl implements PostService {
 
     @Transactional
     @Override
-    public PostDTO getPostById(long id) {
+    public PostDTO getPostById(UUID id) {
         log.debug("Fetching post by id: {}", id);
         Post post = postRepository.findById(id).orElseThrow(()->
         {
@@ -67,7 +67,7 @@ public class PostServiceImpl implements PostService {
 
     @Transactional
     @Override
-    public PostDTO updatePost(long id, PostUpdateDTO postUpdateDTO) {
+    public PostDTO updatePost(UUID id, PostUpdateDTO postUpdateDTO) {
         log.debug("Attempting to update post by id: {}", id);
         Post post = postRepository.findById(id).orElseThrow(
                 ()->{
@@ -106,7 +106,7 @@ public class PostServiceImpl implements PostService {
 
     @Transactional
     @Override
-    public void deletePostById(long id) {
+    public void deletePostById(UUID id) {
         log.debug("Attempting to delete post by id: {}", id);
         Post post = postRepository.findById(id).orElseThrow(
                 () -> {

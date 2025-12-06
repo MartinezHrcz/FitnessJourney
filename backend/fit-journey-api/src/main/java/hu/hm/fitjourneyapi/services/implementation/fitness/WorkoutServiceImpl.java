@@ -65,7 +65,7 @@ public class WorkoutServiceImpl implements WorkoutService {
 
     @Transactional(readOnly = true)
     @Override
-    public WorkoutDTO getWorkoutByWorkoutId(long id) {
+    public WorkoutDTO getWorkoutByWorkoutId(UUID id) {
         log.debug("Fetching workout with id: {}", id);
         Workout workout = workoutRepository.findById(id).orElseThrow(
                 () ->
@@ -100,7 +100,7 @@ public class WorkoutServiceImpl implements WorkoutService {
 
     @Transactional
     @Override
-    public WorkoutDTO updateWorkout(long id, WorkoutUpdateDTO workoutUpdateDTO) {
+    public WorkoutDTO updateWorkout(UUID id, WorkoutUpdateDTO workoutUpdateDTO) {
         log.debug("Updating workout {}", workoutUpdateDTO.getId());
         Workout workout = workoutRepository.findById(id).orElseThrow(
                 () -> {
@@ -124,7 +124,7 @@ public class WorkoutServiceImpl implements WorkoutService {
     }
 
     @Override
-    public WorkoutDTO addDefaultExerciseToWorkout(long workoutId, long templateId) {
+    public WorkoutDTO addDefaultExerciseToWorkout(UUID workoutId, UUID templateId) {
         Workout workout =  workoutRepository.findById(workoutId).orElseThrow(
                 () -> {
                     log.warn("Workout with id {} not found", workoutId);
@@ -155,7 +155,7 @@ public class WorkoutServiceImpl implements WorkoutService {
     }
 
     @Override
-    public WorkoutDTO addUserExerciseToWorkout(long workoutId, long templateId) {
+    public WorkoutDTO addUserExerciseToWorkout(UUID workoutId, UUID templateId) {
         Workout workout = workoutRepository.findById(workoutId).orElseThrow(
                 ()-> new WorkoutNotFound("Workout not found with id: " + workoutId)
         );
@@ -179,7 +179,7 @@ public class WorkoutServiceImpl implements WorkoutService {
     }
 
     @Override
-    public WorkoutDTO addExerciseToWorkout(long workoutId, long exerciseId) {
+    public WorkoutDTO addExerciseToWorkout(UUID workoutId, UUID exerciseId) {
         Workout workout = workoutRepository.findById(workoutId).orElseThrow(
                 ()->{
                     log.warn("Workout with id {} not found", workoutId);
@@ -201,7 +201,7 @@ public class WorkoutServiceImpl implements WorkoutService {
     }
 
     @Override
-    public WorkoutDTO removeExerciseFromWorkout(long workoutId, long exerciseId) {
+    public WorkoutDTO removeExerciseFromWorkout(UUID workoutId, UUID exerciseId) {
         Workout workout = workoutRepository.findById(workoutId).orElseThrow(
                 ()->{
                     log.warn("Workout with id {} not found", workoutId);
@@ -226,7 +226,7 @@ public class WorkoutServiceImpl implements WorkoutService {
 
     @Transactional
     @Override
-    public void deleteWorkoutById(long id) {
+    public void deleteWorkoutById(UUID id) {
         log.debug("Deleting workout {}", id);
         Workout workout = workoutRepository.findById(id).orElseThrow(
                 ()->{
