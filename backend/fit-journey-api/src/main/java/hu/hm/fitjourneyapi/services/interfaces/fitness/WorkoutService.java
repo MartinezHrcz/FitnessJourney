@@ -1,17 +1,14 @@
 package hu.hm.fitjourneyapi.services.interfaces.fitness;
 
-import hu.hm.fitjourneyapi.dto.fitness.excercise.AbstractExerciseDTO;
-import hu.hm.fitjourneyapi.dto.fitness.excercise.ExerciseCardioSetDTO;
 import hu.hm.fitjourneyapi.dto.fitness.workout.WorkoutCreateDTO;
 import hu.hm.fitjourneyapi.dto.fitness.workout.WorkoutDTO;
 import hu.hm.fitjourneyapi.dto.fitness.workout.WorkoutUpdateDTO;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
 
 public interface WorkoutService {
-    WorkoutDTO createWorkout(WorkoutCreateDTO workoutCreateDTO);
+    UUID createWorkout(WorkoutCreateDTO workoutCreateDTO);
 
     WorkoutDTO getWorkoutByWorkoutId(UUID id);
 
@@ -28,6 +25,8 @@ public interface WorkoutService {
     WorkoutDTO addUserExerciseToWorkout(UUID workoutId, UUID templateId);
 
     WorkoutDTO removeExerciseFromWorkout(UUID workoutId, UUID exerciseId);
+
+    WorkoutDTO finishWorkout(UUID workoutId);
 
     void deleteWorkoutById(UUID id);
 }

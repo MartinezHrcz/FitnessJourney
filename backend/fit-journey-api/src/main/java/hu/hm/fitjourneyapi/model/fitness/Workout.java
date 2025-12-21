@@ -1,6 +1,7 @@
 package hu.hm.fitjourneyapi.model.fitness;
 
 import hu.hm.fitjourneyapi.model.User;
+import hu.hm.fitjourneyapi.model.enums.WorkoutStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
@@ -24,16 +25,20 @@ public class Workout {
     @Column(nullable = false, length = 50)
     private String name;
 
-    @Column(nullable = true, length = 200)
+    @Column(length = 200)
     private String description;
 
     @CreatedDate
     @Column(nullable = false, updatable = false)
     private LocalDate startDate;
-    private int lengthInMins;
+
+    private LocalDate endDate;
+
+    private WorkoutStatus status;
+
     @ToString.Exclude
     @ManyToOne
-    @JoinColumn(nullable = false, name="user_id")
+    @JoinColumn(nullable = false, name = "user_id")
     private User user;
 
     @Builder.Default

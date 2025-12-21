@@ -19,7 +19,7 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public AuthResponse register(@RequestBody UserCreateDTO  userCreateDTO) {
+    public AuthResponse register(@RequestBody UserCreateDTO userCreateDTO) {
         return authService.register(userCreateDTO);
     }
 

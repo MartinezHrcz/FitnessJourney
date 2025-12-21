@@ -14,6 +14,7 @@ import hu.hm.fitjourneyapi.model.fitness.Workout;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class ExerciseTestFactory {
 
@@ -32,13 +33,13 @@ public class ExerciseTestFactory {
         return exercise;
     }
 
-    public static AbstractExerciseDTO getExerciseDTO(ExerciseTypes exerciseType, long workoutId) {
+    public static AbstractExerciseDTO getExerciseDTO(ExerciseTypes exerciseType, UUID workoutId) {
         switch (exerciseType)
         {
             case RESISTANCE, NOT_GIVEN, BODY_WEIGHT:
             {
                 ExerciseStrengthSetDTO es = ExerciseStrengthSetDTO.builder()
-                        .id(1L)
+                        .id(UUID.randomUUID())
                         .name("Test Exercise")
                         .description("Exercise desc")
                         .workoutId(workoutId)
@@ -52,7 +53,7 @@ public class ExerciseTestFactory {
             {
                  ExerciseCardioSetDTO ec= ExerciseCardioSetDTO
                         .builder()
-                         .id(1L)
+                         .id(UUID.randomUUID())
                         .name("Test Exercise")
                         .description("Test exercise")
                         .workoutId(workoutId)

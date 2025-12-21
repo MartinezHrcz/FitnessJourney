@@ -25,7 +25,7 @@ public class WorkoutTestFactory {
 
     public static WorkoutDTO getWorkoutDTO(UUID userId) {
         WorkoutDTO dto = WorkoutDTO.builder()
-                .id(1L)
+                .id(UUID.randomUUID())
                 .name("Test Workout")
                 .description("This is for a test")
                 .lengthInMins(60)

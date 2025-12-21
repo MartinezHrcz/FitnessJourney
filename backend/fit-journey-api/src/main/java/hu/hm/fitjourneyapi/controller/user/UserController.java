@@ -32,36 +32,33 @@ public class UserController {
             @RequestParam(required = false) UUID id,
             @RequestParam(required = false) String name,
             @RequestParam(required = false) String email
-    ){
+    ) {
         try {
             if (id != null) return ResponseEntity.ok(userService.getUserById(id));
             else if (name != null) return ResponseEntity.ok(userService.getUserByName(name));
             else if (email != null) return ResponseEntity.ok(userService.getUserByEmail(email));
             else return ResponseEntity.badRequest().build();
-        }
-        catch (UserNotFound e) {
+        } catch (UserNotFound e) {
             return ResponseEntity.notFound().build();
         }
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<UserDTO> updateUser(@PathVariable UUID id, @RequestBody @Valid UserUpdateDTO dto) {
-        try{
-            UserDTO result = userService.updateUser(id,dto);
+        try {
+            UserDTO result = userService.updateUser(id, dto);
             return ResponseEntity.ok(result);
-        }
-        catch (UserNotFound e) {
+        } catch (UserNotFound e) {
             return ResponseEntity.notFound().build();
         }
     }
 
     @PutMapping("/pwd/{id}")
     public ResponseEntity<UserDTO> updatePassword(@PathVariable UUID id, @RequestBody @Valid UserPasswordUpdateDTO dto) {
-        try{
+        try {
             UserDTO result = userService.updatePassword(id, dto);
             return ResponseEntity.ok(result);
-        }
-        catch (UserNotFound e) {
+        } catch (UserNotFound e) {
             return ResponseEntity.notFound().build();
         }
     }
@@ -72,11 +69,11 @@ public class UserController {
     }
 
     @DeleteMapping
-    public ResponseEntity<String> deleteUser(UUID id){
-        try{
+    public ResponseEntity<String> deleteUser(UUID id) {
+        try {
             userService.deleteUser(id);
             return ResponseEntity.ok("Deleted");
-        }catch (UserNotFound e) {
+        } catch (UserNotFound e) {
             return ResponseEntity.notFound().build();
         }
     }

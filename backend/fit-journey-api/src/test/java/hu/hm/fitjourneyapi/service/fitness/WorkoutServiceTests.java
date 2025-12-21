@@ -83,7 +83,7 @@ public class WorkoutServiceTests {
 
     @Test
     public void WorkoutCreateTest_WorkoutCreated_success() {
-        WorkoutDTO result = workoutService.createWorkout(workoutCreateDTO);
+        UUID result = workoutService.createWorkout(workoutCreateDTO);
         assertNotNull(result);
         assertEquals(workoutDTO.getName(), result.getName());
         assertEquals(workoutDTO.getDescription(), result.getDescription());

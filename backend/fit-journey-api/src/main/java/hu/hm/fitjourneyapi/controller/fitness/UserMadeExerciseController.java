@@ -23,66 +23,58 @@ public class UserMadeExerciseController {
     }
 
     @GetMapping
-    public ResponseEntity<List<UserMadeExercisesDTO>> getAll(){
+    public ResponseEntity<List<UserMadeExercisesDTO>> getAll() {
         return ResponseEntity.ok(userExerciseService.getUserMadeExercises());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<UserMadeExercisesDTO> getById(@PathVariable UUID id){
-        try{
+    public ResponseEntity<UserMadeExercisesDTO> getById(@PathVariable UUID id) {
+        try {
             return ResponseEntity.ok(userExerciseService.getUserMadeExercise(id));
-        }
-        catch (ExerciseNotFound ex){
-            return  ResponseEntity.notFound().build();
+        } catch (ExerciseNotFound ex) {
+            return ResponseEntity.notFound().build();
         }
     }
 
     @GetMapping("/byname/{name}")
-    public ResponseEntity<List<UserMadeExercisesDTO>> getByName(@PathVariable String name){
+    public ResponseEntity<List<UserMadeExercisesDTO>> getByName(@PathVariable String name) {
         return ResponseEntity.ok(userExerciseService.getUserMadeExercisesByName(name));
     }
 
     @GetMapping("/byuser/{id}")
-    public ResponseEntity<List<UserMadeExercisesDTO>> getByUser(@PathVariable UUID id){
+    public ResponseEntity<List<UserMadeExercisesDTO>> getByUser(@PathVariable UUID id) {
         try {
             return ResponseEntity.ok(userExerciseService.getUserMadeExercisesByUser(id));
-        }
-        catch (ExerciseNotFound ex){
-            return  ResponseEntity.notFound().build();
+        } catch (ExerciseNotFound ex) {
+            return ResponseEntity.notFound().build();
         }
     }
 
     @PostMapping("/{id}")
-    public ResponseEntity<UserMadeExercisesDTO> createUserTemplate(@PathVariable UUID userId, @RequestBody UserExerciseUpdateDto dto){
-        try
-        {
+    public ResponseEntity<UserMadeExercisesDTO> createUserTemplate(@PathVariable UUID userId, @RequestBody UserExerciseUpdateDto dto) {
+        try {
             return ResponseEntity.ok(userExerciseService.createUserMadeExercise(userId, dto));
-        }
-        catch (UserNotFound ex){
+        } catch (UserNotFound ex) {
             return ResponseEntity.notFound().build();
         }
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<UserMadeExercisesDTO> updateUserTemplate(@PathVariable UUID id, @RequestBody UserExerciseUpdateDto dto){
-        try{
+    public ResponseEntity<UserMadeExercisesDTO> updateUserTemplate(@PathVariable UUID id, @RequestBody UserExerciseUpdateDto dto) {
+        try {
             return ResponseEntity.ok(userExerciseService.updateUserMadeExercise(id, dto));
-        }
-        catch (ExerciseNotFound ex)
-        {
+        } catch (ExerciseNotFound ex) {
             return ResponseEntity.notFound().build();
         }
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteUserTemplate(@PathVariable UUID id){
-        try{
+    public ResponseEntity<String> deleteUserTemplate(@PathVariable UUID id) {
+        try {
             userExerciseService.deleteUserMadeExercise(id);
             return ResponseEntity.ok("Exercise template deleted");
-        }
-        catch (ExerciseNotFound ex)
-        {
-            return  ResponseEntity.notFound().build();
+        } catch (ExerciseNotFound ex) {
+            return ResponseEntity.notFound().build();
         }
     }
 }

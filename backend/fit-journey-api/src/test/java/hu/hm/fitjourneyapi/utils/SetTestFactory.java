@@ -7,6 +7,8 @@ import hu.hm.fitjourneyapi.dto.fitness.set.StrengthSetDTO;
 import hu.hm.fitjourneyapi.model.enums.ExerciseTypes;
 import hu.hm.fitjourneyapi.model.fitness.*;
 
+import java.util.UUID;
+
 public class SetTestFactory {
     public static Set getSet(Exercise exercise) {
 
@@ -39,7 +41,7 @@ public class SetTestFactory {
         return null;
     }
 
-    public static AbstractSetDTO getSetDTO(long exerciseId, ExerciseTypes exerciseType) {
+    public static AbstractSetDTO getSetDTO(UUID exerciseId, ExerciseTypes exerciseType) {
         switch (exerciseType)
         {
             case NOT_GIVEN, RESISTANCE, BODY_WEIGHT -> {

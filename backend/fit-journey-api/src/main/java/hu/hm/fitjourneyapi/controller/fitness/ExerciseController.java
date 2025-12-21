@@ -8,6 +8,7 @@ import hu.hm.fitjourneyapi.exception.fitness.SetNotFound;
 import hu.hm.fitjourneyapi.services.interfaces.fitness.ExerciseService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 import java.util.UUID;
 
@@ -23,8 +24,8 @@ public class ExerciseController {
 
     @PostMapping
     public ResponseEntity<AbstractExerciseDTO> createExercise(@RequestBody AbstractExerciseDTO exerciseDTO) {
-        try{
-            AbstractExerciseDTO exercise =exerciseService.createExercise(exerciseDTO);
+        try {
+            AbstractExerciseDTO exercise = exerciseService.createExercise(exerciseDTO);
             return ResponseEntity.ok(exercise);
         } catch (NoSuchFieldException e) {
             return ResponseEntity.badRequest().build();
@@ -38,11 +39,9 @@ public class ExerciseController {
 
     @GetMapping("/{id}")
     public ResponseEntity<AbstractExerciseDTO> getExercise(@PathVariable UUID id) {
-        try{
+        try {
             return ResponseEntity.ok(exerciseService.getById(id));
-        }
-        catch (ExerciseNotFound ex)
-        {
+        } catch (ExerciseNotFound ex) {
             return ResponseEntity.notFound().build();
         }
     }
@@ -64,34 +63,28 @@ public class ExerciseController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteExercise(@PathVariable UUID id) {
-        try
-        {
+        try {
             exerciseService.deleteExerciseById(id);
             return ResponseEntity.noContent().build();
-        }
-        catch (ExerciseNotFound ex){
+        } catch (ExerciseNotFound ex) {
             return ResponseEntity.notFound().build();
         }
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<AbstractExerciseDTO> updateExercise(@PathVariable UUID id,@RequestBody ExerciseUpdateDTO exerciseDTO) {
-        try{
+    public ResponseEntity<AbstractExerciseDTO> updateExercise(@PathVariable UUID id, @RequestBody ExerciseUpdateDTO exerciseDTO) {
+        try {
             return ResponseEntity.ok(exerciseService.updateExercise(id, exerciseDTO));
-        }
-        catch (ExerciseNotFound ex)
-        {
+        } catch (ExerciseNotFound ex) {
             return ResponseEntity.notFound().build();
         }
     }
 
     @PutMapping("/addset/{id}")
     public ResponseEntity<AbstractExerciseDTO> addSet(@PathVariable UUID id, @RequestBody AbstractSetDTO abstractSetDTO) {
-        try{
+        try {
             return ResponseEntity.ok(exerciseService.addSetById(id, abstractSetDTO));
-        }
-        catch (ExerciseNotFound ex)
-        {
+        } catch (ExerciseNotFound ex) {
             return ResponseEntity.notFound().build();
         }
 
@@ -99,12 +92,9 @@ public class ExerciseController {
 
     @DeleteMapping("/removeset/{id}-{setid}")
     public ResponseEntity<AbstractExerciseDTO> removeSet(@PathVariable UUID id, @PathVariable long setid) {
-        try
-        {
+        try {
             return ResponseEntity.ok(exerciseService.removeSetById(id, setid));
-        }
-        catch (ExerciseNotFound | SetNotFound ex)
-        {
+        } catch (ExerciseNotFound | SetNotFound ex) {
             return ResponseEntity.notFound().build();
         }
     }

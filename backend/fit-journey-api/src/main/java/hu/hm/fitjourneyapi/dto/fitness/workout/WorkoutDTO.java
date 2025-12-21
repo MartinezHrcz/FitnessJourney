@@ -1,10 +1,10 @@
 package hu.hm.fitjourneyapi.dto.fitness.workout;
 
 import hu.hm.fitjourneyapi.dto.fitness.excercise.AbstractExerciseDTO;
-import hu.hm.fitjourneyapi.model.fitness.Exercise;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -14,5 +14,6 @@ import java.util.UUID;
 public class WorkoutDTO extends AbstractWorkoutDTO {
     private UUID id;
     private int lengthInMins;
+    private LocalDate startDate;
     private List<AbstractExerciseDTO> exercises;
 }

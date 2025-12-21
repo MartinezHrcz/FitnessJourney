@@ -1,6 +1,5 @@
 package hu.hm.fitjourneyapi.services.implementation.fitness;
 
-import hu.hm.fitjourneyapi.dto.fitness.excercise.AbstractExerciseDTO;
 import hu.hm.fitjourneyapi.dto.fitness.workout.WorkoutCreateDTO;
 import hu.hm.fitjourneyapi.dto.fitness.workout.WorkoutDTO;
 import hu.hm.fitjourneyapi.dto.fitness.workout.WorkoutUpdateDTO;
@@ -9,6 +8,7 @@ import hu.hm.fitjourneyapi.exception.fitness.WorkoutNotFound;
 import hu.hm.fitjourneyapi.exception.userExceptions.UserNotFound;
 import hu.hm.fitjourneyapi.mapper.fitness.WorkoutMapper;
 import hu.hm.fitjourneyapi.model.User;
+import hu.hm.fitjourneyapi.model.enums.WorkoutStatus;
 import hu.hm.fitjourneyapi.model.fitness.DefaultExercise;
 import hu.hm.fitjourneyapi.model.fitness.Exercise;
 import hu.hm.fitjourneyapi.model.fitness.UserMadeTemplates;
@@ -48,7 +48,7 @@ public class WorkoutServiceImpl implements WorkoutService {
 
     @Transactional
     @Override
-    public WorkoutDTO createWorkout(WorkoutCreateDTO workoutCreateDTO) {
+    public UUID createWorkout(WorkoutCreateDTO workoutCreateDTO) {
         log.debug("Attempting to create workout {}", workoutCreateDTO.getName());
         User user = userRepository.findById(workoutCreateDTO.getUserId()).orElseThrow(
                 () -> {
@@ -60,7 +60,7 @@ public class WorkoutServiceImpl implements WorkoutService {
         workout = workoutRepository.save(workout);
         user.addWorkout(workout);
         log.info("Created workout {} with id {}", workoutCreateDTO.getName(), workout.getId());
-        return workoutMapper.toDTO(workout);
+        return workout.getId();
     }
 
     @Transactional(readOnly = true)
@@ -101,31 +101,34 @@ public class WorkoutServiceImpl implements WorkoutService {
     @Transactional
     @Override
     public WorkoutDTO updateWorkout(UUID id, WorkoutUpdateDTO workoutUpdateDTO) {
-        log.debug("Updating workout {}", workoutUpdateDTO.getId());
+        log.debug("Updating workout {}", id);
         Workout workout = workoutRepository.findById(id).orElseThrow(
                 () -> {
-                    log.warn("Workout with id {} not found", workoutUpdateDTO.getId());
+                    log.warn("Workout with id {} not found", id);
                     return new WorkoutNotFound("Workout not found with id " + id);
-                    }
-                );
+                }
+        );
+
         workout.setName(workoutUpdateDTO.getName());
         workout.setDescription(workoutUpdateDTO.getDescription());
-        workout.setLengthInMins(workoutUpdateDTO.getLengthInMins());
+
         User user = userRepository.findById(workoutUpdateDTO.getUserId()).orElseThrow(
                 () -> {
                     log.warn("user not found with id " + workoutUpdateDTO.getUserId());
                     return new UserNotFound("User not found with id " + workoutUpdateDTO.getUserId());
                 }
         );
+
         workout.setUser(user);
         workout = workoutRepository.save(workout);
-        log.info("Updated workout {} with id {}", workoutUpdateDTO.getName(), workoutUpdateDTO.getId());
+
+        log.info("Updated workout {} with id {}", workoutUpdateDTO.getName(), id);
         return workoutMapper.toDTO(workout);
     }
 
     @Override
     public WorkoutDTO addDefaultExerciseToWorkout(UUID workoutId, UUID templateId) {
-        Workout workout =  workoutRepository.findById(workoutId).orElseThrow(
+        Workout workout = workoutRepository.findById(workoutId).orElseThrow(
                 () -> {
                     log.warn("Workout with id {} not found", workoutId);
                     return new WorkoutNotFound("Workout not found with id " + workoutId);
@@ -157,11 +160,11 @@ public class WorkoutServiceImpl implements WorkoutService {
     @Override
     public WorkoutDTO addUserExerciseToWorkout(UUID workoutId, UUID templateId) {
         Workout workout = workoutRepository.findById(workoutId).orElseThrow(
-                ()-> new WorkoutNotFound("Workout not found with id: " + workoutId)
+                () -> new WorkoutNotFound("Workout not found with id: " + workoutId)
         );
 
         UserMadeTemplates template = userTemplateRepository.findById(templateId).orElseThrow(
-                ()-> new UserNotFound("User not found with id: " + templateId)
+                () -> new UserNotFound("User not found with id: " + templateId)
         );
 
         Exercise exercise = Exercise.builder()
@@ -181,7 +184,7 @@ public class WorkoutServiceImpl implements WorkoutService {
     @Override
     public WorkoutDTO addExerciseToWorkout(UUID workoutId, UUID exerciseId) {
         Workout workout = workoutRepository.findById(workoutId).orElseThrow(
-                ()->{
+                () -> {
                     log.warn("Workout with id {} not found", workoutId);
                     return new WorkoutNotFound("Workout not found with id " + workoutId);
                 }
@@ -196,14 +199,14 @@ public class WorkoutServiceImpl implements WorkoutService {
         workout.getExercises().add(exercise);
         workout = workoutRepository.save(workout);
         exerciseRepository.save(exercise);
-        log.info("Added {} to workout {} with id {}",exercise.getName(), workout.getName(), workout.getId());
+        log.info("Added {} to workout {} with id {}", exercise.getName(), workout.getName(), workout.getId());
         return workoutMapper.toDTO(workout);
     }
 
     @Override
     public WorkoutDTO removeExerciseFromWorkout(UUID workoutId, UUID exerciseId) {
         Workout workout = workoutRepository.findById(workoutId).orElseThrow(
-                ()->{
+                () -> {
                     log.warn("Workout with id {} not found", workoutId);
                     return new WorkoutNotFound("Workout not found with id " + workoutId);
                 }
@@ -220,7 +223,21 @@ public class WorkoutServiceImpl implements WorkoutService {
         exercise.setWorkout(null);
         workout.getExercises().remove(exercise);
         exerciseRepository.save(exercise);
-        log.info("Removed {} to workout {} with id {}",exercise.getName(), workout.getName(), workout.getId());
+        log.info("Removed {} to workout {} with id {}", exercise.getName(), workout.getName(), workout.getId());
+        return workoutMapper.toDTO(workout);
+    }
+
+    @Override
+    public WorkoutDTO finishWorkout(UUID workoutId) {
+        Workout workout = workoutRepository.findById(workoutId).orElseThrow(
+                () -> {
+                    log.warn("Workout with id {} not found", workoutId);
+                    return new WorkoutNotFound("Workout not found with id " + workoutId);
+                }
+        );
+
+        workout.setStatus(WorkoutStatus.FINISHED);
+
         return workoutMapper.toDTO(workout);
     }
 
@@ -229,7 +246,7 @@ public class WorkoutServiceImpl implements WorkoutService {
     public void deleteWorkoutById(UUID id) {
         log.debug("Deleting workout {}", id);
         Workout workout = workoutRepository.findById(id).orElseThrow(
-                ()->{
+                () -> {
                     log.warn("Workout with id {} not found", id);
                     return new WorkoutNotFound("Workout not found with id " + id);
                 }

@@ -24,11 +24,10 @@ public class WorkoutController {
     }
 
     @PostMapping
-    public ResponseEntity<WorkoutDTO> createWorkout(@RequestBody WorkoutCreateDTO  workoutCreateDTO) {
+    public ResponseEntity<UUID> createWorkout(@RequestBody WorkoutCreateDTO workoutCreateDTO) {
         try {
             return ResponseEntity.ok(workoutService.createWorkout(workoutCreateDTO));
-        }
-        catch (UserNotFound ex) {
+        } catch (UserNotFound ex) {
             return ResponseEntity.notFound().build();
         }
     }
@@ -40,11 +39,11 @@ public class WorkoutController {
 
     @GetMapping("/byuser/{id}")
     public ResponseEntity<List<WorkoutDTO>> getWorkoutByUser(@PathVariable UUID id) {
-        try{
+        try {
             return ResponseEntity.ok(workoutService.getWorkoutByUserId(id));
 
-        }catch (UserNotFound ex){
-            return  ResponseEntity.notFound().build();
+        } catch (UserNotFound ex) {
+            return ResponseEntity.notFound().build();
         }
     }
 
@@ -56,66 +55,58 @@ public class WorkoutController {
 
     @PutMapping("/{id}")
     public ResponseEntity<WorkoutDTO> updateWorkout(@PathVariable UUID id, @RequestBody WorkoutUpdateDTO workoutUpdateDTO) {
-        try{
+        try {
             return ResponseEntity.ok(workoutService.updateWorkout(id, workoutUpdateDTO));
-        }
-        catch (UserNotFound ex) {
+        } catch (UserNotFound ex) {
             return ResponseEntity.notFound().build();
         }
     }
 
     @PutMapping("/addexc/{id}-{exerciseId}")
     public ResponseEntity<WorkoutDTO> addExerciseToWorkout(@PathVariable UUID id, @PathVariable UUID exerciseId) {
-        try{
+        try {
             return ResponseEntity.ok(workoutService.addExerciseToWorkout(id, exerciseId));
-        }
-        catch (ExerciseNotFound | WorkoutNotFound ex) {
-            return  ResponseEntity.notFound().build();
+        } catch (ExerciseNotFound | WorkoutNotFound ex) {
+            return ResponseEntity.notFound().build();
         }
     }
 
     @PutMapping("addexc/template/default/{id}-{templateId}")
     public ResponseEntity<WorkoutDTO> addDefaultExerciseToWorkout(@PathVariable UUID id, @PathVariable UUID templateId) {
-        try{
+        try {
             return ResponseEntity.ok(workoutService.addDefaultExerciseToWorkout(id, templateId));
-        }
-        catch (ExerciseNotFound | WorkoutNotFound ex) {
+        } catch (ExerciseNotFound | WorkoutNotFound ex) {
             return ResponseEntity.notFound().build();
         }
     }
 
     @PutMapping("addexc/template/usermade/{id}-{template}")
     public ResponseEntity<WorkoutDTO> addUserExerciseToWorkout(@PathVariable UUID id, @PathVariable UUID template) {
-        try
-        {
+        try {
             return ResponseEntity.ok(workoutService.addUserExerciseToWorkout(id, template));
-        }
-        catch (ExerciseNotFound | WorkoutNotFound ex) {
+        } catch (ExerciseNotFound | WorkoutNotFound ex) {
             return ResponseEntity.notFound().build();
         }
     }
 
     @DeleteMapping("/rmexc/{id}-{exerciseId}")
     public ResponseEntity<WorkoutDTO> removeExerciseFromWorkout(@PathVariable UUID id, @PathVariable UUID exerciseId) {
-        try{
+        try {
             return ResponseEntity.ok(workoutService.removeExerciseFromWorkout(id, exerciseId));
-        }
-        catch (ExerciseNotFound | WorkoutNotFound ex) {
-            return  ResponseEntity.notFound().build();
-        }
-        catch (IllegalStateException ex){
-            return  ResponseEntity.badRequest().build();
+        } catch (ExerciseNotFound | WorkoutNotFound ex) {
+            return ResponseEntity.notFound().build();
+        } catch (IllegalStateException ex) {
+            return ResponseEntity.badRequest().build();
         }
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteWorkout(UUID id) {
-        try{
+        try {
             workoutService.deleteWorkoutById(id);
             return ResponseEntity.ok("Workout with id " + id + " deleted");
-        }
-        catch (WorkoutNotFound ex) {
-            return  ResponseEntity.notFound().build();
+        } catch (WorkoutNotFound ex) {
+            return ResponseEntity.notFound().build();
         }
     }
 
