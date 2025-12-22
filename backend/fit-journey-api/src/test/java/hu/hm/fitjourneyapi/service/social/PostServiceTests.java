@@ -22,6 +22,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -53,7 +54,7 @@ public class PostServiceTests {
 
         when(postRepository.save(post)).thenReturn(post);
         when(postRepository.findPostsByUserId(user.getId())).thenReturn(List.of(post));
-        when(postRepository.findById(1L)).thenReturn(Optional.ofNullable(post));
+        when(postRepository.findById(any(UUID.class))).thenReturn(Optional.ofNullable(post));
         when(postRepository.findAll()).thenReturn(List.of(post));
         when(postMapper.toListPostDTO(List.of(post))).thenReturn(List.of(postDTO));
         when(postRepository.findById(post.getId())).thenReturn(Optional.of(post));

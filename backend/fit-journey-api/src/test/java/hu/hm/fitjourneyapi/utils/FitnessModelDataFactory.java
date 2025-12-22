@@ -26,8 +26,7 @@ public class FitnessModelDataFactory {
     public Workout createWorkout(User user){
         Workout workout = Workout.builder()
                 .user(user)
-                .name("Placeholder workout")
-                .lengthInMins(10).build();
+                .name("Placeholder workout").build();
         return workout;
     }
 

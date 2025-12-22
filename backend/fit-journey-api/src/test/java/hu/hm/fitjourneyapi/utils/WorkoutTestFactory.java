@@ -42,7 +42,6 @@ public class WorkoutTestFactory {
                 .user(user)
                 .name("Test Workout")
                 .description("This is for a test")
-                .lengthInMins(60)
                 .exercises(new ArrayList<>())
                 .build();
         List<Exercise> exercises = List.of(ExerciseTestFactory.getExercise(workout));

@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import hu.hm.fitjourneyapi.model.enums.ExerciseTypes;
 import hu.hm.fitjourneyapi.model.enums.WeightType;
-import io.swagger.v3.core.util.Json;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 

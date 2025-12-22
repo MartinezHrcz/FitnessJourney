@@ -71,7 +71,7 @@ public class FriendServiceImpl implements FriendService {
     @Override
     public FriendDTO updateFriend(UUID id, FriendDTO friendDTO) {
         log.debug("Attempting to update friend with id {} ", friendDTO.getId());
-        Friend friend = friendRepository.findById(friendDTO.getId()).orElseThrow(
+        Friend friend = friendRepository.findById(id).orElseThrow(
                 ()->{
                     log.warn("Friend with id {} not found", friendDTO.getId());
                     return new FriendNotFoundException("Friend with id " + friendDTO.getId() + " not found");

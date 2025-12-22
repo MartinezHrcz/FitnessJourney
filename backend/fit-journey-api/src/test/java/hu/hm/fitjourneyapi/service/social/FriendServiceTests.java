@@ -56,10 +56,10 @@ public class FriendServiceTests {
         relationship = FriendsTestFactory.getFriend(sender);
         relationshipDTO = FriendsTestFactory.getFriendDTO();
 
-        when(friendRepository.findById(any(long.class))).thenReturn(Optional.ofNullable(relationship));
+        when(friendRepository.findById(any(UUID.class))).thenReturn(Optional.ofNullable(relationship));
         when(friendRepository.save(any(Friend.class))).thenAnswer(invocation -> invocation.getArgument(0));
-        when(userRepository.findById(relationshipDTO.getUserId())).thenReturn(Optional.of(sender));
-        when(userRepository.findById(relationshipDTO.getFriendId())).thenReturn(Optional.of(recipient));
+        when(userRepository.findById(eq(relationshipDTO.getUserId()))).thenReturn(Optional.of(sender));
+        when(userRepository.findById(eq(relationshipDTO.getFriendId()))).thenReturn(Optional.of(recipient));
         when(friendRepository.findFriendsByUser_Id(any(UUID.class))).thenReturn(List.of(relationship));
         when(friendRepository.findFriendsByUser_Id(any(UUID.class))).thenReturn(List.of(relationship));
         when(friendRepository.findAll()).thenReturn(List.of(relationship));
@@ -132,7 +132,7 @@ public class FriendServiceTests {
 
     @Test
     public void updateFriend_relationNotFound_fail() {
-        when(friendRepository.findById(any(long.class))).thenReturn(Optional.empty());
+        when(friendRepository.findById(any(UUID.class))).thenReturn(Optional.empty());
         assertThrows(FriendNotFoundException.class, ()-> friendService.updateFriend(relationship.getId(), new FriendDTO()));
     }
 
@@ -157,7 +157,7 @@ public class FriendServiceTests {
 
     @Test
     public void deleteFriend_userNotFound_fail() {
-        when(friendRepository.findById(any(long.class))).thenReturn(Optional.empty());
+        when(friendRepository.findById(any(UUID.class))).thenReturn(Optional.empty());
         assertThrows(FriendNotFoundException.class,()->friendService.deleteFriend(relationship.getId()));
     }
 }

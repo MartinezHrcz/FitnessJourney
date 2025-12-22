@@ -48,7 +48,7 @@ public class TestFitnessDataFactory {
         Workout workout = Workout.builder()
                 .user(user)
                 .name("Placeholder workout")
-                .lengthInMins(10).build();
+                .build();
         workoutRepository.save(workout);
         return workout;
     }

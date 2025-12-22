@@ -33,7 +33,7 @@ public class WorkoutController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<WorkoutDTO> getWorkout(UUID id) {
+    public ResponseEntity<WorkoutDTO> getWorkout(@PathVariable UUID id) {
         return ResponseEntity.ok(workoutService.getWorkoutByWorkoutId(id));
     }
 

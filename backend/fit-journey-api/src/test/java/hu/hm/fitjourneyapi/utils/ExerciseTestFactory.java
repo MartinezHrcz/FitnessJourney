@@ -21,7 +21,7 @@ public class ExerciseTestFactory {
     public static Exercise getExercise(Workout workout) {
         Exercise exercise = Exercise
                 .builder()
-                .id(1L)
+                .id(UUID.randomUUID())
                 .name("Test Exercise")
                 .description("Exercise desc")
                 .workout(workout)
@@ -65,7 +65,7 @@ public class ExerciseTestFactory {
             {
                 ExerciseFlexibilitySetDTO ef = ExerciseFlexibilitySetDTO
                         .builder()
-                        .id(1L)
+                        .id(UUID.randomUUID())
                         .name("Test Exercise")
                         .description("Test exercise")
                         .workoutId(workoutId)

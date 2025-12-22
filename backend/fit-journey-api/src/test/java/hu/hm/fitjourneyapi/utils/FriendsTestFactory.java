@@ -17,6 +17,7 @@ public class FriendsTestFactory {
     public static FriendDTO getFriendDTO() {
         FriendDTO friendDTO =
                 FriendDTO.builder()
+                        .id(UUID.randomUUID())
                         .friendId(UUID.randomUUID())
                         .userId(UUID.randomUUID())
                         .requestedTime(LocalDateTime.MIN)
@@ -38,6 +39,7 @@ public class FriendsTestFactory {
 
         Friend friend = Friend
                 .builder()
+                .id(UUID.randomUUID())
                 .user(user1)
                 .friend(user2)
                 .status(FriendStatus.ACCEPTED)

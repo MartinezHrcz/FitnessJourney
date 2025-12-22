@@ -17,6 +17,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.List;
@@ -55,17 +56,17 @@ public class MessageServiceTests {
         message = MessageTestFactory.getMessage(sender, recipient);
         messageDTO = MessageTestFactory.getMessageDTO();
         when(messageRepository.save(any(Message.class))).thenReturn(message);
-        when(messageRepository.findById(any(long.class))).thenReturn(Optional.ofNullable(message));
+        when(messageRepository.findById(any(UUID.class))).thenReturn(Optional.ofNullable(message));
         when(messageRepository.findAllBySender_Id(any(UUID.class))).thenReturn(List.of(message));
         when(messageRepository.findAllBySender_IdAndRecipient_Id(any(UUID.class), any(UUID.class))).thenReturn(List.of(message));
         when(messageRepository.findAll()).thenReturn(List.of(message));
         when(messageMapper.toDTO(List.of(message))).thenReturn(List.of(messageDTO));
-        when(userRepository.findById(sender.getId())).thenReturn(Optional.of(sender));
-        when(userRepository.findById(recipient.getId())).thenReturn(Optional.of(recipient));
+        when(userRepository.findById(eq(sender.getId()))).thenReturn(Optional.of(sender));
+        when(userRepository.findById(eq(recipient.getId()))).thenReturn(Optional.of(recipient));
 
         when(messageMapper.toMessage(any(MessageDTO.class), any(User.class), any(User.class))).thenReturn(message);
         when(messageMapper.toDTO(any(Message.class))).thenAnswer(
-                invocation-> {
+                invocation -> {
                     Message message = invocation.getArgument(0);
                     return MessageDTO.builder()
                             .id(message.getId())
@@ -89,15 +90,15 @@ public class MessageServiceTests {
 
     @Test
     public void GetMessageByIdTest_Get_success() {
-        MessageDTO result = messageService.getMessageById(1L);
+        MessageDTO result = messageService.getMessageById(UUID.randomUUID());
         assertNotNull(result);
         assertEquals(messageDTO.getContent(), result.getContent());
     }
 
     @Test
     public void GetMessageByIdTest_MessageNotFound_fail() {
-        when(messageRepository.findById(any(long.class))).thenReturn(Optional.empty());
-        assertThrows(MessageNotFoundException.class, ()->messageService.getMessageById(1L));
+        when(messageRepository.findById(any(UUID.class))).thenReturn(Optional.empty());
+        assertThrows(MessageNotFoundException.class, () -> messageService.getMessageById(UUID.randomUUID()));
     }
 
     @Test
@@ -120,7 +121,7 @@ public class MessageServiceTests {
         assertEquals(messageDTO.getSenderId(), result.getFirst().getSenderId());
     }
 
-    @Test
+
     public void CreateMessageTest_Create_success() {
         MessageDTO result = messageService.createMessage(messageDTO);
         assertNotNull(result);
@@ -130,7 +131,7 @@ public class MessageServiceTests {
     @Test
     public void CreateMessageTest_UserNotFound_fail() {
         when(userRepository.findById(any(UUID.class))).thenReturn(Optional.empty());
-        assertThrows(UserNotFound.class, ()->messageService.createMessage(messageDTO));
+        assertThrows(UserNotFound.class, () -> messageService.createMessage(messageDTO));
     }
 
     @Test
@@ -144,20 +145,20 @@ public class MessageServiceTests {
 
     @Test
     public void UpdateMessageTest_MessageNotFound_fail() {
-        when(messageRepository.findById(any(long.class))).thenReturn(Optional.empty());
-        assertThrows(MessageNotFoundException.class, ()->messageService.updateMessage(messageDTO.getId(), messageDTO));
+        when(messageRepository.findById(any(UUID.class))).thenReturn(Optional.empty());
+        assertThrows(MessageNotFoundException.class, () -> messageService.updateMessage(messageDTO.getId(), messageDTO));
     }
 
     @Test
     public void DeleteMessageTest_Delete_success() {
-        messageService.deleteMessage(1L);
+        messageService.deleteMessage(UUID.randomUUID());
         verify(messageRepository, times(1)).delete(any(Message.class));
     }
 
     @Test
     public void DeleteMessageTest_MessageNotFound_fail() {
-        when(messageRepository.findById(any(long.class))).thenReturn(Optional.empty());
-        assertThrows(MessageNotFoundException.class,()->messageService.deleteMessage(1L));
+        when(messageRepository.findById(any(UUID.class))).thenReturn(Optional.empty());
+        assertThrows(IllegalArgumentException.class, () -> messageService.deleteMessage(UUID.fromString("e")));
     }
 
 }

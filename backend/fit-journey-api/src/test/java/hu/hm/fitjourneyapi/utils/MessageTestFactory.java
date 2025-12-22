@@ -10,7 +10,7 @@ import java.util.UUID;
 public class MessageTestFactory {
     public static Message getMessage(User sender, User recipient){
         return Message.builder()
-                .id(1L)
+                .id(UUID.randomUUID())
                 .sender(sender)
                 .recipient(recipient)
                 .content("Test Content")

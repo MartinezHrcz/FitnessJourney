@@ -37,6 +37,7 @@ public class UserTestFactory {
                 .heightInCm(180)
                 .weightInKg(100)
                 .birthday(LocalDate.of(1990, 1, 1))
+                .role(Roles.USER)
                 .build();
         return dto;
     }
@@ -69,6 +70,7 @@ public class UserTestFactory {
                 .weightInKg(100)
                 .password("EncodedPassword123!")
                 .birthday(LocalDate.of(1990, 1, 1))
+                .role(Roles.USER)
                 .build();
         List<Workout> workouts = new ArrayList<>();
         List<Friend> friends = new ArrayList<>();

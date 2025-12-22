@@ -61,7 +61,7 @@ public class WorkoutServiceTests {
         when(workoutMapper.toWorkout(workoutCreateDTO, user)).thenReturn(workout);
         when(repository.save(workout)).thenReturn(workout);
         when(repository.findWorkoutsByUser_Id(user.getId())).thenReturn(List.of(workout));
-        when(repository.findById(1L)).thenReturn(Optional.ofNullable(workout));
+        when(repository.findById(any(UUID.class))).thenReturn(Optional.ofNullable(workout));
         when(repository.findAll()).thenReturn(List.of(workout));
         when(workoutMapper.toDTOList(List.of(workout))).thenReturn(List.of(workoutDTO));
         when(userRepository.findById(any(UUID.class))).thenReturn(Optional.of(user));
@@ -74,8 +74,7 @@ public class WorkoutServiceTests {
                                     .name(w.getName())
                                     .description(w.getDescription())
                                     .userId(user.getId())
-                                    .lengthInMins(w.getLengthInMins())
-                                    .exercises((List<AbstractExerciseDTO>) List.of(ExerciseTestFactory.getExerciseDTO(ExerciseTypes.RESISTANCE, 1L)))
+                                    .exercises((List<AbstractExerciseDTO>) List.of(ExerciseTestFactory.getExerciseDTO(ExerciseTypes.RESISTANCE, w.getId())))
                                     .build();
                         }
                         );
@@ -85,9 +84,6 @@ public class WorkoutServiceTests {
     public void WorkoutCreateTest_WorkoutCreated_success() {
         UUID result = workoutService.createWorkout(workoutCreateDTO);
         assertNotNull(result);
-        assertEquals(workoutDTO.getName(), result.getName());
-        assertEquals(workoutDTO.getDescription(), result.getDescription());
-        assertEquals(workoutDTO.getUserId(), result.getUserId());
     }
 
     @Test
@@ -98,7 +94,7 @@ public class WorkoutServiceTests {
 
     @Test
     public void WorkoutUpdateTest_WorkoutUpdated_success() {
-        long idToUpdate = workoutDTO.getId();
+        UUID idToUpdate = workoutDTO.getId();
         WorkoutUpdateDTO update = WorkoutUpdateDTO.builder()
                 .name("Updated name")
                 .description("Updated desc")
@@ -108,14 +104,14 @@ public class WorkoutServiceTests {
 
         WorkoutDTO result = workoutService.updateWorkout(idToUpdate, update);
         assertNotNull(result);
-        assertEquals(0L, result.getId());
+        assertEquals(idToUpdate, result.getId());
         assertEquals(update.getName(), result.getName());
         assertEquals(update.getDescription(), result.getDescription());
     }
 
     @Test
     public void WorkoutUpdateTest_WorkoutIdNotFound_fail() {
-        long idToUpdate = workoutDTO.getId();
+        UUID idToUpdate = workoutDTO.getId();
         WorkoutUpdateDTO update = WorkoutUpdateDTO.builder()
                 .name("Updated name")
                 .description("Updated desc")
@@ -128,7 +124,7 @@ public class WorkoutServiceTests {
 
     @Test
     public void WorkoutUpdateTest_UserIdNotFound_fail() {
-        long idToUpdate = workoutDTO.getId();
+        UUID idToUpdate = workoutDTO.getId();
         WorkoutUpdateDTO update = WorkoutUpdateDTO.builder()
                 .name("Updated name")
                 .description("Updated desc")
@@ -141,7 +137,7 @@ public class WorkoutServiceTests {
 
     @Test
     public void WorkoutDeleteTest_WorkoutDeleted_success() {
-        long idToDelete = workoutDTO.getId();
+        UUID idToDelete = workoutDTO.getId();
         when(workoutRepository.findById(idToDelete)).thenReturn(Optional.ofNullable(workout));
         workoutService.deleteWorkoutById(idToDelete);
         verify(workoutRepository, times(1)).delete(any(Workout.class));
@@ -149,7 +145,7 @@ public class WorkoutServiceTests {
 
     @Test
     public void WorkoutDeleteTest_WorkoutIdNotFound_fail() {
-        long idToDelete = workoutDTO.getId();
+        UUID idToDelete = workoutDTO.getId();
         when(workoutRepository.findById(idToDelete)).thenReturn(Optional.empty());
         assertThrows(WorkoutNotFound.class, () -> workoutService.deleteWorkoutById(idToDelete));
     }
@@ -166,7 +162,7 @@ public class WorkoutServiceTests {
 
     @Test
     public void WorkoutGetByIdTest_WorkoutGet_success(){
-        WorkoutDTO result = workoutService.getWorkoutByWorkoutId(1L);
+        WorkoutDTO result = workoutService.getWorkoutByWorkoutId(UUID.randomUUID());
         assertNotNull(result);
         assertEquals(workoutDTO.getName(), result.getName());
         assertEquals(workoutDTO.getDescription(), result.getDescription());
@@ -176,8 +172,8 @@ public class WorkoutServiceTests {
 
     @Test
     public void WorkoutGetByIdTest_WorkoutIdNotFound_fail(){
-        when(workoutRepository.findById(1L)).thenReturn(Optional.empty());
-        assertThrows(WorkoutNotFound.class, () -> workoutService.getWorkoutByWorkoutId(1L));
+        when(workoutRepository.findById(any(UUID.class))).thenReturn(Optional.empty());
+        assertThrows(WorkoutNotFound.class, () -> workoutService.getWorkoutByWorkoutId(UUID.randomUUID()));
     }
 
     @Test

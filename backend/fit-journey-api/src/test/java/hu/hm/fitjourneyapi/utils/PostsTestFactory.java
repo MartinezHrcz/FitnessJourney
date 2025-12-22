@@ -10,7 +10,7 @@ import java.util.UUID;
 public class PostsTestFactory {
     public static Post getPost(User user){
         Post post = Post.builder()
-                .id(1L)
+                .id(UUID.randomUUID())
                 .user(user)
                 .title("Test Post")
                 .content("This is test content!")
@@ -22,7 +22,7 @@ public class PostsTestFactory {
     public static PostDTO getPostDTO(){
         PostDTO dto = PostDTO
                 .builder()
-                .id(1L)
+                .id(UUID.randomUUID())
                 .userId(UUID.randomUUID())
                 .title("Test Post")
                 .content("This is test content!")
