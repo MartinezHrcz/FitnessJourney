@@ -22,10 +22,6 @@ public class JwtUtil {
 
     private final long EXPIRATION_TIME = 1000 * 60 * 60 * 4;
 
-    private final String TOKEN_PREFIX = "Bearer ";
-
-    private final String HEADER_STRING = "Authorization";
-
     private Key getSigningKey() {
         return  new SecretKeySpec(SECRET_KEY.getBytes(), "HmacSHA256");
     }
@@ -57,10 +53,6 @@ public class JwtUtil {
     public List<String> extractRoles(String token){
         log.info(extractClaim(token, claims-> claims.get("roles", List.class)).toString());
         return extractClaim(token, claims-> claims.get("roles", List.class));
-    }
-
-    public String extractID(String token) {
-        return extractClaim(token, Claims::getSubject);
     }
 
     public String extractUsername(String token) {

@@ -22,6 +22,4 @@ public abstract class Set {
     @ManyToOne
     @JoinColumn(name = "exercise_id")
     private Exercise exercise;
-
-
 }

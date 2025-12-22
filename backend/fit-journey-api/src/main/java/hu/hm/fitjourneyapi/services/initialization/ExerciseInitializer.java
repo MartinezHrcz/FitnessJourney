@@ -27,24 +27,31 @@ public class ExerciseInitializer {
     }
 
     @PostConstruct
-    public void init(){
+    public void init() {
         log.info("Exercise initialization started");
-        try(InputStream is = ExerciseInitializer.class.getClassLoader().getResourceAsStream("defaultExercises.json")){
+        try (InputStream is = ExerciseInitializer.class.getClassLoader().getResourceAsStream("defaultExercises.json"))
+        {
             JsonNode defaultExercises = objectMapper.readTree(is).get("exercises");
-            for(JsonNode exercise: defaultExercises){
+
+            for (JsonNode exercise : defaultExercises) {
+
                 String name = exercise.get("name").asText();
+
                 if (exerciseRepository.existsByNameIgnoreCase(name)) continue;
+
                 DefaultExercise initialExercise = DefaultExercise.builder()
                         .name(name)
                         .description(exercise.get("description").asText())
                         .weightType(WeightType.valueOf(exercise.get("weightType").asText()))
                         .type(ExerciseTypes.valueOf(exercise.get("exerciseType").asText()))
                         .build();
+
                 exerciseRepository.save(initialExercise);
             }
-        } catch (IOException e) {
+        }
+        catch (IOException e)
+        {
             log.error("Exercise initialization failed", e);
-            e.printStackTrace();
         }
     }
 }
