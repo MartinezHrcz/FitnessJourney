@@ -62,6 +62,16 @@ public class WorkoutController {
         }
     }
 
+    @PutMapping("/{id}/finish")
+    public ResponseEntity<WorkoutDTO> finishWorkout(@PathVariable UUID id) {
+        try {
+            return ResponseEntity.ok(workoutService.finishWorkout(id));
+        }
+        catch (WorkoutNotFound ex) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
     @PutMapping("/addexc/{id}-{exerciseId}")
     public ResponseEntity<WorkoutDTO> addExerciseToWorkout(@PathVariable UUID id, @PathVariable UUID exerciseId) {
         try {

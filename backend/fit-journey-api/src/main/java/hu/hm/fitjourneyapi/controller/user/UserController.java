@@ -2,13 +2,13 @@ package hu.hm.fitjourneyapi.controller.user;
 
 import hu.hm.fitjourneyapi.dto.user.*;
 import hu.hm.fitjourneyapi.exception.userExceptions.UserNotFound;
-import hu.hm.fitjourneyapi.model.User;
 import hu.hm.fitjourneyapi.services.interfaces.UserService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.UUID;
 
@@ -65,7 +65,14 @@ public class UserController {
 
     @PostMapping
     public ResponseEntity<UserDTO> createUser(@RequestBody @Valid UserCreateDTO dto) {
-        return ResponseEntity.ok(userService.createUser(dto));
+        try {
+            return ResponseEntity.ok(userService.createUser(dto));
+        } catch (Exception e) {
+            if (e.getCause() instanceof SQLException) {
+                return ResponseEntity.badRequest().build();
+            }
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     @DeleteMapping
