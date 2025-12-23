@@ -3,14 +3,15 @@ package hu.hm.fitjourneyapi.services.implementation.fitness;
 
 import hu.hm.fitjourneyapi.dto.fitness.excercise.*;
 import hu.hm.fitjourneyapi.dto.fitness.set.AbstractSetDTO;
+import hu.hm.fitjourneyapi.dto.fitness.set.CardioSetDTO;
+import hu.hm.fitjourneyapi.dto.fitness.set.FlexibilitySetDTO;
+import hu.hm.fitjourneyapi.dto.fitness.set.StrengthSetDTO;
 import hu.hm.fitjourneyapi.exception.fitness.ExerciseNotFound;
 import hu.hm.fitjourneyapi.exception.fitness.SetNotFound;
 import hu.hm.fitjourneyapi.mapper.fitness.ExerciseMapper;
 import hu.hm.fitjourneyapi.mapper.fitness.SetMapper;
 import hu.hm.fitjourneyapi.model.User;
-import hu.hm.fitjourneyapi.model.fitness.Exercise;
-import hu.hm.fitjourneyapi.model.fitness.Set;
-import hu.hm.fitjourneyapi.model.fitness.Workout;
+import hu.hm.fitjourneyapi.model.fitness.*;
 import hu.hm.fitjourneyapi.repository.UserRepository;
 import hu.hm.fitjourneyapi.repository.fitness.ExerciseRepository;
 import hu.hm.fitjourneyapi.repository.fitness.SetRepository;
@@ -93,7 +94,7 @@ public class ExerciseServiceImpl implements ExerciseService {
     public AbstractExerciseDTO getById(UUID id) {
         log.debug("Fetching exercise by id {}", id);
         Exercise exercise = exerciseRepository.findById(id).orElseThrow(
-                ()-> new ExerciseNotFound("Exercise not found by id"));
+                () -> new ExerciseNotFound("Exercise not found by id"));
         return exerciseMapper.toExerciseDTO(exercise);
     }
 
@@ -152,7 +153,7 @@ public class ExerciseServiceImpl implements ExerciseService {
     public AbstractExerciseDTO updateExercise(UUID id, ExerciseUpdateDTO dto) {
         log.debug("Updating exercise by id {}", id);
         Exercise exercise = exerciseRepository.findById(id).orElseThrow(
-                ()-> new ExerciseNotFound("Exercise not found by id")
+                () -> new ExerciseNotFound("Exercise not found by id")
         );
         exerciseMapper.updateExerciseFields(exercise, dto);
         exercise = exerciseRepository.save(exercise);
@@ -164,7 +165,7 @@ public class ExerciseServiceImpl implements ExerciseService {
     public AbstractExerciseDTO addSetById(UUID id, AbstractSetDTO abstractSetDTO) {
         log.debug("Adding set to exercise by id {}", id);
         Exercise exercise = exerciseRepository.findById(id).orElseThrow(
-                ()-> new ExerciseNotFound("Exercise not found by id")
+                () -> new ExerciseNotFound("Exercise not found by id")
         );
         Set set = setMapper.toEntity(abstractSetDTO, exercise);
         exercise.addSet(set);
@@ -174,13 +175,45 @@ public class ExerciseServiceImpl implements ExerciseService {
     }
 
     @Override
+    public AbstractExerciseDTO updateSetById(UUID id, long setId, AbstractSetDTO abstractSetDTO) {
+
+        Exercise exercise = exerciseRepository.findById(id).orElseThrow(
+                () -> new ExerciseNotFound("Exercise not found by id")
+        );
+
+        Set set = setRepository.findById(setId).orElseThrow(
+                () -> new SetNotFound("Set not found by id")
+        );
+
+        if (set instanceof StrengthSet && abstractSetDTO instanceof StrengthSetDTO) {
+            int weight = ((StrengthSetDTO) abstractSetDTO).getWeight();
+            int reps = ((StrengthSetDTO) abstractSetDTO).getReps();
+            ((StrengthSet) set).setWeight(weight);
+            ((StrengthSet) set).setReps(reps);
+        } else if (set instanceof CardioSet && abstractSetDTO instanceof CardioSetDTO) {
+            int duration = ((CardioSetDTO) abstractSetDTO).getDurationInSeconds();
+            double distance = ((CardioSetDTO) abstractSetDTO).getDistanceInKilometers();
+            ((CardioSet) set).setDurationInSeconds(duration);
+            ((CardioSet) set).setDistanceInKm(distance);
+        } else if (set instanceof FlexibilitySet && abstractSetDTO instanceof FlexibilitySetDTO) {
+            int reps = ((FlexibilitySetDTO) abstractSetDTO).getReps();
+            ((FlexibilitySet) set).setReps(reps);
+        }
+
+        exercise = exerciseRepository.save(exercise);
+        setRepository.save(set);
+
+        return exerciseMapper.toExerciseDTO(exercise);
+    }
+
+    @Override
     public AbstractExerciseDTO removeSetById(UUID id, long setid) {
         log.debug("Removing set from exercise by id {}", id);
         Exercise exercise = exerciseRepository.findById(id).orElseThrow(
-                ()-> new ExerciseNotFound("Exercise not found by id")
+                () -> new ExerciseNotFound("Exercise not found by id")
         );
         Set set = setRepository.findById(setid).orElseThrow(
-                ()-> new SetNotFound("Set not found by id")
+                () -> new SetNotFound("Set not found by id")
         );
 
         exercise.removeSet(set);
@@ -195,7 +228,7 @@ public class ExerciseServiceImpl implements ExerciseService {
     public void deleteExerciseById(UUID id) {
         log.debug("Deleting exercise with id {}", id);
         Exercise exercise = exerciseRepository.findById(id).orElseThrow(
-                ()-> new ExerciseNotFound("Exercise not found by id")
+                () -> new ExerciseNotFound("Exercise not found by id")
         );
         log.info("Deleted exercise with id {}", id);
         exerciseRepository.delete(exercise);

@@ -11,6 +11,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,13 +28,13 @@ public interface ExerciseMapper {
                 .sets(exercise.getSets().stream().map(
                         set ->
                         {
-                                StrengthSet strengthSet = (StrengthSet) set;
-                                return StrengthSetDTO.builder()
-                                        .id(strengthSet.getId())
-                                        .exerciseId(exercise.getId())
-                                        .reps(strengthSet.getReps())
-                                        .weight(strengthSet.getWeight())
-                                        .build();
+                            StrengthSet strengthSet = (StrengthSet) set;
+                            return StrengthSetDTO.builder()
+                                    .id(strengthSet.getId())
+                                    .exerciseId(exercise.getId())
+                                    .reps(strengthSet.getReps())
+                                    .weight(strengthSet.getWeight())
+                                    .build();
                         }
                 ).collect(Collectors.toList())).build();
     }
@@ -83,20 +84,18 @@ public interface ExerciseMapper {
 
     //Generic mapper test
     //refactoring
-    @SuppressWarnings("unchecked")
-    default <T extends AbstractExerciseDTO> T toExerciseDTO(Exercise exercise) {
+    default AbstractExerciseDTO toExerciseDTO(Exercise exercise) {
         if (exercise == null) return null;
 
         ExerciseTypes type = exercise.getType();
 
         switch (type) {
-            case RESISTANCE, BODY_WEIGHT, NOT_GIVEN ->
-            {
-                return (T) ExerciseStrengthSetDTO.builder()
+            case RESISTANCE, BODY_WEIGHT, NOT_GIVEN -> {
+                return ExerciseStrengthSetDTO.builder()
                         .id(exercise.getId())
                         .name(exercise.getName())
                         .description(exercise.getDescription())
-                        .workoutId(exercise.getWorkout() ==  null ? null : exercise.getWorkout().getId())
+                        .workoutId(exercise.getWorkout() == null ? null : exercise.getWorkout().getId())
                         .weightType(exercise.getWeightType())
                         .type(exercise.getType())
                         .sets(exercise.getSets().stream().map(
@@ -113,14 +112,13 @@ public interface ExerciseMapper {
                         ).collect(Collectors.toList())).build();
             }
 
-            case CARDIO ->
-            {
-                return (T) ExerciseCardioSetDTO.builder()
+            case CARDIO -> {
+                return ExerciseCardioSetDTO.builder()
                         .id(exercise.getId())
                         .name(exercise.getName())
                         .description(exercise.getDescription())
                         .weightType(exercise.getWeightType())
-                        .workoutId(exercise.getWorkout() ==  null ? null : exercise.getWorkout().getId())
+                        .workoutId(exercise.getWorkout() == null ? null : exercise.getWorkout().getId())
                         .type(exercise.getType())
                         .sets(exercise.getSets().stream().map(
                                 set ->
@@ -138,11 +136,11 @@ public interface ExerciseMapper {
             }
 
             case FLEXIBILITY -> {
-                return (T) ExerciseFlexibilitySetDTO.builder()
+                return ExerciseFlexibilitySetDTO.builder()
                         .id(exercise.getId())
                         .name(exercise.getName())
                         .description(exercise.getDescription())
-                        .workoutId(exercise.getWorkout() ==  null ? null : exercise.getWorkout().getId())
+                        .workoutId(exercise.getWorkout() == null ? null : exercise.getWorkout().getId())
                         .weightType(exercise.getWeightType())
                         .type(exercise.getType())
                         .sets(exercise.getSets().stream().map(
@@ -158,45 +156,33 @@ public interface ExerciseMapper {
                                 }
                         ).collect(Collectors.toList())).build();
             }
-            default -> throw new  InvalidSetType(exercise.getName());
+            default -> throw new InvalidSetType(exercise.getName());
         }
     }
 
 
-    @Mapping(source ="dto.id", target = "id")
-    @Mapping(source="dto.name", target = "name")
+    @Mapping(source = "dto.id", target = "id")
+    @Mapping(source = "dto.name", target = "name")
     @Mapping(source = "dto.description", target = "description")
-    @Mapping(target="workout", expression="java(workout)")
+    @Mapping(target = "workout", expression = "java(workout)")
     Exercise toExercise(AbstractExerciseDTO dto, Workout workout);
 
-    @Mapping(source ="dto.id", target = "id")
-    @Mapping(source="dto.name", target = "name")
+    @Mapping(source = "dto.id", target = "id")
+    @Mapping(source = "dto.name", target = "name")
     @Mapping(source = "dto.description", target = "description")
-    @Mapping(source="dto.type", target = "type")
+    @Mapping(source = "dto.type", target = "type")
     Exercise toExercise(AbstractExerciseDTO dto);
 
-    default List<Exercise> toExercises(List<AbstractExerciseDTO> exerciseDTOS, Workout workout){
+    default List<Exercise> toExercises(List<AbstractExerciseDTO> exerciseDTOS, Workout workout) {
         if (exerciseDTOS == null || exerciseDTOS.isEmpty()) return null;
         return exerciseDTOS.stream().map(dto -> toExercise(dto, workout)).collect(Collectors.toList());
     }
 
-
-
-    default List<AbstractExerciseDTO> toExerciseDTOs(List<Exercise> exercises){
-        if (exercises == null || exercises.isEmpty()) return null;
+    default List<AbstractExerciseDTO> toExerciseDTOs(List<Exercise> exercises) {
+        if (exercises == null || exercises.isEmpty()) return Collections.emptyList();
 
         return exercises.stream()
-                .map(
-                        exercise ->
-                        {
-                            switch (exercise.getType()){
-                                case ExerciseTypes.RESISTANCE, ExerciseTypes.BODY_WEIGHT, NOT_GIVEN: return toExerciseStrengthSetDTO(exercise);
-                                case ExerciseTypes.CARDIO: return toExerciseCardioSetDTO(exercise);
-                                case ExerciseTypes.FLEXIBILITY: return toExerciseFlexibilitySetDTO(exercise);
-                                default: throw new InvalidSetType("Incorrect exercise type " + exercise.getType());
-                            }
-                        }
-                ).collect(Collectors.toList());
+                .map(this::toExerciseDTO).collect(Collectors.toList());
     }
 
     default void updateExerciseFields(Exercise exercise, ExerciseUpdateDTO update) {

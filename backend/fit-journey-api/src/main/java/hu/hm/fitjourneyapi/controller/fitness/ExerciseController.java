@@ -87,7 +87,15 @@ public class ExerciseController {
         } catch (ExerciseNotFound ex) {
             return ResponseEntity.notFound().build();
         }
+    }
 
+    @PutMapping("/{id}/sets/{setId}")
+    public ResponseEntity<AbstractExerciseDTO> updateSet(@PathVariable UUID id, @PathVariable long setId, @RequestBody AbstractSetDTO abstractSetDTO) {
+        try {
+            return ResponseEntity.ok(exerciseService.updateSetById(id,setId, abstractSetDTO));
+        } catch (ExerciseNotFound ex) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @DeleteMapping("/removeset/{id}-{setid}")
