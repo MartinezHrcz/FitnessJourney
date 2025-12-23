@@ -20,16 +20,7 @@ public interface ExerciseService {
     AbstractExerciseDTO getById(UUID id);
 
     AbstractExerciseDTO createExercise(AbstractExerciseDTO dto) throws NoSuchFieldException;
-    /*
-    @Deprecated(forRemoval = true)
-    ExerciseStrengthSetDTO createExerciseStrengthSet(ExerciseStrengthSetDTO exerciseStrengthSetDTO);
 
-    @Deprecated(forRemoval = true)
-    ExerciseFlexibilitySetDTO createExerciseFlexibilitySet(ExerciseFlexibilitySetDTO flexibilitySetDTO);
-
-    @Deprecated(forRemoval = true)
-    ExerciseCardioSetDTO createExerciseCardioSet(ExerciseCardioSetDTO cardioSetDTO);
-    */
     AbstractExerciseDTO updateExercise(UUID id, ExerciseUpdateDTO dto);
 
     AbstractExerciseDTO addSetById(UUID id, AbstractSetDTO abstractSetDTO);
