@@ -28,7 +28,6 @@ public class WorkoutTestFactory {
                 .id(UUID.randomUUID())
                 .name("Test Workout")
                 .description("This is for a test")
-                .lengthInMins(60)
                 .exercises(new ArrayList<>())
                 .userId(userId)
                 .build();

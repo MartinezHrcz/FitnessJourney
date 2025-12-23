@@ -57,6 +57,7 @@ public class WorkoutServiceImpl implements WorkoutService {
                 }
         );
         Workout workout = workoutMapper.toWorkout(workoutCreateDTO, user);
+        workout.setStatus(WorkoutStatus.ONGOING);
         workout = workoutRepository.save(workout);
         user.addWorkout(workout);
         log.info("Created workout {} with id {}", workoutCreateDTO.getName(), workout.getId());
@@ -237,6 +238,7 @@ public class WorkoutServiceImpl implements WorkoutService {
         );
 
         workout.setStatus(WorkoutStatus.FINISHED);
+        workout = workoutRepository.save(workout);
 
         return workoutMapper.toDTO(workout);
     }

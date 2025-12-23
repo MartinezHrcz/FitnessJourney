@@ -98,7 +98,6 @@ public class WorkoutServiceTests {
         WorkoutUpdateDTO update = WorkoutUpdateDTO.builder()
                 .name("Updated name")
                 .description("Updated desc")
-                .lengthInMins(10)
                 .userId(userDTO.getId())
                 .build();
 
@@ -116,7 +115,6 @@ public class WorkoutServiceTests {
                 .name("Updated name")
                 .description("Updated desc")
                 .userId(userDTO.getId())
-                .lengthInMins(10)
                 .build();
         when(workoutRepository.findById(idToUpdate)).thenThrow(WorkoutNotFound.class);
         assertThrows(WorkoutNotFound.class, () -> workoutService.updateWorkout(idToUpdate, update));
@@ -128,7 +126,6 @@ public class WorkoutServiceTests {
         WorkoutUpdateDTO update = WorkoutUpdateDTO.builder()
                 .name("Updated name")
                 .description("Updated desc")
-                .lengthInMins(10)
                 .userId(userDTO.getId())
                 .build();
         when(workoutRepository.findById(idToUpdate)).thenThrow(WorkoutNotFound.class);
