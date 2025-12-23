@@ -98,7 +98,7 @@ public class ExerciseController {
         }
     }
 
-    @DeleteMapping("/removeset/{id}-{setid}")
+    @DeleteMapping("/removeset/{id}/{setid}")
     public ResponseEntity<AbstractExerciseDTO> removeSet(@PathVariable UUID id, @PathVariable long setid) {
         try {
             return ResponseEntity.ok(exerciseService.removeSetById(id, setid));
