@@ -23,9 +23,10 @@ import java.util.UUID;
         visible = true
 )
 @JsonSubTypes({
-        @JsonSubTypes.Type(value = StrengthSetDTO.class, names={"STRENGTH"}),
+        @JsonSubTypes.Type(value = StrengthSetDTO.class, names={"RESISTANCE"}),
         @JsonSubTypes.Type(value = CardioSetDTO.class, name="CARDIO"),
-        @JsonSubTypes.Type(value = FlexibilitySetDTO.class, name="FLEXIBILITY")
+        @JsonSubTypes.Type(value = FlexibilitySetDTO.class, name="FLEXIBILITY"),
+        @JsonSubTypes.Type(value = StrengthSetDTO.class, name = "BODY_WEIGHT")
 })
 public abstract class AbstractSetDTO {
     private long id;
