@@ -23,7 +23,7 @@ public class Exercise {
     @Enumerated(EnumType.STRING)
     private WeightType weightType = WeightType.NOT_GIVEN;
 
-    @Column(unique = true, nullable = false, length = 50)
+    @Column(nullable = false, length = 50)
     private String name;
     @Column(length = 400)
     private String description;
