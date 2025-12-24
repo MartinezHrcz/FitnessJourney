@@ -24,6 +24,7 @@ import java.util.UUID;
 )
 @JsonSubTypes({
         @JsonSubTypes.Type(value = StrengthSetDTO.class, names={"RESISTANCE"}),
+        @JsonSubTypes.Type(value = StrengthSetDTO.class, names={"STRENGTH"}),
         @JsonSubTypes.Type(value = CardioSetDTO.class, name="CARDIO"),
         @JsonSubTypes.Type(value = FlexibilitySetDTO.class, name="FLEXIBILITY"),
         @JsonSubTypes.Type(value = StrengthSetDTO.class, name = "BODY_WEIGHT")
