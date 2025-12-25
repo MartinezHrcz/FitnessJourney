@@ -23,6 +23,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -238,6 +239,23 @@ public class WorkoutServiceImpl implements WorkoutService {
         );
 
         workout.setStatus(WorkoutStatus.FINISHED);
+        workout.setEndDate(LocalDate.now());
+        workout = workoutRepository.save(workout);
+
+        return workoutMapper.toDTO(workout);
+    }
+
+    @Override
+    public WorkoutDTO cancelWorkout(UUID workoutId) {
+        Workout workout = workoutRepository.findById(workoutId).orElseThrow(
+                () -> {
+                    log.warn("Workout with id {} not found", workoutId);
+                    return new WorkoutNotFound("Workout not found with id " + workoutId);
+                }
+        );
+
+        workout.setStatus(WorkoutStatus.CANCELLED);
+        workout.setEndDate(LocalDate.now());
         workout = workoutRepository.save(workout);
 
         return workoutMapper.toDTO(workout);

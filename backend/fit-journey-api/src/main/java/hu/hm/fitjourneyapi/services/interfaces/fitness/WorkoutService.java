@@ -28,5 +28,7 @@ public interface WorkoutService {
 
     WorkoutDTO finishWorkout(UUID workoutId);
 
+    WorkoutDTO cancelWorkout(UUID workoutId);
+
     void deleteWorkoutById(UUID id);
 }

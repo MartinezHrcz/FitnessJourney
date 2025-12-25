@@ -72,6 +72,16 @@ public class WorkoutController {
         }
     }
 
+    @PutMapping("/{id}/cancel")
+    public ResponseEntity<WorkoutDTO> cancelWorkout(@PathVariable UUID id) {
+        try {
+            return ResponseEntity.ok(workoutService.cancelWorkout(id));
+        }
+        catch (WorkoutNotFound ex) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
     @PutMapping("/addexc/{id}/{exerciseId}")
     public ResponseEntity<WorkoutDTO> addExerciseToWorkout(@PathVariable UUID id, @PathVariable UUID exerciseId) {
         try {
