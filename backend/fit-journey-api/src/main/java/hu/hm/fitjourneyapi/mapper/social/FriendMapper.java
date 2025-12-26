@@ -1,5 +1,6 @@
 package hu.hm.fitjourneyapi.mapper.social;
 
+import hu.hm.fitjourneyapi.dto.social.friend.FriendCreateDTO;
 import hu.hm.fitjourneyapi.dto.social.friend.FriendDTO;
 import hu.hm.fitjourneyapi.model.User;
 import hu.hm.fitjourneyapi.model.social.Friend;
@@ -20,10 +21,13 @@ public interface FriendMapper {
 
     List<FriendDTO> toListFriendDTO(List<Friend> friends);
 
-    @Mapping(target="id", ignore = true)
     @Mapping(target = "user", expression = "java(user)")
     @Mapping(target = "friend", expression = "java(friend)")
-    Friend toFriend(FriendDTO dto, User user, User friend  );
+    Friend toFriend(FriendDTO dto, User user, User friend);
+
+    @Mapping(target = "user", expression = "java(user)")
+    @Mapping(target = "friend", expression = "java(friend)")
+    Friend toFriend(FriendCreateDTO dto, User user, User friend);
 
     @Named("userToId")
     static UUID userToId(User user) {

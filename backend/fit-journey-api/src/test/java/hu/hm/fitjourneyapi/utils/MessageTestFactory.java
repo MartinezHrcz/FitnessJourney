@@ -1,5 +1,6 @@
 package hu.hm.fitjourneyapi.utils;
 
+import hu.hm.fitjourneyapi.dto.social.message.CreateMessageDTO;
 import hu.hm.fitjourneyapi.dto.social.message.MessageDTO;
 import hu.hm.fitjourneyapi.model.User;
 import hu.hm.fitjourneyapi.model.social.Message;
@@ -24,6 +25,14 @@ public class MessageTestFactory {
                 .recipientId(UUID.randomUUID())
                 .content("Test Content")
                 .sentTime(LocalDateTime.now())
+                .build();
+    }
+
+    public static CreateMessageDTO getCreateMessageDTO(){
+        return CreateMessageDTO.builder()
+                .senderId(UUID.randomUUID())
+                .recipientId(UUID.randomUUID())
+                .content("Test Content")
                 .build();
     }
 }

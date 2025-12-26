@@ -1,5 +1,6 @@
 package hu.hm.fitjourneyapi.services.interfaces.social;
 
+import hu.hm.fitjourneyapi.dto.social.friend.FriendCreateDTO;
 import hu.hm.fitjourneyapi.dto.social.friend.FriendDTO;
 
 import java.util.List;
@@ -16,7 +17,7 @@ public interface FriendService {
 
     FriendDTO updateFriend(UUID id,FriendDTO friendDTO);
 
-    FriendDTO createFriend(FriendDTO friendDTO);
+    FriendDTO createFriend(FriendCreateDTO friendDTO);
 
     void deleteFriend(UUID id);
 }

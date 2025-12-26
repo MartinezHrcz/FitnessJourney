@@ -1,9 +1,9 @@
 package hu.hm.fitjourneyapi.services.implementation.social;
 
+import hu.hm.fitjourneyapi.dto.social.friend.FriendCreateDTO;
 import hu.hm.fitjourneyapi.dto.social.friend.FriendDTO;
 import hu.hm.fitjourneyapi.exception.social.friend.FriendNotFoundException;
 import hu.hm.fitjourneyapi.exception.userExceptions.UserNotFound;
-import hu.hm.fitjourneyapi.mapper.UserMapper;
 import hu.hm.fitjourneyapi.mapper.social.FriendMapper;
 import hu.hm.fitjourneyapi.model.User;
 import hu.hm.fitjourneyapi.model.social.Friend;
@@ -13,7 +13,6 @@ import hu.hm.fitjourneyapi.services.interfaces.social.FriendService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -83,12 +82,11 @@ public class FriendServiceImpl implements FriendService {
     }
 
     @Override
-    public FriendDTO createFriend(FriendDTO friendDTO) {
-        log.debug("Attempting to create friend with id {} ", friendDTO.getId());
+    public FriendDTO createFriend(FriendCreateDTO friendDTO) {
         User user = userRepository.findById(friendDTO.getUserId()).orElseThrow(
                 ()->{
-                    log.warn("Friend with id {} not found", friendDTO.getId());
-                    return new UserNotFound("Friend with id " + friendDTO.getId() + " not found");
+                    log.warn("Friend with id {} not found", friendDTO.getUserId());
+                    return new UserNotFound("Friend with id " + friendDTO.getUserId()+ " not found");
                 }
         );
         User friend = userRepository.findById(friendDTO.getFriendId()).orElseThrow(

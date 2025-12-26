@@ -1,5 +1,6 @@
 package hu.hm.fitjourneyapi.service.social;
 
+import hu.hm.fitjourneyapi.dto.social.message.CreateMessageDTO;
 import hu.hm.fitjourneyapi.dto.social.message.MessageDTO;
 import hu.hm.fitjourneyapi.dto.social.message.UpdateMessageDTO;
 import hu.hm.fitjourneyapi.dto.user.UserDTO;
@@ -45,6 +46,7 @@ public class MessageServiceTests {
 
     private Message message;
     private MessageDTO messageDTO;
+    private CreateMessageDTO createMessageDTO;
     private User sender;
     private User recipient;
 
@@ -56,6 +58,7 @@ public class MessageServiceTests {
         recipient.setId(UUID.randomUUID());
         message = MessageTestFactory.getMessage(sender, recipient);
         messageDTO = MessageTestFactory.getMessageDTO();
+        createMessageDTO = MessageTestFactory.getCreateMessageDTO();
         when(messageRepository.save(any(Message.class))).thenReturn(message);
         when(messageRepository.findById(any(UUID.class))).thenReturn(Optional.ofNullable(message));
         when(messageRepository.findAllBySender_Id(any(UUID.class))).thenReturn(List.of(message));
@@ -124,7 +127,8 @@ public class MessageServiceTests {
 
 
     public void CreateMessageTest_Create_success() {
-        MessageDTO result = messageService.createMessage(messageDTO);
+
+        MessageDTO result = messageService.createMessage(createMessageDTO);
         assertNotNull(result);
         assertEquals(messageDTO.getContent(), result.getContent());
     }
@@ -132,7 +136,7 @@ public class MessageServiceTests {
     @Test
     public void CreateMessageTest_UserNotFound_fail() {
         when(userRepository.findById(any(UUID.class))).thenReturn(Optional.empty());
-        assertThrows(UserNotFound.class, () -> messageService.createMessage(messageDTO));
+        assertThrows(UserNotFound.class, () -> messageService.createMessage(createMessageDTO));
     }
 
     @Test
