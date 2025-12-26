@@ -121,7 +121,7 @@ public class WorkoutController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteWorkout(UUID id) {
+    public ResponseEntity<String> deleteWorkout(@PathVariable UUID id) {
         try {
             workoutService.deleteWorkoutById(id);
             return ResponseEntity.ok("Workout with id " + id + " deleted");
