@@ -1,6 +1,8 @@
 package hu.hm.fitjourneyapi.services.implementation.social;
 
+import hu.hm.fitjourneyapi.dto.social.message.CreateMessageDTO;
 import hu.hm.fitjourneyapi.dto.social.message.MessageDTO;
+import hu.hm.fitjourneyapi.dto.social.message.UpdateMessageDTO;
 import hu.hm.fitjourneyapi.exception.social.message.MessageNotFoundException;
 import hu.hm.fitjourneyapi.exception.userExceptions.UserNotFound;
 import hu.hm.fitjourneyapi.mapper.social.MessageMapper;
@@ -76,8 +78,8 @@ public class MessageServiceImpl implements MessageService {
 
     @Transactional
     @Override
-    public MessageDTO createMessage(MessageDTO messageDTO) {
-        log.debug("Attempting to creat message");
+    public MessageDTO createMessage(CreateMessageDTO messageDTO) {
+        log.debug("Attempting to create message");
 
         User sender = userRepository.findById(messageDTO.getSenderId()).orElseThrow(
                 ()->{
@@ -99,7 +101,7 @@ public class MessageServiceImpl implements MessageService {
 
     @Transactional
     @Override
-    public MessageDTO updateMessage(UUID id, MessageDTO messageDTO) {
+    public MessageDTO updateMessage(UUID id, UpdateMessageDTO messageDTO) {
         log.debug("Attempting to update message");
         Message message = messageRepository.findById(id).orElseThrow(
                 ()-> {

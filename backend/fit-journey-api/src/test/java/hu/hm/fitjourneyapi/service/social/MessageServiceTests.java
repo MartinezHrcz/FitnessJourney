@@ -1,6 +1,7 @@
 package hu.hm.fitjourneyapi.service.social;
 
 import hu.hm.fitjourneyapi.dto.social.message.MessageDTO;
+import hu.hm.fitjourneyapi.dto.social.message.UpdateMessageDTO;
 import hu.hm.fitjourneyapi.dto.user.UserDTO;
 import hu.hm.fitjourneyapi.exception.social.message.MessageNotFoundException;
 import hu.hm.fitjourneyapi.exception.userExceptions.UserNotFound;
@@ -136,7 +137,7 @@ public class MessageServiceTests {
 
     @Test
     public void UpdateMessageTest_Update_success() {
-        MessageDTO updateDTO = MessageDTO.builder()
+        UpdateMessageDTO updateDTO = UpdateMessageDTO.builder()
                 .content("update content")
                 .build();
         MessageDTO result = messageService.updateMessage(messageDTO.getId(), updateDTO);
@@ -146,7 +147,7 @@ public class MessageServiceTests {
     @Test
     public void UpdateMessageTest_MessageNotFound_fail() {
         when(messageRepository.findById(any(UUID.class))).thenReturn(Optional.empty());
-        assertThrows(MessageNotFoundException.class, () -> messageService.updateMessage(messageDTO.getId(), messageDTO));
+        assertThrows(MessageNotFoundException.class, () -> messageService.updateMessage(messageDTO.getId(), new UpdateMessageDTO("")));
     }
 
     @Test

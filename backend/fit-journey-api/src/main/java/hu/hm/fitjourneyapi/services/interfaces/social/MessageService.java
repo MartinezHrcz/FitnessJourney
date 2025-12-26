@@ -1,6 +1,8 @@
 package hu.hm.fitjourneyapi.services.interfaces.social;
 
+import hu.hm.fitjourneyapi.dto.social.message.CreateMessageDTO;
 import hu.hm.fitjourneyapi.dto.social.message.MessageDTO;
+import hu.hm.fitjourneyapi.dto.social.message.UpdateMessageDTO;
 
 import java.util.List;
 import java.util.UUID;
@@ -14,9 +16,9 @@ public interface MessageService {
 
     List<MessageDTO> getMessagesBySenderAndRecipientId(UUID senderId, UUID recipientId);
 
-    MessageDTO createMessage(MessageDTO messageDTO);
+    MessageDTO createMessage(CreateMessageDTO messageDTO);
 
-    MessageDTO updateMessage(UUID id,MessageDTO messageDTO);
+    MessageDTO updateMessage(UUID id, UpdateMessageDTO messageDTO);
 
     void deleteMessage(UUID id);
 }
