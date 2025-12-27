@@ -35,7 +35,7 @@ public class UserController {
     ) {
         try {
             if (id != null) return ResponseEntity.ok(userService.getUserById(id));
-            else if (name != null) return ResponseEntity.ok(userService.getUserByName(name));
+            else if (name != null) return ResponseEntity.ok(userService.getAllUsersByName(name));
             else if (email != null) return ResponseEntity.ok(userService.getUserByEmail(email));
             else return ResponseEntity.badRequest().build();
         } catch (UserNotFound e) {

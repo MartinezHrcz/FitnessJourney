@@ -18,6 +18,9 @@ public class FriendDTO {
     private UUID id;
     private UUID userId;
     private UUID friendId;
+    private String friendName;
+    private String friendEmail;
+    private boolean isRequester;
     private FriendStatus status;
     private LocalDateTime requestedTime;
 

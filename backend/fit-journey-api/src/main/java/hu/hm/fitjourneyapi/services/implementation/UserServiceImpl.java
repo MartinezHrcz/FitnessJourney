@@ -153,12 +153,20 @@ public class UserServiceImpl implements UserService {
     @Transactional(readOnly = true)
     @Override
     public UserDTO getUserByName(String name) {
-        log.debug("Fetching users with name {} ", name);
+        log.debug("Fetching user with name {} ", name);
         User users = userRepository.findUserByName(name).orElseThrow(
                 () -> new UserNotFound("User not found with name:" + name)
         );
-        log.debug("Fetched users with name {} ", name);
+        log.debug("Fetched user with name {} ", name);
         return userMapper.toUserDTO(users);
+    }
+
+    @Override
+    public List<UserDTO> getAllUsersByName(String name) {
+        log.debug("Fetching user with name {} ", name);
+        List<User> users = userRepository.findAll().stream().filter(user -> user.getName().contains(name)).toList();
+        log.debug("Fetched user with name {} ", name);
+        return userMapper.toUserDTOList(users);
     }
 
     @Transactional(readOnly = true)
@@ -237,7 +245,8 @@ public class UserServiceImpl implements UserService {
                 }
         );
         log.info("Deleted user friend with id {} ", friend.getId());
-        user.removeFriend(friend);
+
+        friendRepository.deleteById(friend.getId());
     }
 
     @Transactional

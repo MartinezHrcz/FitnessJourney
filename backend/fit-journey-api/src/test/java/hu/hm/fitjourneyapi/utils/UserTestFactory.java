@@ -81,7 +81,6 @@ public class UserTestFactory {
         posts.add(PostsTestFactory.getPost(user));
 
         user.setWorkouts(workouts);
-        user.setFriends(friends);
         user.setPosts(posts);
 
         return user;

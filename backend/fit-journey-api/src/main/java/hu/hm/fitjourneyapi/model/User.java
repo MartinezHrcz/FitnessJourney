@@ -58,24 +58,6 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Post> posts = new ArrayList<>();
 
-    @Builder.Default
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Friend> friends = new ArrayList<>();
-
-    @Builder.Default
-    @OneToMany(mappedBy = "friend", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Friend> friendOf = new ArrayList<>();
-
-    public void addFriend(Friend friend) {
-        this.friends.add(friend);
-        friend.setUser(this);
-    }
-
-    public void removeFriend(Friend friend) {
-        this.friends.remove(friend);
-        friend.setUser(null);
-    }
-
     public void addPost(Post post) {
         this.posts.add(post);
         post.setUser(this);

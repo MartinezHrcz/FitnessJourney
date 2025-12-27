@@ -25,6 +25,7 @@ public interface MessageMapper {
     @Mapping(target = "recipient", expression = "java(recipient)")
     Message toMessage(MessageDTO dto,User sender, User recipient);
 
+    @Mapping(target = "id", ignore = true)
     @Mapping(target = "sender", expression = "java(sender)")
     @Mapping(target = "recipient", expression = "java(recipient)")
     Message toMessage(CreateMessageDTO dto, User sender, User recipient);

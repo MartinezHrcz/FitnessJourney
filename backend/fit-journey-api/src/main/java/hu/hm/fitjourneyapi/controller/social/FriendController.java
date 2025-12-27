@@ -2,6 +2,7 @@ package hu.hm.fitjourneyapi.controller.social;
 
 import hu.hm.fitjourneyapi.dto.social.friend.FriendCreateDTO;
 import hu.hm.fitjourneyapi.dto.social.friend.FriendDTO;
+import hu.hm.fitjourneyapi.model.enums.FriendStatus;
 import hu.hm.fitjourneyapi.services.interfaces.social.FriendService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -48,6 +49,17 @@ public class FriendController {
     public ResponseEntity<FriendDTO> createFriend(@RequestBody FriendCreateDTO friendDTO) {
         try{
             return ResponseEntity.ok(FriendService.createFriend(friendDTO));
+        }
+        catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @PutMapping("/{id}/accept")
+    public ResponseEntity acceptFriend(@PathVariable UUID id) {
+        try {
+            FriendService.updateFriend(id, FriendStatus.ACCEPTED);
+            return ResponseEntity.ok().build();
         }
         catch (Exception e) {
             return ResponseEntity.badRequest().build();

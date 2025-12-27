@@ -6,6 +6,7 @@ import hu.hm.fitjourneyapi.exception.social.friend.FriendNotFoundException;
 import hu.hm.fitjourneyapi.exception.userExceptions.UserNotFound;
 import hu.hm.fitjourneyapi.mapper.social.FriendMapper;
 import hu.hm.fitjourneyapi.model.User;
+import hu.hm.fitjourneyapi.model.enums.FriendStatus;
 import hu.hm.fitjourneyapi.model.social.Friend;
 import hu.hm.fitjourneyapi.repository.UserRepository;
 import hu.hm.fitjourneyapi.repository.social.FriendRepository;
@@ -13,6 +14,7 @@ import hu.hm.fitjourneyapi.services.interfaces.social.FriendService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -54,57 +56,53 @@ public class FriendServiceImpl implements FriendService {
     @Override
     public List<FriendDTO> getFriendsByUserId(UUID id) {
         log.debug("Fetching all friends with user id {} ", id);
-        List<Friend> friends = friendRepository.findFriendsByUser_Id(id);
+        List<Friend> friends = friendRepository.findFriendsByUser_IdOrFriend_Id(id,id);
         log.info("Fetched all friends with user id {} ", id);
-        return friendMapper.toListFriendDTO(friends);
+        return friendMapper.toListFriendDTO(friends, id);
     }
 
     @Override
-    public List<FriendDTO> getFriendsByUserIdAndRecipientName(UUID id, String recipientName) {
-        log.debug("Fetching all friends with user id {} and recipient name {} ", id, recipientName);
-        List<Friend> friends = friendRepository.findFriendsByUser_IdAndFriend_Name(id,recipientName);
-        log.info("Fetched all friends of user id {} and recipient name {} ", id, recipientName);
-        return friendMapper.toListFriendDTO(friends);
-    }
-
-    @Override
-    public FriendDTO updateFriend(UUID id, FriendDTO friendDTO) {
-        log.debug("Attempting to update friend with id {} ", friendDTO.getId());
+    public FriendDTO updateFriend(UUID id, FriendStatus status) {
+        log.debug("Attempting to update friend with id {} ", id);
         Friend friend = friendRepository.findById(id).orElseThrow(
                 ()->{
-                    log.warn("Friend with id {} not found", friendDTO.getId());
-                    return new FriendNotFoundException("Friend with id " + friendDTO.getId() + " not found");
+                    log.warn("Friend with id {} not found", id);
+                    return new FriendNotFoundException("Friend with id " + id + " not found");
                 }
         );
-        friend.setStatus(friendDTO.getStatus());
+        friend.setStatus(status);
         friend = friendRepository.save(friend);
         return friendMapper.toFriendDTO(friend);
     }
 
     @Override
     public FriendDTO createFriend(FriendCreateDTO friendDTO) {
-        User user = userRepository.findById(friendDTO.getUserId()).orElseThrow(
-                ()->{
-                    log.warn("Friend with id {} not found", friendDTO.getUserId());
-                    return new UserNotFound("Friend with id " + friendDTO.getUserId()+ " not found");
-                }
-        );
-        User friend = userRepository.findById(friendDTO.getFriendId()).orElseThrow(
-                ()-> {
-                    log.warn("Friend with id {} not found", friendDTO.getFriendId());
-                    return new UserNotFound("Friend with id " + friendDTO.getFriendId() + " not found");
-                }
-        );
+        boolean usersExist = userRepository.existsById(friendDTO.getUserId()) &&
+                userRepository.existsById(friendDTO.getFriendId());
 
-        Friend RelationshipFromUser = friendMapper.toFriend(friendDTO,user,friend);
-        Friend RelationshipToFriend = friendMapper.toFriend(friendDTO,friend,user);
+        if (!usersExist) {
+            throw new IllegalArgumentException("Users don't exist");
+        }
 
-        user.addFriend(RelationshipFromUser);
+        boolean exists = friendRepository.existsByFriend_IdAndUser_Id(friendDTO.getUserId(), friendDTO.getFriendId()) ||
+                friendRepository.existsByFriend_IdAndUser_Id(friendDTO.getFriendId(), friendDTO.getUserId());
 
-        RelationshipFromUser = friendRepository.save(RelationshipFromUser);
-        RelationshipToFriend = friendRepository.save(RelationshipToFriend);
+        if (exists) {
+            throw new IllegalStateException("Relationship already exists");
+        }
 
-        return friendMapper.toFriendDTO(RelationshipFromUser);
+        User sender = userRepository.findById(friendDTO.getUserId()).orElseThrow(() -> new UserNotFound("Sender not found"));
+        User recipient = userRepository.findById(friendDTO.getFriendId()).orElseThrow(() -> new UserNotFound("Recipient not found"));
+
+        Friend friendship = Friend.builder()
+                .user(sender)
+                .friend(recipient)
+                .status(FriendStatus.IN_PROGRESS)
+                .requestedTime(LocalDateTime.now())
+                .build();
+
+        friendship = friendRepository.save(friendship);
+        return friendMapper.toFriendDTO(friendship,sender.getId());
     }
 
     @Override
@@ -115,7 +113,6 @@ public class FriendServiceImpl implements FriendService {
                     return new FriendNotFoundException("Friend with id " + id + " not found");
                 }
         );
-        friend.getUser().removeFriend(friend);
         friendRepository.delete(friend);
     }
 }

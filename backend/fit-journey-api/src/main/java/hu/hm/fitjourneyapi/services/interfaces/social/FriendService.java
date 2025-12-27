@@ -2,6 +2,7 @@ package hu.hm.fitjourneyapi.services.interfaces.social;
 
 import hu.hm.fitjourneyapi.dto.social.friend.FriendCreateDTO;
 import hu.hm.fitjourneyapi.dto.social.friend.FriendDTO;
+import hu.hm.fitjourneyapi.model.enums.FriendStatus;
 
 import java.util.List;
 import java.util.UUID;
@@ -13,9 +14,7 @@ public interface FriendService {
 
     List<FriendDTO> getFriendsByUserId(UUID id);
 
-    List<FriendDTO> getFriendsByUserIdAndRecipientName(UUID id, String recipientName);
-
-    FriendDTO updateFriend(UUID id,FriendDTO friendDTO);
+    FriendDTO updateFriend(UUID id, FriendStatus status);
 
     FriendDTO createFriend(FriendCreateDTO friendDTO);
 

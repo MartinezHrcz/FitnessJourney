@@ -54,8 +54,6 @@ public class TestSocialDataFactory {
                 .user(user1)
                 .friend(user2)
                 .build();
-        user1.getFriends().add(friend);
-        user2.getFriends().add(friend);
         friendRepository.save(friend);
         return friend;
     }

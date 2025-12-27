@@ -173,7 +173,6 @@ public class UserServiceTests {
         UserWithFriendsDTO result = userService.getUserWithFriendsById(user.getId());
         assertNotNull(result);
         assertEquals(user.getEmail(), result.getEmail());
-        assertSame(user.getFriends().getFirst().getId(), result.getFriends().getFirst().getId());
     }
 
     @Test

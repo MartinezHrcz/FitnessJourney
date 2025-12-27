@@ -30,6 +30,7 @@ public interface UserService {
 
     UserDTO getUserByName(String name);
 
+    List<UserDTO> getAllUsersByName(String name);
 
     UserWithWorkoutsDTO getUserWithWorkoutsById(UUID id);
 
