@@ -74,49 +74,6 @@ public class SetServiceImpl implements SetService {
         return setMapper.toDto(set,set.getExercise());
     }
 
-    /*
-    @Deprecated
-    @Transactional
-    @Override
-    public StrengthSetDTO createStrengthSet(StrengthSetDTO strengthSetDTO) {
-        log.debug("Creating strength set with id: {}", strengthSetDTO.getId());
-        Exercise exercise = exerciseRepository.findById(strengthSetDTO.getExerciseId()).orElseThrow(
-                ()-> new ExerciseNotFound("Exercise with id " + strengthSetDTO.getExerciseId() + " not found")
-        );
-        StrengthSet set = setMapper.toStrengthSet(strengthSetDTO, exercise);
-        setRepository.save(set);
-        log.info("Created strength set with id: {}", strengthSetDTO.getId());
-        return setMapper.toStrengthSetDTO(set);
-    }
-
-    @Deprecated
-    @Transactional
-    @Override
-    public FlexibilitySetDTO createFlexibilitySet(FlexibilitySetDTO flexibilitySet) {
-        log.debug("Creating strength set with id: {}", flexibilitySet.getId());
-        Exercise exercise = exerciseRepository.findById(flexibilitySet.getExerciseId()).orElseThrow(
-                ()-> new ExerciseNotFound("Exercise with id " + flexibilitySet.getExerciseId() + " not found")
-        );
-        FlexibilitySet set = setMapper.toFlexibilitySet(flexibilitySet, exercise);
-        setRepository.save(set);
-        log.info("Created strength set with id: {}", flexibilitySet.getId());
-        return setMapper.toFlexibilitySetDTO(set);
-    }
-
-    @Deprecated
-    @Transactional
-    @Override
-    public CardioSetDTO createCardioSet(CardioSetDTO cardioSet) {
-        log.debug("Creating cardio set");
-        Exercise exercise = exerciseRepository.findById(cardioSet.getExerciseId()).orElseThrow(
-                ()-> new ExerciseNotFound("Exercise with id " + cardioSet.getExerciseId() + " not found")
-        );
-        CardioSet set = setMapper.toCardioSet(cardioSet, exercise);
-        setRepository.save(set);
-        log.info("Created strength set with id: {}", set.getId());
-        return setMapper.toCardioSetDTO(set);
-    }
-*/
     @Override
     public AbstractSetDTO updateSet(long id, AbstractSetDTO abstractSetDTO) {
         Set set =  setRepository.findById(id).orElseThrow(
@@ -135,50 +92,6 @@ public class SetServiceImpl implements SetService {
         log.info("Updated set with id: {}", id);
         return setMapper.toDto(set,set.getExercise());
     }
-
-    /*
-    @Transactional
-    @Override
-    public StrengthSetDTO updateStrengthSet(StrengthSetDTO strengthSetDTO) {
-        log.debug("Updating strength set with id: {}", strengthSetDTO.getId());
-        StrengthSet set = strengthSetRepository.findById(strengthSetDTO.getId()).orElseThrow(
-                () -> new SetNotFound("Set with id " + strengthSetDTO.getId() + " not found")
-        );
-        set.setReps(strengthSetDTO.getReps());
-        set.setWeight(strengthSetDTO.getWeight());
-        strengthSetRepository.save(set);
-        log.info("Updated strength set with id: {}", set.getId());
-        return setMapper.toStrengthSetDTO(set);
-    }
-
-    @Transactional
-    @Override
-    public FlexibilitySetDTO updateFlexibilitySet(FlexibilitySetDTO flexibilitySet) {
-        log.debug("Updating flexibility set with id: {}", flexibilitySet.getId());
-        FlexibilitySet set = flexibilitySetRepository.findById(flexibilitySet.getId()).orElseThrow(
-                () -> new SetNotFound("Set with id " + flexibilitySet.getId() + " not found")
-        );
-        set.setReps(flexibilitySet.getReps());
-        flexibilitySetRepository.save(set);
-        log.info("Updated flexibility set with id: {}", set.getId());
-        return setMapper.toFlexibilitySetDTO(set);
-    }
-
-    @Transactional
-    @Override
-    public CardioSetDTO updateCardioSet(CardioSetDTO cardioSet) {
-        log.debug("Updating cardio set with id: {}", cardioSet.getId());
-        CardioSet set = cardioSetRepository.findById(cardioSet.getId()).orElseThrow(
-                () -> new SetNotFound("Set with id " + cardioSet.getId() + " not found")
-        );
-
-        set.setDistanceInKm(cardioSet.getDistanceInKilometers());
-        set.setDurationInSeconds(cardioSet.getDurationInSeconds());
-        cardioSetRepository.save(set);
-        log.info("Updated cardio set with id: {}", set.getId());
-        return setMapper.toCardioSetDTO(set);
-    }
-     */
 
     @Transactional
     @Override
