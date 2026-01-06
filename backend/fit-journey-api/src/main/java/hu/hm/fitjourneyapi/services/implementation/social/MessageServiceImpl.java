@@ -15,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 
@@ -71,6 +72,8 @@ public class MessageServiceImpl implements MessageService {
     public List<MessageDTO> getMessagesBySenderAndRecipientId(UUID senderId, UUID recipientId) {
         log.debug("Getting messages by sender id {} and recipient id {}", senderId, recipientId);
         List<Message> messages = messageRepository.findAllBySender_IdAndRecipient_Id(senderId,recipientId);
+        messages.addAll(messageRepository.findAllBySender_IdAndRecipient_Id(recipientId,senderId));
+        messages.sort(Comparator.comparing(Message::getSentTime));
         List<MessageDTO> dtos = messageMapper.toDTO(messages);
         log.info("Got {} messages by sender and recipient id", messages.size());
         return dtos;

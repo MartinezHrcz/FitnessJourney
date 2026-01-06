@@ -23,5 +23,4 @@ public class FriendDTO {
     private boolean isRequester;
     private FriendStatus status;
     private LocalDateTime requestedTime;
-
 }

@@ -31,11 +31,11 @@ public class Message {
     private String content;
 
     @CreatedDate
-    @Column(updatable = false)
     private LocalDateTime sentTime;
 
     @PrePersist
-    public void generateId() {
+    protected void onCreate() {
         this.id = UUID.randomUUID();
+        this.sentTime = LocalDateTime.now();
     }
 }

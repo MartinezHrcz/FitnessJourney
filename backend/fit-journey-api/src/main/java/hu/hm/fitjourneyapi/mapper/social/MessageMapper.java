@@ -11,7 +11,6 @@ import org.mapstruct.ReportingPolicy;
 
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface MessageMapper {
