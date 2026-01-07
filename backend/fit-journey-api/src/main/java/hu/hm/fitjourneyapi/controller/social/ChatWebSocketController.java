@@ -23,7 +23,15 @@ public class ChatWebSocketController {
         MessageDTO messageDTO = messageService.createMessage(message);
 
         template.convertAndSendToUser(
-            message.getRecipientId().toString(), "/queue/message", messageDTO
+                messageDTO.getRecipientId().toString(),
+                "/queue/messages",
+                messageDTO
+        );
+
+        template.convertAndSendToUser(
+                messageDTO.getSenderId().toString(),
+                "/queue/messages",
+                messageDTO
         );
     }
 }

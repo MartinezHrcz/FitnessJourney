@@ -38,11 +38,14 @@ public class SecurityConfig {
         http.csrf(csrf -> csrf.disable())
                 .cors(cors -> cors.configurationSource(corsConfigurationSource))
                 .authorizeHttpRequests(
-                        auth -> auth.requestMatchers(
+                        auth -> auth
+                                .requestMatchers("/ws-chat/**").permitAll()
+                                .requestMatchers(
                                 "/api/auth/**",
                                 "/v3/api-docs/**",
                                 "/swagger-ui/**",
-                                "/swagger-ui.html").permitAll().anyRequest().authenticated()
+                                "/swagger-ui.html",
+                                "/ws-chat/**").permitAll().anyRequest().authenticated()
                 ).sessionManagement(session->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 ).authenticationProvider(authenticationProvider())
