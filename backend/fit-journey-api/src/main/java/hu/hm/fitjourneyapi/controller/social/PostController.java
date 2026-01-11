@@ -3,9 +3,13 @@ package hu.hm.fitjourneyapi.controller.social;
 import hu.hm.fitjourneyapi.dto.social.post.PostCreateDTO;
 import hu.hm.fitjourneyapi.dto.social.post.PostDTO;
 import hu.hm.fitjourneyapi.dto.social.post.PostUpdateDTO;
+import hu.hm.fitjourneyapi.model.social.Post;
 import hu.hm.fitjourneyapi.services.interfaces.social.PostService;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.UUID;
@@ -50,6 +54,17 @@ public class PostController {
             return ResponseEntity.ok(postService.createPost(createDTO));
         }
         catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @PostMapping(value = "/with-image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<PostDTO> createWithImage(
+            PostCreateDTO createDTO,
+            @RequestPart(value = "image", required = false) MultipartFile image) {
+        try {
+            return ResponseEntity.ok(postService.createPostWithImage(createDTO, image));
+        } catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }
     }

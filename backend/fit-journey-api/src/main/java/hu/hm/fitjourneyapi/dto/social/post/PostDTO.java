@@ -17,5 +17,7 @@ public class PostDTO {
     private String title;
     private String content;
     private UUID userId;
+    private String userName;
+    private String imageUrl;
     private LocalDateTime sentTime;
 }

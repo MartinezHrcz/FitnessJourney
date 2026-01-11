@@ -13,7 +13,12 @@ import hu.hm.fitjourneyapi.services.interfaces.social.PostService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.UUID;
 
@@ -24,14 +29,13 @@ public class PostServiceImpl implements PostService {
     private final PostRepository postRepository;
     private final PostMapper postMapper;
     private final UserRepository userRepository;
-
+    private final String uploadDir = "uploads/";
 
     public PostServiceImpl(PostRepository postRepository, PostMapper postMapper, UserRepository userRepository) {
         this.postRepository = postRepository;
         this.postMapper = postMapper;
         this.userRepository = userRepository;
     }
-
 
     @Transactional
     @Override
@@ -101,6 +105,31 @@ public class PostServiceImpl implements PostService {
         log.info("Created post with id: {} ",postCreateDTO.getUserId());
         post = postRepository.save(post);
         user.addPost(post);
+        return postMapper.toPostDTO(post);
+    }
+
+    @Override
+    public PostDTO createPostWithImage(PostCreateDTO postCreateDTO, MultipartFile image) {
+        String fileName = null;
+
+        if (image != null && image.isEmpty()) {
+            fileName = UUID.randomUUID() + "_" + image.getOriginalFilename();
+            Path path = Paths.get(uploadDir + fileName);
+
+            try {
+                Files.createDirectory(path.getParent());
+                Files.write(path, image.getBytes());
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        Post post = Post.builder()
+                .content(postCreateDTO.getContent())
+                .user(userRepository.findById(postCreateDTO.getUserId()).orElseThrow())
+                .imageUrl(fileName) // Store the filename reference
+                .build();
+
         return postMapper.toPostDTO(post);
     }
 
