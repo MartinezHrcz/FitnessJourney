@@ -22,5 +22,7 @@ public interface PostService {
 
     PostDTO createPostWithImage(PostCreateDTO postCreateDTO, MultipartFile image);
 
+    void likePost(UUID id, UUID userId);
+
     void deletePostById(UUID id);
 }

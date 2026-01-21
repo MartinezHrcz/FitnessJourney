@@ -18,7 +18,7 @@ public interface CommentService {
 
     List<CommentDTO> getComments();
 
-    CommentDTO createComment(CommentCreateDTO commentDTO);
+    CommentDTO createComment(CommentCreateDTO commentDTO, UUID postId, UUID userId);
 
     CommentDTO updateComment(UUID id, CreateMessageDTO commentDTO);
 

@@ -127,10 +127,15 @@ public class PostServiceImpl implements PostService {
         Post post = Post.builder()
                 .content(postCreateDTO.getContent())
                 .user(userRepository.findById(postCreateDTO.getUserId()).orElseThrow())
-                .imageUrl(fileName) // Store the filename reference
+                .imageUrl(fileName)
                 .build();
 
         return postMapper.toPostDTO(post);
+    }
+
+    @Override
+    public void likePost(UUID id, UUID userId) {
+
     }
 
     @Transactional
