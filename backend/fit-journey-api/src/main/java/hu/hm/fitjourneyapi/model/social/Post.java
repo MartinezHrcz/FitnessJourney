@@ -5,9 +5,9 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -19,6 +19,7 @@ import java.util.UUID;
 @EntityListeners(AuditingEntityListener.class)
 public class Post {
     @Id
+    @GeneratedValue
     private UUID id;
     @ToString.Exclude
     @ManyToOne
@@ -28,12 +29,15 @@ public class Post {
     private String content;
     private String imageUrl;
 
+    @ElementCollection
+    @CollectionTable(name = "post_likes", joinColumns = @JoinColumn(name = "post_id"))
+    @Column(name = "user_id")
+    private List<UUID> likedByUsers;
+
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Comment> comments;
+
     @CreatedDate
     @Column(nullable = false)
     private LocalDateTime sentTime;
-
-    @PrePersist
-    public void generateId() {
-        this.id = UUID.randomUUID();
-    }
 }
