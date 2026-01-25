@@ -20,7 +20,7 @@ public interface CommentService {
 
     CommentDTO createComment(CommentCreateDTO commentDTO, UUID postId, UUID userId);
 
-    CommentDTO updateComment(UUID id, CreateMessageDTO commentDTO);
+    CommentDTO updateComment(UUID id, String comment);
 
     void deleteComment(UUID id);
 }

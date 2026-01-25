@@ -97,7 +97,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public CommentDTO updateComment(UUID id, CreateMessageDTO commentDTO) {
+    public CommentDTO updateComment(UUID id, String content) {
         Comment comment = commentRepository.findById(id).orElseThrow(
                 () -> {
                     log.warn("Comment with id {} not found", id);
@@ -105,7 +105,7 @@ public class CommentServiceImpl implements CommentService {
                 }
         );
 
-        comment.setContent(commentDTO.getContent());
+        comment.setContent(content);
 
         comment = commentRepository.save(comment);
 
