@@ -76,7 +76,7 @@ public class CommentController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<CommentDTO> updateComment(@PathVariable UUID id, String content) {
+    public ResponseEntity<CommentDTO> updateComment(@PathVariable UUID id, @RequestBody String content) {
         try {
             return ResponseEntity.ok(commentService.updateComment(id, content));
         }catch (Exception e){
