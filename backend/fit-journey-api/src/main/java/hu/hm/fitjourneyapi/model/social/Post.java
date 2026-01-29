@@ -8,6 +8,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -19,7 +20,7 @@ import java.util.UUID;
 @EntityListeners(AuditingEntityListener.class)
 public class Post {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
     @ToString.Exclude
     @ManyToOne
@@ -30,9 +31,9 @@ public class Post {
     private String imageUrl;
 
     @ElementCollection
-    @CollectionTable(name = "post_likes", joinColumns = @JoinColumn(name = "post_id"))
+    @CollectionTable(name = "post_likes", joinColumns = @JoinColumn(name = "id"))
     @Column(name = "user_id")
-    private List<UUID> likedByUsers;
+    private Set<UUID> likedByUsers;
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments;

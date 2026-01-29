@@ -7,6 +7,7 @@ import hu.hm.fitjourneyapi.model.social.Post;
 import hu.hm.fitjourneyapi.services.interfaces.social.PostService;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -25,23 +26,25 @@ public class PostController {
     }
 
     @GetMapping
-    public ResponseEntity<List<PostDTO>> getAll() {
-        return ResponseEntity.ok(postService.getPosts());
+    public ResponseEntity<List<PostDTO>> getAll(Authentication authentication) {
+        return ResponseEntity.ok(postService.getPosts(UUID.fromString(authentication.getName())));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<PostDTO> getById(@PathVariable UUID id) {
+    public ResponseEntity<PostDTO> getById(@PathVariable UUID id, Authentication authentication) {
+        UUID currentUserId = UUID.fromString(authentication.getName());
         try {
-          return ResponseEntity.ok(postService.getPostById(id));
+          return ResponseEntity.ok(postService.getPostById(id, currentUserId));
         } catch (Exception e) {
             return ResponseEntity.notFound().build();
         }
     }
 
     @GetMapping("/user/{id}")
-    public ResponseEntity<List<PostDTO>> getByUserId(@PathVariable UUID id) {
+    public ResponseEntity<List<PostDTO>> getByUserId(Authentication authentication) {
+        UUID currentUserId = UUID.fromString(authentication.getName());
         try {
-          return ResponseEntity.ok(postService.getPostsByUserId(id));
+          return ResponseEntity.ok(postService.getPostsByUserId(currentUserId));
         }
         catch (Exception e) {
             return ResponseEntity.notFound().build();
@@ -70,9 +73,10 @@ public class PostController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<PostDTO> update(@PathVariable UUID id, @RequestBody PostUpdateDTO updateDTO) {
+    public ResponseEntity<PostDTO> update(@PathVariable UUID id, @RequestBody PostUpdateDTO updateDTO, Authentication authentication) {
+        UUID currentUserId = UUID.fromString(authentication.getName());
         try{
-            return ResponseEntity.ok(postService.updatePost(id, updateDTO));
+            return ResponseEntity.ok(postService.updatePost(id, updateDTO,currentUserId));
         }
         catch (Exception e) {
             return ResponseEntity.badRequest().build();

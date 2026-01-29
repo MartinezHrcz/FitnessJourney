@@ -13,4 +13,6 @@ public interface PostRepository extends JpaRepository<Post, UUID> {
     List<Post> findPostsByUser(User user);
 
     List<Post> findPostsByUserId(UUID id);
+
+    List<Post> user(User user);
 }

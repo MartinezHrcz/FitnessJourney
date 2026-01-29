@@ -2,7 +2,6 @@ package hu.hm.fitjourneyapi.services.implementation.social;
 
 import hu.hm.fitjourneyapi.dto.social.comment.CommentCreateDTO;
 import hu.hm.fitjourneyapi.dto.social.comment.CommentDTO;
-import hu.hm.fitjourneyapi.dto.social.message.CreateMessageDTO;
 import hu.hm.fitjourneyapi.mapper.social.CommentMapper;
 import hu.hm.fitjourneyapi.model.User;
 import hu.hm.fitjourneyapi.model.social.Comment;
@@ -90,7 +89,10 @@ public class CommentServiceImpl implements CommentService {
                 }
         );
 
-        Comment comment = mapper.toComment(commentDTO.getContent(), post, user);
+        Comment comment = Comment.builder()
+                        .post(post)
+                        .user(user)
+                        .content(commentDTO.getContent()).build();
 
         log.info("Created comment with id {} ", comment.getId());
         return  mapper.toCommentDTO(commentRepository.save(comment));

@@ -55,8 +55,8 @@ public class JwtUtil {
         return extractClaim(token, claims-> claims.get("roles", List.class));
     }
 
-    public String extractUsername(String token) {
-        return extractClaim(token, claims -> claims.get("username", String.class));
+    public String extractUserId(String token) {
+        return extractClaim(token, Claims::getSubject);
     }
 
     public Date extractExpiration(String token) {
@@ -67,9 +67,9 @@ public class JwtUtil {
         return extractExpiration(token).before(new Date());
     }
 
-    public boolean validateToken(String token, String id) {
-        final String tokenID = extractUsername(token);
-        return (tokenID.equals(id) && ! isTokenExpired(token));
+    public boolean validateToken(String token, String idFromContext) {
+        final String idFromToken = extractUserId(token);
+        return (idFromToken.equals(idFromContext) && !isTokenExpired(token));
     }
 
 }

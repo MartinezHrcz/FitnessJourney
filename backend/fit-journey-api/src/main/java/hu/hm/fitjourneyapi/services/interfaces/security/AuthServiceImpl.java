@@ -36,8 +36,10 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public AuthResponse login(AuthRequest request) {
+        UserDTO requestedUser = userService.getUserByName(request.getUsername());
+
         authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
+                new UsernamePasswordAuthenticationToken(requestedUser.getId().toString(), request.getPassword())
         );
 
         UserDTO user = userService.getUserByName(request.getUsername());

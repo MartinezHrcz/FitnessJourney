@@ -20,6 +20,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @Slf4j
@@ -39,7 +40,7 @@ public class PostServiceImpl implements PostService {
 
     @Transactional
     @Override
-    public PostDTO getPostById(UUID id) {
+    public PostDTO getPostById(UUID id, UUID currentUserId) {
         log.debug("Fetching post by id: {}", id);
         Post post = postRepository.findById(id).orElseThrow(()->
         {
@@ -48,16 +49,16 @@ public class PostServiceImpl implements PostService {
         }
         );
         log.info("Fetched post with id: {} ",id);
-        return postMapper.toPostDTO(post);
+        return postMapper.toPostDTO(post, currentUserId);
     }
 
     @Transactional
     @Override
-    public List<PostDTO> getPosts() {
+    public List<PostDTO> getPosts(UUID currentUserId) {
         log.debug("Fetching posts");
         List<Post> posts = postRepository.findAll();
         log.info("Fetched posts");
-        return postMapper.toListPostDTO(posts);
+        return postMapper.toListPostDTO(posts, currentUserId);
     }
 
     @Transactional
@@ -66,12 +67,12 @@ public class PostServiceImpl implements PostService {
         log.debug("Fetching posts by user id: {}", id);
         List<Post> posts = postRepository.findPostsByUserId(id);
         log.info("Fetched posts by user id: {} ",id);
-        return postMapper.toListPostDTO(posts);
+        return postMapper.toListPostDTO(posts, id);
     }
 
     @Transactional
     @Override
-    public PostDTO updatePost(UUID id, PostUpdateDTO postUpdateDTO) {
+    public PostDTO updatePost(UUID id, PostUpdateDTO postUpdateDTO, UUID currentUserId) {
         log.debug("Attempting to update post by id: {}", id);
         Post post = postRepository.findById(id).orElseThrow(
                 ()->{
@@ -84,7 +85,7 @@ public class PostServiceImpl implements PostService {
 
         log.info("Updated post with id: {} ",id);
         post = postRepository.save(post);
-        return postMapper.toPostDTO(post);
+        return postMapper.toPostDTO(post, currentUserId);
     }
 
     @Transactional
@@ -105,7 +106,7 @@ public class PostServiceImpl implements PostService {
         log.info("Created post with id: {} ",postCreateDTO.getUserId());
         post = postRepository.save(post);
         user.addPost(post);
-        return postMapper.toPostDTO(post);
+        return postMapper.toPostDTO(post, postCreateDTO.getUserId());
     }
 
     @Override
@@ -130,12 +131,25 @@ public class PostServiceImpl implements PostService {
                 .imageUrl(fileName)
                 .build();
 
-        return postMapper.toPostDTO(post);
+        return postMapper.toPostDTO(post, postCreateDTO.getUserId());
     }
 
     @Override
     public void likePost(UUID id, UUID userId) {
+        Post post = postRepository.findById(id)
+                .orElseThrow(() -> new PostNotFoundException("Post not found with id: " + id));
 
+        Set<UUID> likedByUsers = post.getLikedByUsers();
+
+        if (likedByUsers.contains(userId)) {
+            likedByUsers.remove(userId);
+            log.debug("User {} unliked post {}", userId, id);
+        } else {
+            likedByUsers.add(userId);
+            log.debug("User {} liked post {}", userId, id);
+        }
+
+        postRepository.save(post);
     }
 
     @Transactional

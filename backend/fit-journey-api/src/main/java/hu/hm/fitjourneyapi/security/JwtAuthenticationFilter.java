@@ -41,32 +41,35 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         final String authorizationHeader = request.getHeader("Authorization");
-        String username = null;
+        String userId = null;
         String jwt = null;
         List<String> roles = null;
+
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             jwt = authorizationHeader.substring(7);
-            username = jwtUtil.extractUsername(jwt);
+            userId = jwtUtil.extractUserId(jwt);
             roles = jwtUtil.extractRoles(jwt);
         }
-        if(username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+
+        if(userId != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails;
             try{
-                userDetails = userDetailsService.loadUserByUsername(username);
+                userDetails = userDetailsService.loadUserByUsername(userId);
             }
             catch(UsernameNotFoundException e){
-                log.info("User not found: " + username);
+                log.warn(e.getMessage());
                 return;
             }
 
             List<SimpleGrantedAuthority> authorities = roles.stream()
                     .map(role -> new SimpleGrantedAuthority("ROLE_" + role))
                     .toList();
-            if (jwtUtil.validateToken(jwt, username))
+
+            if (jwtUtil.validateToken(jwt, userId))
             {
                 UsernamePasswordAuthenticationToken authToken =
                         new UsernamePasswordAuthenticationToken(
-                                userDetails,
+                                userId,
                                 null,
                                 userDetails.getAuthorities()
                         );
