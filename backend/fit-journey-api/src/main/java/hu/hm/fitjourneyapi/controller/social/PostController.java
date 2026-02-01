@@ -86,6 +86,18 @@ public class PostController {
         }
     }
 
+    @PostMapping("/{id}/like")
+    public ResponseEntity<PostDTO> likePost(@PathVariable UUID id, Authentication authentication) {
+        try {
+            postService.likePost(id, UUID.fromString(authentication.getName()));
+            return ResponseEntity.ok().build();
+        }
+        catch (Exception e)
+        {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity delete(@PathVariable UUID id) {
         try{
