@@ -11,14 +11,14 @@ import java.util.UUID;
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface PostMapper {
 
-    @Mapping(source = "post.user", target = "userId", qualifiedByName = "userToId")
-    @Mapping(source = "post.user", target = "userName", qualifiedByName = "userToName")
+    @Mapping(source = "post.user.id", target = "userId")
+    @Mapping(source = "post.user.name", target = "userName")
     @Mapping(target = "likeCount", expression = "java(post.getLikedByUsers() != null ? post.getLikedByUsers().size() : 0)")
     @Mapping(target = "commentCount", expression = "java(post.getComments() != null ? post.getComments().size() : 0)")
     @Mapping(target = "likedByCurrentUser", expression = "java(checkIfLiked(post, currentUserId))")
-    PostDTO toPostDTO(Post post, UUID currentUserId);
+    PostDTO toPostDTO(Post post, @Context UUID currentUserId);
 
-    default boolean checkIfLiked(Post post, UUID currentUserId) {
+    default boolean checkIfLiked(Post post, @Context UUID currentUserId) {
         if (post.getLikedByUsers() == null || currentUserId == null) return false;
         return post.getLikedByUsers().contains(currentUserId);
     }

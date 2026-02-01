@@ -90,12 +90,12 @@ public class PostServiceImpl implements PostService {
 
     @Transactional
     @Override
-    public PostDTO createPost(PostCreateDTO postCreateDTO) {
+    public PostDTO createPost(PostCreateDTO postCreateDTO, UUID currentUserId) {
         log.debug("Attempting to create post");
-        User user =userRepository.findById(postCreateDTO.getUserId()).orElseThrow(
+        User user =userRepository.findById(currentUserId).orElseThrow(
                 ()-> {
-                    log.warn("User not found with id: {}", postCreateDTO.getUserId());
-                    return new PostNotFoundException("User not found with id: " + postCreateDTO.getUserId());
+                    log.warn("User not found with id: {}", currentUserId);
+                    return new PostNotFoundException("User not found with id: " + currentUserId);
                 }
         );
         Post post = Post.builder()
@@ -106,11 +106,11 @@ public class PostServiceImpl implements PostService {
         log.info("Created post with id: {} ",postCreateDTO.getUserId());
         post = postRepository.save(post);
         user.addPost(post);
-        return postMapper.toPostDTO(post, postCreateDTO.getUserId());
+        return postMapper.toPostDTO(post, currentUserId);
     }
 
     @Override
-    public PostDTO createPostWithImage(PostCreateDTO postCreateDTO, MultipartFile image) {
+    public PostDTO createPostWithImage(PostCreateDTO postCreateDTO, MultipartFile image, UUID currentUserId) {
         String fileName = null;
 
         if (image != null && image.isEmpty()) {

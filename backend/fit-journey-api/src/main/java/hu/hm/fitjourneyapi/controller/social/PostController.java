@@ -52,9 +52,10 @@ public class PostController {
     }
 
     @PostMapping
-    public ResponseEntity<PostDTO> create(@RequestBody PostCreateDTO createDTO) {
+    public ResponseEntity<PostDTO> create(@RequestBody PostCreateDTO createDTO, Authentication authentication) {
+        UUID currentUserId = UUID.fromString(authentication.getName());
         try {
-            return ResponseEntity.ok(postService.createPost(createDTO));
+            return ResponseEntity.ok(postService.createPost(createDTO, currentUserId));
         }
         catch (Exception e) {
             return ResponseEntity.badRequest().build();
@@ -64,9 +65,11 @@ public class PostController {
     @PostMapping(value = "/with-image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<PostDTO> createWithImage(
             PostCreateDTO createDTO,
-            @RequestPart(value = "image", required = false) MultipartFile image) {
+            @RequestPart(value = "image", required = false) MultipartFile image,
+            Authentication authentication) {
+        UUID currentUserId = UUID.fromString(authentication.getName());
         try {
-            return ResponseEntity.ok(postService.createPostWithImage(createDTO, image));
+            return ResponseEntity.ok(postService.createPostWithImage(createDTO, image, currentUserId));
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }

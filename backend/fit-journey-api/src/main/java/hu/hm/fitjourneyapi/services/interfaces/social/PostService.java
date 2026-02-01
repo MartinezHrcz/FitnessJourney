@@ -18,9 +18,9 @@ public interface PostService {
 
     PostDTO updatePost(UUID id,PostUpdateDTO postUpdateDTO, UUID currentUserId);
 
-    PostDTO createPost(PostCreateDTO postCreateDTO);
+    PostDTO createPost(PostCreateDTO postCreateDTOm, UUID currentUserId);
 
-    PostDTO createPostWithImage(PostCreateDTO postCreateDTO, MultipartFile image);
+    PostDTO createPostWithImage(PostCreateDTO postCreateDTO, MultipartFile image, UUID currentUserId);
 
     void likePost(UUID id, UUID userId);
 
