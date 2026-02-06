@@ -3,12 +3,10 @@ package hu.hm.fitjourneyapi.controller.social;
 import hu.hm.fitjourneyapi.dto.social.post.PostCreateDTO;
 import hu.hm.fitjourneyapi.dto.social.post.PostDTO;
 import hu.hm.fitjourneyapi.dto.social.post.PostUpdateDTO;
-import hu.hm.fitjourneyapi.model.social.Post;
 import hu.hm.fitjourneyapi.services.interfaces.social.PostService;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -64,7 +62,7 @@ public class PostController {
 
     @PostMapping(value = "/with-image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<PostDTO> createWithImage(
-            PostCreateDTO createDTO,
+            @RequestPart("content") PostCreateDTO createDTO,
             @RequestPart(value = "image", required = false) MultipartFile image,
             Authentication authentication) {
         UUID currentUserId = UUID.fromString(authentication.getName());

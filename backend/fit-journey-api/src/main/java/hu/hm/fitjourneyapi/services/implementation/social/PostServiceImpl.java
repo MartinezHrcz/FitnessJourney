@@ -9,16 +9,13 @@ import hu.hm.fitjourneyapi.model.User;
 import hu.hm.fitjourneyapi.model.social.Post;
 import hu.hm.fitjourneyapi.repository.UserRepository;
 import hu.hm.fitjourneyapi.repository.social.PostRepository;
+import hu.hm.fitjourneyapi.services.interfaces.common.FileShareService;
 import hu.hm.fitjourneyapi.services.interfaces.social.PostService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -30,12 +27,14 @@ public class PostServiceImpl implements PostService {
     private final PostRepository postRepository;
     private final PostMapper postMapper;
     private final UserRepository userRepository;
+    private final FileShareService fileShareService;
     private final String uploadDir = "uploads/";
 
-    public PostServiceImpl(PostRepository postRepository, PostMapper postMapper, UserRepository userRepository) {
+    public PostServiceImpl(PostRepository postRepository, PostMapper postMapper, UserRepository userRepository, FileShareService fileShareService) {
         this.postRepository = postRepository;
         this.postMapper = postMapper;
         this.userRepository = userRepository;
+        this.fileShareService = fileShareService;
     }
 
     @Transactional
@@ -112,26 +111,22 @@ public class PostServiceImpl implements PostService {
     @Override
     public PostDTO createPostWithImage(PostCreateDTO postCreateDTO, MultipartFile image, UUID currentUserId) {
         String fileName = null;
-
-        if (image != null && image.isEmpty()) {
-            fileName = UUID.randomUUID() + "_" + image.getOriginalFilename();
-            Path path = Paths.get(uploadDir + fileName);
-
-            try {
-                Files.createDirectory(path.getParent());
-                Files.write(path, image.getBytes());
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+        if (image != null && !image.isEmpty()) {
+            fileName = fileShareService.store(image);
         }
 
+        User user = userRepository.findById(currentUserId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
         Post post = Post.builder()
+                .title(postCreateDTO.getTitle())
                 .content(postCreateDTO.getContent())
-                .user(userRepository.findById(postCreateDTO.getUserId()).orElseThrow())
+                .user(user)
                 .imageUrl(fileName)
                 .build();
 
-        return postMapper.toPostDTO(post, postCreateDTO.getUserId());
+        Post savedPost = postRepository.save(post);
+        return postMapper.toPostDTO(savedPost, postCreateDTO.getUserId());
     }
 
     @Override
