@@ -1,10 +1,12 @@
 package hu.hm.fitjourneyapi.model.diet;
 
 import jakarta.persistence.*;
+import lombok.Data;
 
 import java.util.UUID;
 
 @Entity
+@Data
 public class MealEntry {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
