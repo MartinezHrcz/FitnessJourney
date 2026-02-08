@@ -13,7 +13,7 @@ public interface FoodItemMapper {
     FoodItem toEntity(FoodItemCreateDTO dto);
 
     @Mapping(target = "nutritionSummary", expression = "java(formatSummary(foodItem))")
-    FoodItemDTO toResponseDto(FoodItem foodItem);
+    FoodItemDTO toDto(FoodItem foodItem);
 
     default String formatSummary(FoodItem foodItem) {
         return String.format("%d kcal per %.1f %s",
