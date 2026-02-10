@@ -18,7 +18,12 @@ public class MealEntry {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "calorie_log_id")
+    private CalorieLog calorieLog;
+
     @ManyToOne
+    @JoinColumn(name = "fooditem_id")
     private FoodItem foodItem;
 
     private double amount;

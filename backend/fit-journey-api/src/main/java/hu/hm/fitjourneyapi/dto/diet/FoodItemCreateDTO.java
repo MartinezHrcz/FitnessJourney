@@ -3,7 +3,10 @@ package hu.hm.fitjourneyapi.dto.diet;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
+import lombok.*;
 
+@Data
+@Builder
 public class FoodItemCreateDTO {
     @NotBlank(message = "Food name is required")
     private String name;

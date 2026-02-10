@@ -24,7 +24,7 @@ public class CalorieLog {
     private UUID userId;
     private LocalDate date;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "calorieLog", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MealEntry> entries;
 
     public int getTotalCalories() {

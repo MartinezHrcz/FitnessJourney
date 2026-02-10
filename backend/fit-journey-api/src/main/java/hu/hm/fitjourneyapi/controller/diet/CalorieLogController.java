@@ -5,6 +5,7 @@ import hu.hm.fitjourneyapi.dto.diet.MealEntryCreateDTO;
 import hu.hm.fitjourneyapi.services.interfaces.diet.CalorieLogService;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -23,23 +24,29 @@ public class CalorieLogController {
     @GetMapping("/log/{date}")
     public ResponseEntity<CalorieLogDTO> getDailyLog(
             @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
-            @RequestParam UUID userId) {
-        return ResponseEntity.ok(calorieLogService.getDailyLog(userId, date));
+            Authentication authentication)
+    {
+        UUID currentUserId = UUID.fromString(authentication.getName());
+        return ResponseEntity.ok(calorieLogService.getDailyLog(currentUserId, date));
     }
 
     @PostMapping("/log/{date}/meal")
     public ResponseEntity<CalorieLogDTO> addMeal(
             @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
-            @RequestParam UUID userId,
-            @RequestBody MealEntryCreateDTO mealDto) {
-        return ResponseEntity.ok(calorieLogService.addMealToLog(userId, date, mealDto));
+            Authentication authentication,
+            @RequestBody MealEntryCreateDTO mealDto)
+    {
+        UUID currentUserId = UUID.fromString(authentication.getName());
+        return ResponseEntity.ok(calorieLogService.addMealToLog(currentUserId, date, mealDto));
     }
 
     @DeleteMapping("/log/{date}/meal/{mealEntryId}")
     public ResponseEntity<CalorieLogDTO> removeMeal(
             @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
             @PathVariable UUID mealEntryId,
-            @RequestParam UUID userId) {
-        return ResponseEntity.ok(calorieLogService.removeMealFromLog(userId, mealEntryId, date));
+            Authentication authentication)
+    {
+        UUID currentUserId = UUID.fromString(authentication.getName());
+        return ResponseEntity.ok(calorieLogService.removeMealFromLog(currentUserId, mealEntryId, date));
     }
 }

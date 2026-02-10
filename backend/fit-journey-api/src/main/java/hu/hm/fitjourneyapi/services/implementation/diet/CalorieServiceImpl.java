@@ -46,15 +46,20 @@ public class CalorieServiceImpl implements CalorieLogService {
                 .orElseThrow(() -> new RuntimeException("Food not found"));
 
         MealEntry mealEntry = MealEntry.builder()
-                .id(UUID.randomUUID())
                 .foodItem(foodItem)
+                .calorieLog(log)
                 .amount(mealDto.getQuantity())
                 .build();
 
-        log.getEntries().add(mealEntry);
-        CalorieLog savedLog = calorieLogRepository.save(log);
+        if (log.getEntries() == null) {
+            log.setEntries(new ArrayList<>());
+        }
 
-        return calorieLogMapper.toDto(savedLog);
+        log.getEntries().add(mealEntry);
+
+        log = calorieLogRepository.save(log);
+
+        return calorieLogMapper.toDto(log);
     }
 
     @Override
@@ -70,7 +75,6 @@ public class CalorieServiceImpl implements CalorieLogService {
 
     private CalorieLog createEmptyLog(UUID userId, LocalDate date) {
         return CalorieLog.builder()
-                .id(UUID.randomUUID())
                 .userId(userId)
                 .date(date)
                 .entries(new ArrayList<>())
