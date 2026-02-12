@@ -28,4 +28,11 @@ public class FoodItem {
     private int protein;
     private int carbs;
     private int fats;
+
+    @Column(nullable = true)
+    private UUID userId;
+
+    public boolean isDefault() {
+        return userId == null;
+    }
 }

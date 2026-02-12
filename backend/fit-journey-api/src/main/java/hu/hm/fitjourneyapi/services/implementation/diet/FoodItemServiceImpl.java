@@ -33,9 +33,26 @@ public class FoodItemServiceImpl implements FoodItemService {
     }
 
     @Override
+    public FoodItemDTO createFoodItem(FoodItemCreateDTO dto, UUID userId) {
+        FoodItem foodItem = foodItemMapper.toEntity(dto, userId);
+
+        FoodItem savedFood = foodItemRepository.save(foodItem);
+        return foodItemMapper.toDto(savedFood);
+    }
+
+    @Override
     public List<FoodItemDTO> searchFoods(String name) {
         return foodItemRepository.findByNameContainingIgnoreCase(name)
                 .stream()
+                .map(foodItemMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<FoodItemDTO> searchFoods(String name, boolean defaults) {
+        return foodItemRepository.findByNameContainingIgnoreCase(name)
+                .stream()
+                .filter(x -> defaults == x.isDefault())
                 .map(foodItemMapper::toDto)
                 .collect(Collectors.toList());
     }
@@ -45,5 +62,29 @@ public class FoodItemServiceImpl implements FoodItemService {
         FoodItem foodItem = foodItemRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Food item not found with id: " + id));
         return foodItemMapper.toDto(foodItem);
+    }
+
+    @Override
+    public List<FoodItemDTO> getDefaultFoodItems() {
+        return foodItemRepository.findAll()
+                .stream()
+                .filter(FoodItem::isDefault)
+                .map(foodItemMapper::toDto)
+                .collect(Collectors.toList());    }
+
+    @Override
+    public List<FoodItemDTO> getUserCreatedFoodItems(UUID userId) {
+        return foodItemRepository.findAll()
+                .stream()
+                .filter(x -> x.getUserId().equals(userId))
+                .map(foodItemMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public void DeleteFoodItem(UUID id) {
+        FoodItem item = foodItemRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Food item not found with id: " + id));
+        foodItemRepository.delete(item);
     }
 }
