@@ -6,6 +6,7 @@ import hu.hm.fitjourneyapi.mapper.diet.FoodItemMapper;
 import hu.hm.fitjourneyapi.model.diet.FoodItem;
 import hu.hm.fitjourneyapi.repository.diet.FoodItemRepository;
 import hu.hm.fitjourneyapi.services.interfaces.diet.FoodItemService;
+import org.apache.coyote.BadRequestException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -41,15 +42,16 @@ public class FoodItemServiceImpl implements FoodItemService {
     }
 
     @Override
-    public List<FoodItemDTO> searchFoods(String name) {
+    public List<FoodItemDTO> searchFoods(String name, UUID userId) {
         return foodItemRepository.findByNameContainingIgnoreCase(name)
                 .stream()
+                .filter(foodItem ->  foodItem.getUserId() == null || foodItem.getUserId().equals(userId))
                 .map(foodItemMapper::toDto)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public List<FoodItemDTO> searchFoods(String name, boolean defaults) {
+    public List<FoodItemDTO> searchFoods(String name, boolean defaults, UUID userId) {
         return foodItemRepository.findByNameContainingIgnoreCase(name)
                 .stream()
                 .filter(x -> defaults == x.isDefault())
@@ -82,9 +84,12 @@ public class FoodItemServiceImpl implements FoodItemService {
     }
 
     @Override
-    public void DeleteFoodItem(UUID id) {
+    public void DeleteFoodItem(UUID id, UUID userId) throws BadRequestException {
         FoodItem item = foodItemRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Food item not found with id: " + id));
+        if (!item.getUserId().equals(userId)) {
+            throw new BadRequestException("Food item was created by other user");
+        }
         foodItemRepository.delete(item);
     }
 }
