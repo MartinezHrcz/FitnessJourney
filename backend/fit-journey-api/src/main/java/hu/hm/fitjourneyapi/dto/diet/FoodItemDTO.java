@@ -17,5 +17,6 @@ public class FoodItemDTO {
     private int carbs;
     private int fats;
 
+    private boolean isDefault;
     private String nutritionSummary;
 }

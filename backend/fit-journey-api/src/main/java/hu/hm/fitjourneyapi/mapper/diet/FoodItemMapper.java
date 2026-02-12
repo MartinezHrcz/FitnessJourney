@@ -20,6 +20,7 @@ public interface FoodItemMapper {
     FoodItem toEntity(FoodItemCreateDTO dto, UUID userId);
 
     @Mapping(target = "nutritionSummary", expression = "java(formatSummary(foodItem))")
+    @Mapping(target = "isDefault", expression = "java(foodItem.isDefault())")
     FoodItemDTO toDto(FoodItem foodItem);
 
     default String formatSummary(FoodItem foodItem) {
