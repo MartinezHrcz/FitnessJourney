@@ -4,16 +4,12 @@ import hu.hm.fitjourneyapi.dto.diet.FoodItemCreateDTO;
 import hu.hm.fitjourneyapi.dto.diet.FoodItemDTO;
 import hu.hm.fitjourneyapi.services.interfaces.diet.FoodItemService;
 import jakarta.validation.Valid;
-import org.apache.coyote.BadRequestException;
-import org.apache.tomcat.util.http.parser.Authorization;
-import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.lang.Nullable;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.UUID;
 
 @RestController
@@ -28,7 +24,7 @@ public class FoodItemController {
 
     @GetMapping("/search")
     public ResponseEntity<List<FoodItemDTO>> searchFoods(@RequestParam String name, @RequestParam(required = false) Boolean defaults, Authentication authentication) {
-        UUID currentUserId = UUID.fromString(authentication.name());
+        UUID currentUserId = UUID.fromString(authentication.getName());
         if (defaults != null) {
             return ResponseEntity.ok(foodItemService.searchFoods(name, defaults, currentUserId));
         }
@@ -42,7 +38,7 @@ public class FoodItemController {
 
     @PostMapping
     public ResponseEntity<FoodItemDTO> createFoodItem(@Valid @RequestBody FoodItemCreateDTO dto, Authentication authentication) {
-        UUID currentUserId = UUID.fromString(authentication.name());
+        UUID currentUserId = UUID.fromString(authentication.getName());
         return new ResponseEntity<>(foodItemService.createFoodItem(dto, currentUserId), HttpStatus.CREATED);
     }
 
@@ -53,13 +49,13 @@ public class FoodItemController {
 
     @GetMapping("/user/me")
     public ResponseEntity<List<FoodItemDTO>> getUserCreatedFoodItems(Authentication authentication) {
-        UUID currentUserId = UUID.fromString(authentication.name());
+        UUID currentUserId = UUID.fromString(authentication.getName());
         return ResponseEntity.ok(foodItemService.getUserCreatedFoodItems(currentUserId));
     }
 
     @DeleteMapping("/id")
     public ResponseEntity deleteFoodItem(@RequestParam UUID id, Authentication authentication) {
-        UUID currentUserId = UUID.fromString(authentication.name());
+        UUID currentUserId = UUID.fromString(authentication.getName());
         try {
             foodItemService.DeleteFoodItem(id, currentUserId);
         }

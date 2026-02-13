@@ -6,6 +6,7 @@ import hu.hm.fitjourneyapi.mapper.diet.FoodItemMapper;
 import hu.hm.fitjourneyapi.model.diet.FoodItem;
 import hu.hm.fitjourneyapi.repository.diet.FoodItemRepository;
 import hu.hm.fitjourneyapi.services.interfaces.diet.FoodItemService;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.coyote.BadRequestException;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +16,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class FoodItemServiceImpl implements FoodItemService {
 
     private final FoodItemRepository foodItemRepository;
@@ -43,11 +45,14 @@ public class FoodItemServiceImpl implements FoodItemService {
 
     @Override
     public List<FoodItemDTO> searchFoods(String name, UUID userId) {
-        return foodItemRepository.findByNameContainingIgnoreCase(name)
+        List<FoodItemDTO> foodItemDTOS = foodItemRepository.findByNameContainingIgnoreCase(name)
                 .stream()
                 .filter(foodItem ->  foodItem.getUserId() == null || foodItem.getUserId().equals(userId))
                 .map(foodItemMapper::toDto)
-                .collect(Collectors.toList());
+                .toList();
+
+        log.info("Returned {} number of food items", (long) foodItemDTOS.size());
+        return foodItemDTOS;
     }
 
     @Override
