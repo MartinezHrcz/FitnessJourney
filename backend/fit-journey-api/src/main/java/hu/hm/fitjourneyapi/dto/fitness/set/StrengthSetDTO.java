@@ -6,6 +6,7 @@ import lombok.experimental.SuperBuilder;
 
 @Getter
 @SuperBuilder
+@Setter
 @NoArgsConstructor
 public class StrengthSetDTO extends AbstractSetDTO{
     private int reps;
