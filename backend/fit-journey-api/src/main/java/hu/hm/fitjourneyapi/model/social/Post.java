@@ -7,6 +7,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -33,7 +34,7 @@ public class Post {
     @ElementCollection
     @CollectionTable(name = "post_likes", joinColumns = @JoinColumn(name = "id"))
     @Column(name = "user_id")
-    private Set<UUID> likedByUsers;
+    private Set<UUID> likedByUsers = new HashSet<>();
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments;

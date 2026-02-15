@@ -5,6 +5,7 @@ import hu.hm.fitjourneyapi.model.User;
 import hu.hm.fitjourneyapi.model.social.Post;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.UUID;
 
 public class PostsTestFactory {
@@ -14,6 +15,7 @@ public class PostsTestFactory {
                 .user(user)
                 .title("Test Post")
                 .content("This is test content!")
+                .likedByUsers(new HashSet<>())
                 .sentTime(LocalDateTime.now())
                 .build();
         return post;
