@@ -1,10 +1,7 @@
 package hu.hm.fitjourneyapi.dto.social.friend;
 
 import hu.hm.fitjourneyapi.model.enums.FriendStatus;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -13,6 +10,7 @@ import java.util.UUID;
 @Getter
 @NoArgsConstructor
 @Builder
+@Setter
 @AllArgsConstructor
 public class FriendDTO {
     private UUID id;
