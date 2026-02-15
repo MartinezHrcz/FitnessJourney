@@ -9,6 +9,7 @@ import lombok.experimental.SuperBuilder;
 import java.util.UUID;
 
 @Getter
+@Setter
 @SuperBuilder
 @AllArgsConstructor
 public class UserUpdateDTO extends AbstractUserDTO {

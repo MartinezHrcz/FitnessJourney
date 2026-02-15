@@ -12,6 +12,7 @@ import java.util.UUID;
 
 @Getter
 @SuperBuilder
+@Setter
 @NoArgsConstructor
 public class UserWithWorkoutsDTO extends AbstractUserDTO {
     private UUID id;

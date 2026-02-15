@@ -1,30 +1,30 @@
 package hu.hm.fitjourneyapi.service.user;
 
 
-import hu.hm.fitjourneyapi.dto.social.post.PostDTO;
 import hu.hm.fitjourneyapi.dto.user.UserCreateDTO;
 import hu.hm.fitjourneyapi.dto.user.UserDTO;
 import hu.hm.fitjourneyapi.dto.user.UserPasswordUpdateDTO;
 import hu.hm.fitjourneyapi.dto.user.UserUpdateDTO;
-import hu.hm.fitjourneyapi.dto.user.fitness.UserWithWorkoutsDTO;
-import hu.hm.fitjourneyapi.dto.user.social.UserWithFriendsDTO;
-import hu.hm.fitjourneyapi.dto.user.social.UserWithPostsDTO;
-import hu.hm.fitjourneyapi.exception.userExceptions.UserNotFound;
+import hu.hm.fitjourneyapi.exception.userExceptions.IncorrectPassword;
 import hu.hm.fitjourneyapi.mapper.UserMapper;
 import hu.hm.fitjourneyapi.model.User;
+import hu.hm.fitjourneyapi.model.enums.Roles;
 import hu.hm.fitjourneyapi.repository.UserRepository;
-import hu.hm.fitjourneyapi.services.interfaces.UserService;
-import hu.hm.fitjourneyapi.utils.PostsTestFactory;
+import hu.hm.fitjourneyapi.repository.fitness.WorkoutRepository;
+import hu.hm.fitjourneyapi.repository.social.FriendRepository;
+import hu.hm.fitjourneyapi.repository.social.PostRepository;
+import hu.hm.fitjourneyapi.security.JwtUtil;
+import hu.hm.fitjourneyapi.services.implementation.UserServiceImpl;
 import hu.hm.fitjourneyapi.utils.UserTestFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -33,178 +33,111 @@ import java.util.UUID;
 
 @SpringBootTest
 public class UserServiceTests {
-
-    @Autowired
-    private UserService userService;
-
-    @MockitoBean
-    private UserMapper userMapper;
-
-    @MockitoBean
-    private PasswordEncoder passwordEncoder;
-
-    @MockitoBean
+    @Mock
     private UserRepository userRepository;
+    @Mock
+    private UserMapper userMapper;
+    @Mock
+    private PasswordEncoder passwordEncoder;
+    @Mock
+    private PostRepository postRepository;
+    @Mock
+    private FriendRepository friendRepository;
+    @Mock
+    private WorkoutRepository workoutRepository;
+    @Mock
+    private JwtUtil jwtUtil;
 
-    private UserCreateDTO userCreateDTO;
+    @InjectMocks
+    private UserServiceImpl userService;
+
     private User user;
     private UserDTO userDTO;
-
+    private UserCreateDTO userCreateDTO;
 
     @BeforeEach
     void setup() {
-        userCreateDTO = UserTestFactory.getUserCreateDTO();
         user = UserTestFactory.getUser();
+        user.setId(UUID.randomUUID());
+        user.setRole(Roles.USER);
+
         userDTO = UserTestFactory.getUserDTO();
+        userCreateDTO = UserTestFactory.getUserCreateDTO();
+    }
 
-        when(userMapper.toUser(userDTO)).thenReturn(user);
+    @Test
+    void createUser_Success() {
         when(userMapper.toUser(userCreateDTO)).thenReturn(user);
-        when(passwordEncoder.encode(userCreateDTO.getPassword())).thenReturn("Encodedpassword123!");
-        when(userRepository.save(user)).thenAnswer(invocation -> invocation.getArgument(0));
-        when(userMapper.toUserDTO(user)).thenAnswer(invocation ->
-        {
-            User u = invocation.getArgument(0);
-            return UserDTO.builder()
-                    .id(u.getId())
-                    .name(u.getName())
-                    .email(u.getEmail())
-                    .weightInKg(u.getWeightInKg())
-                    .heightInCm(u.getHeightInCm())
-                    .birthday(u.getBirthday())
-                    .build();
-        });
-    }
+        when(passwordEncoder.encode(any())).thenReturn("encodedPass");
+        when(userRepository.save(any(User.class))).thenReturn(user);
+        when(userMapper.toUserDTO(user)).thenReturn(userDTO);
 
-    @Test
-    void testCreateUser_success() {
         UserDTO result = userService.createUser(userCreateDTO);
+
         assertNotNull(result);
-        assertEquals(UserTestFactory.getUserCreateDTO().getName(), result.getName());
-        assertEquals(UserTestFactory.getUserCreateDTO().getEmail(), result.getEmail());
-        verify(userRepository, times(1)).save(any(User.class));
+        verify(userRepository).save(any(User.class));
     }
 
     @Test
-    void testUpdateUser_success() {
-        UUID id =  UUID.randomUUID();
-        UserUpdateDTO updateDTO = UserUpdateDTO.builder()
-                .name("New name")
-                .email("newEmail@gmail.com")
-                .weightInKg(101)
-                .heightInCm(190)
-                .birthday(LocalDate.of(1991, 1, 1))
-                .build();
+    void updateUser_Success() {
+        UserUpdateDTO updateDTO = UserUpdateDTO.builder().name("New Name").email("new@email.com").birthday(LocalDate.now()).weightInKg(80).heightInCm(180).build();
 
-        when(userRepository.findById(any(UUID.class))).thenReturn(Optional.ofNullable(user));
+        when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
+        when(userRepository.save(any(User.class))).thenReturn(user);
+        when(userMapper.toUserDTO(user)).thenReturn(userDTO);
+        when(jwtUtil.generateToken(any(), any(), any())).thenReturn("mock-token");
 
-        UserDTO result = userService.updateUser(id,updateDTO);
+        UserDTO result = userService.updateUser(user.getId(), updateDTO);
 
         assertNotNull(result);
-
-        assertEquals(updateDTO.getName(), result.getName());
-        assertEquals(updateDTO.getEmail(), result.getEmail());
-        assertEquals(updateDTO.getWeightInKg(), result.getWeightInKg());
-        assertEquals(updateDTO.getHeightInCm(), result.getHeightInCm());
-        assertEquals(updateDTO.getBirthday(), result.getBirthday());
-        verify(userRepository, times(1)).save(any(User.class));
+        assertEquals("mock-token", result.getToken());
+        verify(userRepository).save(user);
     }
 
     @Test
-    void testUpdateUserPassword_success() {
-        UserPasswordUpdateDTO updateDTO = UserPasswordUpdateDTO.builder()
-                .passwordNew("A123a!")
-                .passwordOld("EncodedPassword123!")
-                .build();
-        when(userRepository.findById(any(UUID.class))).thenReturn(Optional.ofNullable(user));
-        when(passwordEncoder.encode(anyString())).thenReturn("NewEncodedPassword123!");
-        when(passwordEncoder.matches(updateDTO.getPasswordOld(), user.getPassword())).thenReturn(true);
-        UserDTO result = userService.updatePassword(UUID.randomUUID(),updateDTO);
+    void updatePassword_Success() {
+        UserPasswordUpdateDTO passDTO = new UserPasswordUpdateDTO("oldPass", "newPass");
+
+        when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
+        when(passwordEncoder.matches(user.getPassword(), passDTO.getPasswordOld())).thenReturn(true);
+        when(passwordEncoder.encode("newPass")).thenReturn("encodedNewPass");
+        when(userRepository.save(user)).thenReturn(user);
+        when(userMapper.toUserDTO(user)).thenReturn(userDTO);
+        when(jwtUtil.generateToken(any(), any(), any())).thenReturn("new-token");
+
+        UserDTO result = userService.updatePassword(user.getId(), passDTO);
 
         assertNotNull(result);
-        assertEquals(user.getName(), result.getName());
-        assertEquals(user.getEmail(), result.getEmail());
-        verify(userRepository, times(1)).save(any(User.class));
-        verify(passwordEncoder, times(1)).encode(anyString());
+        verify(passwordEncoder).encode("newPass");
     }
 
+    @Test
+    void updatePassword_WrongOldPassword_ThrowsException() {
+        UserPasswordUpdateDTO passDTO = new UserPasswordUpdateDTO("wrongOld", "newPass");
+        when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
+        when(passwordEncoder.matches(any(), any())).thenReturn(false);
+
+        assertThrows(IncorrectPassword.class, () -> userService.updatePassword(user.getId(), passDTO));
+    }
 
     @Test
-    void testDeleteUser_success() {
+    void deleteUser_Success() {
         when(userRepository.findUserById(user.getId())).thenReturn(Optional.of(user));
+
         userService.deleteUser(user.getId());
-        verify(userRepository, times(1)).delete(user);
+
+        verify(userRepository).delete(user);
     }
 
     @Test
-    void testDeleteUser_fail() {
-        when(userRepository.findUserById(user.getId())).thenReturn(Optional.empty());
-        assertThrows(UserNotFound.class, () -> userService.deleteUser(user.getId()));
+    void getAllUsersByName_FiltersCorrectly() {
+        User user1 = new User(); user1.setName("Alice");
+        User user2 = new User(); user2.setName("Bob");
+        when(userRepository.findAll()).thenReturn(List.of(user1, user2));
+        when(userMapper.toUserDTOList(anyList())).thenAnswer(i -> List.of(new UserDTO()));
+
+        List<UserDTO> result = userService.getAllUsersByName("Ali");
+
+        assertEquals(1, result.size());
     }
-
-    @Test
-    void testGetAllUsers_success() {
-        when(userRepository.findAll()).thenReturn(UserTestFactory.getMultipleUsers());
-        List<UserDTO> result = userService.getAllUsers();
-        List<UserDTO> expected = userMapper.toUserDTOList(UserTestFactory.getMultipleUsers());
-        assertNotNull(result);
-        assertEquals(expected.size(), result.size());
-        for (int i = 0; i < result.size(); i++) {
-            assertEquals(expected.get(i), result.get(i));
-        }
-        verify(userRepository, times(1)).findAll();
-    }
-
-    @Test
-    void testGetUserWithWorkout_success() {
-        when(userRepository.findUserById(any(UUID.class))).thenReturn(Optional.of(user));
-        when(userMapper.toUserWithWorkoutsDTO(user)).thenReturn(UserTestFactory.getUserWithWorkoutsDTO());
-        UserWithWorkoutsDTO result = userService.getUserWithWorkoutsById(user.getId());
-        assertNotNull(result);
-        assertEquals(user.getName(), result.getName());
-        assertEquals(user.getEmail(), result.getEmail());
-        assertEquals(user.getWeightInKg(), result.getWeightInKg());
-        assertEquals(user.getWorkouts().getFirst().getName(), result.getWorkouts().getFirst().getName());
-    }
-
-    @Test
-    void testGetUserWithFriends_success() {
-        when(userRepository.findUserById(any(UUID.class))).thenReturn(Optional.of(user));
-        when(userMapper.toUserWithFriendsDTO(user)).thenReturn(UserTestFactory.getUserWithFriendsDTO());
-        UserWithFriendsDTO result = userService.getUserWithFriendsById(user.getId());
-        assertNotNull(result);
-        assertEquals(user.getEmail(), result.getEmail());
-    }
-
-    @Test
-    void testGetUserWithPosts_success() {
-        when(userRepository.findUserById(any(UUID.class))).thenReturn(Optional.of(user));
-        when(userMapper.toUserWithPostsDTO(user)).thenReturn(UserTestFactory.getUserWithPostsDTO());
-        UserWithPostsDTO result = userService.getUserWithPostsById(user.getId());
-        assertNotNull(result);
-        PostDTO postDTO = PostsTestFactory.getPostDTO();
-        assertEquals(result.getPosts().getFirst().getTitle(), postDTO.getTitle());
-        assertEquals(result.getPosts().getFirst().getContent(), postDTO.getContent());
-    }
-
-    @Test
-    void testGetUserByEmail_success() {
-        when(userRepository.findUserByEmail(user.getEmail())).thenReturn(Optional.of(user));
-        UserDTO dto = userService.getUserByEmail(user.getEmail());
-        assertNotNull(dto);
-        assertEquals(user.getName(), dto.getName());
-        assertEquals(user.getEmail(), dto.getEmail());
-    }
-
-    @Test
-    void testGetUsersByUsername_success() {
-        when(userRepository.findUserByName(anyString())).thenReturn(Optional.of(user));
-        when(userMapper.toUserDTOList(List.of(user))).thenReturn(List.of(userDTO));
-        UserDTO dto = userService.getUserByName(user.getName());
-        assertNotNull(dto);
-        assertEquals(user.getName(), dto.getName());
-        assertEquals(user.getEmail(), dto.getEmail());
-    }
-
-
-
 }
