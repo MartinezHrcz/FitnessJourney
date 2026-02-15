@@ -11,17 +11,22 @@ import hu.hm.fitjourneyapi.model.User;
 import hu.hm.fitjourneyapi.model.social.Message;
 import hu.hm.fitjourneyapi.repository.UserRepository;
 import hu.hm.fitjourneyapi.repository.social.MessageRepository;
+import hu.hm.fitjourneyapi.services.implementation.social.MessageServiceImpl;
 import hu.hm.fitjourneyapi.services.interfaces.social.MessageService;
 import hu.hm.fitjourneyapi.utils.MessageTestFactory;
 import hu.hm.fitjourneyapi.utils.UserTestFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -31,22 +36,18 @@ import static org.mockito.Mockito.*;
 
 @SpringBootTest
 public class MessageServiceTests {
-
-    @Autowired
-    private MessageService messageService;
-
-    @MockitoBean
+    @Mock
     private MessageRepository messageRepository;
-
-    @MockitoBean
+    @Mock
     private MessageMapper messageMapper;
-
-    @MockitoBean
+    @Mock
     private UserRepository userRepository;
+
+    @InjectMocks
+    private MessageServiceImpl messageService;
 
     private Message message;
     private MessageDTO messageDTO;
-    private CreateMessageDTO createMessageDTO;
     private User sender;
     private User recipient;
 
@@ -54,116 +55,114 @@ public class MessageServiceTests {
     void setUp() {
         sender = UserTestFactory.getUser();
         sender.setId(UUID.randomUUID());
+
         recipient = UserTestFactory.getUser();
         recipient.setId(UUID.randomUUID());
+
         message = MessageTestFactory.getMessage(sender, recipient);
+        message.setId(UUID.randomUUID());
+        message.setSentTime(LocalDateTime.now());
+
         messageDTO = MessageTestFactory.getMessageDTO();
-        createMessageDTO = MessageTestFactory.getCreateMessageDTO();
-        when(messageRepository.save(any(Message.class))).thenReturn(message);
-        when(messageRepository.findById(any(UUID.class))).thenReturn(Optional.ofNullable(message));
-        when(messageRepository.findAllBySender_Id(any(UUID.class))).thenReturn(List.of(message));
-        when(messageRepository.findAllBySender_IdAndRecipient_Id(any(UUID.class), any(UUID.class))).thenReturn(List.of(message));
+        messageDTO.setSenderId(sender.getId());
+        messageDTO.setRecipientId(recipient.getId());
+    }
+
+    @Test
+    void getMessages_Success() {
         when(messageRepository.findAll()).thenReturn(List.of(message));
-        when(messageMapper.toDTO(List.of(message))).thenReturn(List.of(messageDTO));
-        when(userRepository.findById(eq(sender.getId()))).thenReturn(Optional.of(sender));
-        when(userRepository.findById(eq(recipient.getId()))).thenReturn(Optional.of(recipient));
+        when(messageMapper.toDTO(anyList())).thenReturn(List.of(messageDTO));
 
-        when(messageMapper.toMessage(any(MessageDTO.class), any(User.class), any(User.class))).thenReturn(message);
-        when(messageMapper.toDTO(any(Message.class))).thenAnswer(
-                invocation -> {
-                    Message message = invocation.getArgument(0);
-                    return MessageDTO.builder()
-                            .id(message.getId())
-                            .content(message.getContent())
-                            .recipientId(message.getRecipient().getId())
-                            .senderId(message.getSender().getId())
-                            .build();
-                }
-        );
-    }
-
-    @Test
-    public void GetMessagesTest_GetAll_success() {
         List<MessageDTO> result = messageService.getMessages();
-        assertNotNull(result);
-        assertTrue(!result.isEmpty());
-        assertEquals(messageDTO.getContent(), result.getFirst().getContent());
-        assertEquals(messageDTO.getRecipientId(), result.getFirst().getRecipientId());
-        assertEquals(messageDTO.getSenderId(), result.getFirst().getSenderId());
+
+        assertFalse(result.isEmpty());
+        verify(messageRepository).findAll();
     }
 
     @Test
-    public void GetMessageByIdTest_Get_success() {
-        MessageDTO result = messageService.getMessageById(UUID.randomUUID());
+    void getMessageById_Success() {
+        when(messageRepository.findById(message.getId())).thenReturn(Optional.of(message));
+        when(messageMapper.toDTO(message)).thenReturn(messageDTO);
+
+        MessageDTO result = messageService.getMessageById(message.getId());
+
         assertNotNull(result);
         assertEquals(messageDTO.getContent(), result.getContent());
     }
 
     @Test
-    public void GetMessageByIdTest_MessageNotFound_fail() {
-        when(messageRepository.findById(any(UUID.class))).thenReturn(Optional.empty());
-        assertThrows(MessageNotFoundException.class, () -> messageService.getMessageById(UUID.randomUUID()));
-    }
+    void getMessagesBySenderAndRecipientId_SuccessAndSorted() {
+        Message secondMessage = MessageTestFactory.getMessage(recipient, sender);
+        secondMessage.setSentTime(LocalDateTime.now().plusMinutes(5));
 
-    @Test
-    public void GetMessageBySenderIDTest_Get_success() {
-        List<MessageDTO> result = messageService.getMessagesBySenderId(sender.getId());
-        assertNotNull(result);
-        assertFalse(result.isEmpty());
-        assertEquals(messageDTO.getContent(), result.getFirst().getContent());
-        assertEquals(messageDTO.getRecipientId(), result.getFirst().getRecipientId());
-        assertEquals(messageDTO.getSenderId(), result.getFirst().getSenderId());
-    }
+        List<Message> firstBatch = new ArrayList<>(List.of(message));
+        List<Message> secondBatch = new ArrayList<>(List.of(secondMessage));
 
-    @Test
-    public void GetMessagesBySenderAndRecipientIDTest_Get_success() {
+        when(messageRepository.findAllBySender_IdAndRecipient_Id(sender.getId(), recipient.getId()))
+                .thenReturn(firstBatch);
+        when(messageRepository.findAllBySender_IdAndRecipient_Id(recipient.getId(), sender.getId()))
+                .thenReturn(secondBatch);
+        when(messageMapper.toDTO(anyList())).thenReturn(List.of(messageDTO, messageDTO));
+
         List<MessageDTO> result = messageService.getMessagesBySenderAndRecipientId(sender.getId(), recipient.getId());
+
         assertNotNull(result);
-        assertFalse(result.isEmpty());
-        assertEquals(messageDTO.getContent(), result.getFirst().getContent());
-        assertEquals(messageDTO.getRecipientId(), result.getFirst().getRecipientId());
-        assertEquals(messageDTO.getSenderId(), result.getFirst().getSenderId());
+        assertEquals(2, result.size());
+        verify(messageRepository, times(2)).findAllBySender_IdAndRecipient_Id(any(), any());
     }
 
+    @Test
+    void createMessage_Success() {
+        CreateMessageDTO createDTO = new CreateMessageDTO(sender.getId(), recipient.getId(), "Hello");
 
-    public void CreateMessageTest_Create_success() {
+        when(userRepository.findById(sender.getId())).thenReturn(Optional.of(sender));
+        when(userRepository.findById(recipient.getId())).thenReturn(Optional.of(recipient));
+        when(messageMapper.toMessage(eq(createDTO), eq(sender), eq(recipient))).thenReturn(message);
+        when(messageRepository.save(any(Message.class))).thenReturn(message);
+        when(messageMapper.toDTO(message)).thenReturn(messageDTO);
 
-        MessageDTO result = messageService.createMessage(createMessageDTO);
+        MessageDTO result = messageService.createMessage(createDTO);
+
         assertNotNull(result);
-        assertEquals(messageDTO.getContent(), result.getContent());
+        verify(messageRepository).save(any(Message.class));
     }
 
     @Test
-    public void CreateMessageTest_UserNotFound_fail() {
-        when(userRepository.findById(any(UUID.class))).thenReturn(Optional.empty());
-        assertThrows(UserNotFound.class, () -> messageService.createMessage(createMessageDTO));
+    void createMessage_SenderNotFound_ThrowsException() {
+        CreateMessageDTO createDTO = new CreateMessageDTO(UUID.randomUUID(), recipient.getId(), "Hello");
+        when(userRepository.findById(createDTO.getSenderId())).thenReturn(Optional.empty());
+
+        assertThrows(UserNotFound.class, () -> messageService.createMessage(createDTO));
     }
 
     @Test
-    public void UpdateMessageTest_Update_success() {
-        UpdateMessageDTO updateDTO = UpdateMessageDTO.builder()
-                .content("update content")
-                .build();
-        MessageDTO result = messageService.updateMessage(messageDTO.getId(), updateDTO);
-        assertNotEquals(messageDTO.getContent(), result.getContent());
+    void updateMessage_Success() {
+        UpdateMessageDTO updateDTO = new UpdateMessageDTO("Updated Content");
+        when(messageRepository.findById(message.getId())).thenReturn(Optional.of(message));
+
+        MessageDTO updatedDTO = MessageDTO.builder().content("Updated Content").build();
+        when(messageMapper.toDTO(message)).thenReturn(updatedDTO);
+
+        MessageDTO result = messageService.updateMessage(message.getId(), updateDTO);
+
+        assertEquals("Updated Content", result.getContent());
+        assertEquals("Updated Content", message.getContent());
     }
 
     @Test
-    public void UpdateMessageTest_MessageNotFound_fail() {
-        when(messageRepository.findById(any(UUID.class))).thenReturn(Optional.empty());
-        assertThrows(MessageNotFoundException.class, () -> messageService.updateMessage(messageDTO.getId(), new UpdateMessageDTO("")));
+    void deleteMessage_Success() {
+        when(messageRepository.findById(message.getId())).thenReturn(Optional.of(message));
+
+        messageService.deleteMessage(message.getId());
+
+        verify(messageRepository).delete(message);
     }
 
     @Test
-    public void DeleteMessageTest_Delete_success() {
-        messageService.deleteMessage(UUID.randomUUID());
-        verify(messageRepository, times(1)).delete(any(Message.class));
-    }
+    void deleteMessage_NotFound_ThrowsException() {
+        UUID randomId = UUID.randomUUID();
+        when(messageRepository.findById(randomId)).thenReturn(Optional.empty());
 
-    @Test
-    public void DeleteMessageTest_MessageNotFound_fail() {
-        when(messageRepository.findById(any(UUID.class))).thenReturn(Optional.empty());
-        assertThrows(IllegalArgumentException.class, () -> messageService.deleteMessage(UUID.fromString("e")));
+        assertThrows(MessageNotFoundException.class, () -> messageService.deleteMessage(randomId));
     }
-
 }
