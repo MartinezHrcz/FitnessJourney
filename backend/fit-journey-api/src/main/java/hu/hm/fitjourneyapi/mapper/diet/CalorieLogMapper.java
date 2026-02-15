@@ -5,6 +5,8 @@ import hu.hm.fitjourneyapi.model.diet.CalorieLog;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
+import java.util.List;
+
 @Mapper(componentModel = "spring", uses = {MealEntryMapper.class})
 public interface CalorieLogMapper {
 
@@ -13,6 +15,8 @@ public interface CalorieLogMapper {
     @Mapping(target = "totalCarbs", expression = "java(calculateTotalCarbs(entity))")
     @Mapping(target = "totalFats", expression = "java(calculateTotalFats(entity))")
     CalorieLogDTO toDto(CalorieLog entity);
+
+    List<CalorieLogDTO> toDto(List<CalorieLog> entityList);
 
     default int calculateTotalCals(CalorieLog entity) {
         return entity.getEntries().stream()

@@ -1,0 +1,454 @@
+{
+  "foodItems": [
+    {
+      "name": "Chicken Breast (Grilled)",
+      "servingSize": 100,
+      "servingUnit": "g",
+      "calories": 165,
+      "protein": 31,
+      "carbs": 0,
+      "fats": 4
+    },
+    {
+      "name": "Ground Beef (90% Lean)",
+      "servingSize": 100,
+      "servingUnit": "g",
+      "calories": 176,
+      "protein": 20,
+      "carbs": 0,
+      "fats": 10
+    },
+    {
+      "name": "Salmon Fillet",
+      "servingSize": 100,
+      "servingUnit": "g",
+      "calories": 208,
+      "protein": 20,
+      "carbs": 0,
+      "fats": 13
+    },
+    {
+      "name": "Whole Egg",
+      "servingSize": 1,
+      "servingUnit": "large",
+      "calories": 70,
+      "protein": 6,
+      "carbs": 0,
+      "fats": 5
+    },
+    {
+      "name": "Egg Whites",
+      "servingSize": 100,
+      "servingUnit": "g",
+      "calories": 52,
+      "protein": 11,
+      "carbs": 1,
+      "fats": 0
+    },
+    {
+      "name": "Canned Tuna (In Water)",
+      "servingSize": 1,
+      "servingUnit": "can",
+      "calories": 120,
+      "protein": 26,
+      "carbs": 0,
+      "fats": 1
+    },
+    {
+      "name": "Greek Yogurt (Plain 0%)",
+      "servingSize": 100,
+      "servingUnit": "g",
+      "calories": 59,
+      "protein": 10,
+      "carbs": 4,
+      "fats": 0
+    },
+    {
+      "name": "Cottage Cheese (Low Fat)",
+      "servingSize": 100,
+      "servingUnit": "g",
+      "calories": 82,
+      "protein": 11,
+      "carbs": 4,
+      "fats": 2
+    },
+    {
+      "name": "Whey Protein Powder",
+      "servingSize": 1,
+      "servingUnit": "scoop",
+      "calories": 120,
+      "protein": 24,
+      "carbs": 3,
+      "fats": 2
+    },
+    {
+      "name": "Tofu (Firm)",
+      "servingSize": 100,
+      "servingUnit": "g",
+      "calories": 83,
+      "protein": 8,
+      "carbs": 2,
+      "fats": 5
+    },
+    {
+      "name": "White Rice (Cooked)",
+      "servingSize": 100,
+      "servingUnit": "g",
+      "calories": 130,
+      "protein": 2,
+      "carbs": 28,
+      "fats": 0
+    },
+    {
+      "name": "Brown Rice (Cooked)",
+      "servingSize": 100,
+      "servingUnit": "g",
+      "calories": 111,
+      "protein": 3,
+      "carbs": 23,
+      "fats": 1
+    },
+    {
+      "name": "Oatmeal (Raw)",
+      "servingSize": 50,
+      "servingUnit": "g",
+      "calories": 190,
+      "protein": 7,
+      "carbs": 33,
+      "fats": 3
+    },
+    {
+      "name": "Quinoa (Cooked)",
+      "servingSize": 100,
+      "servingUnit": "g",
+      "calories": 120,
+      "protein": 4,
+      "carbs": 21,
+      "fats": 2
+    },
+    {
+      "name": "Potato (Boiled)",
+      "servingSize": 100,
+      "servingUnit": "g",
+      "calories": 87,
+      "protein": 2,
+      "carbs": 20,
+      "fats": 0
+    },
+    {
+      "name": "Sweet Potato",
+      "servingSize": 100,
+      "servingUnit": "g",
+      "calories": 86,
+      "protein": 2,
+      "carbs": 20,
+      "fats": 0
+    },
+    {
+      "name": "Pasta (Wheat, Cooked)",
+      "servingSize": 100,
+      "servingUnit": "g",
+      "calories": 131,
+      "protein": 5,
+      "carbs": 25,
+      "fats": 1
+    },
+    {
+      "name": "Whole Wheat Bread",
+      "servingSize": 1,
+      "servingUnit": "slice",
+      "calories": 80,
+      "protein": 4,
+      "carbs": 15,
+      "fats": 1
+    },
+    {
+      "name": "Lentils (Cooked)",
+      "servingSize": 100,
+      "servingUnit": "g",
+      "calories": 116,
+      "protein": 9,
+      "carbs": 20,
+      "fats": 0
+    },
+    {
+      "name": "Black Beans (Canned)",
+      "servingSize": 100,
+      "servingUnit": "g",
+      "calories": 91,
+      "protein": 6,
+      "carbs": 16,
+      "fats": 1
+    },
+    {
+      "name": "Banana",
+      "servingSize": 1,
+      "servingUnit": "medium",
+      "calories": 105,
+      "protein": 1,
+      "carbs": 27,
+      "fats": 0
+    },
+    {
+      "name": "Apple",
+      "servingSize": 1,
+      "servingUnit": "medium",
+      "calories": 95,
+      "protein": 0,
+      "carbs": 25,
+      "fats": 0
+    },
+    {
+      "name": "Blueberries",
+      "servingSize": 100,
+      "servingUnit": "g",
+      "calories": 57,
+      "protein": 1,
+      "carbs": 14,
+      "fats": 0
+    },
+    {
+      "name": "Strawberries",
+      "servingSize": 100,
+      "servingUnit": "g",
+      "calories": 32,
+      "protein": 1,
+      "carbs": 8,
+      "fats": 0
+    },
+    {
+      "name": "Avocado",
+      "servingSize": 100,
+      "servingUnit": "g",
+      "calories": 160,
+      "protein": 2,
+      "carbs": 9,
+      "fats": 15
+    },
+    {
+      "name": "Spinach (Raw)",
+      "servingSize": 100,
+      "servingUnit": "g",
+      "calories": 23,
+      "protein": 3,
+      "carbs": 4,
+      "fats": 0
+    },
+    {
+      "name": "Broccoli",
+      "servingSize": 100,
+      "servingUnit": "g",
+      "calories": 34,
+      "protein": 3,
+      "carbs": 7,
+      "fats": 0
+    },
+    {
+      "name": "Chicken Thigh (Skinless)",
+      "servingSize": 100,
+      "servingUnit": "g",
+      "calories": 179,
+      "protein": 26,
+      "carbs": 0,
+      "fats": 8
+    },
+    {
+      "name": "Cucumber",
+      "servingSize": 100,
+      "servingUnit": "g",
+      "calories": 15,
+      "protein": 1,
+      "carbs": 4,
+      "fats": 0
+    },
+    {
+      "name": "Tomato",
+      "servingSize": 100,
+      "servingUnit": "g",
+      "calories": 18,
+      "protein": 1,
+      "carbs": 4,
+      "fats": 0
+    },
+    {
+      "name": "Peanut Butter",
+      "servingSize": 1,
+      "servingUnit": "tbsp",
+      "calories": 94,
+      "protein": 4,
+      "carbs": 3,
+      "fats": 8
+    },
+    {
+      "name": "Almonds",
+      "servingSize": 30,
+      "servingUnit": "g",
+      "calories": 170,
+      "protein": 6,
+      "carbs": 6,
+      "fats": 14
+    },
+    {
+      "name": "Olive Oil",
+      "servingSize": 1,
+      "servingUnit": "tbsp",
+      "calories": 119,
+      "protein": 0,
+      "carbs": 0,
+      "fats": 14
+    },
+    {
+      "name": "Butter",
+      "servingSize": 1,
+      "servingUnit": "tbsp",
+      "calories": 102,
+      "protein": 0,
+      "carbs": 0,
+      "fats": 12
+    },
+    {
+      "name": "Walnuts",
+      "servingSize": 30,
+      "servingUnit": "g",
+      "calories": 185,
+      "protein": 4,
+      "carbs": 4,
+      "fats": 18
+    },
+    {
+      "name": "Cheddar Cheese",
+      "servingSize": 30,
+      "servingUnit": "g",
+      "calories": 115,
+      "protein": 7,
+      "carbs": 0,
+      "fats": 9
+    },
+    {
+      "name": "Milk (2%)",
+      "servingSize": 240,
+      "servingUnit": "ml",
+      "calories": 122,
+      "protein": 8,
+      "carbs": 12,
+      "fats": 5
+    },
+    {
+      "name": "Almond Milk (Unsweetened)",
+      "servingSize": 240,
+      "servingUnit": "ml",
+      "calories": 30,
+      "protein": 1,
+      "carbs": 1,
+      "fats": 3
+    },
+    {
+      "name": "Bacon (Cooked)",
+      "servingSize": 2,
+      "servingUnit": "slices",
+      "calories": 86,
+      "protein": 6,
+      "carbs": 0,
+      "fats": 7
+    },
+    {
+      "name": "Turkey Breast (Deli)",
+      "servingSize": 100,
+      "servingUnit": "g",
+      "calories": 104,
+      "protein": 17,
+      "carbs": 4,
+      "fats": 2
+    },
+    {
+      "name": "Bell Pepper",
+      "servingSize": 1,
+      "servingUnit": "medium",
+      "calories": 31,
+      "protein": 1,
+      "carbs": 6,
+      "fats": 0
+    },
+    {
+      "name": "Carrot (Raw)",
+      "servingSize": 100,
+      "servingUnit": "g",
+      "calories": 41,
+      "protein": 1,
+      "carbs": 10,
+      "fats": 0
+    },
+    {
+      "name": "Zucchini",
+      "servingSize": 100,
+      "servingUnit": "g",
+      "calories": 17,
+      "protein": 1,
+      "carbs": 3,
+      "fats": 0
+    },
+    {
+      "name": "Asparagus",
+      "servingSize": 100,
+      "servingUnit": "g",
+      "calories": 20,
+      "protein": 2,
+      "carbs": 4,
+      "fats": 0
+    },
+    {
+      "name": "Mushrooms",
+      "servingSize": 100,
+      "servingUnit": "g",
+      "calories": 22,
+      "protein": 3,
+      "carbs": 3,
+      "fats": 0
+    },
+    {
+      "name": "Orange",
+      "servingSize": 1,
+      "servingUnit": "medium",
+      "calories": 62,
+      "protein": 1,
+      "carbs": 15,
+      "fats": 0
+    },
+    {
+      "name": "Grapes",
+      "servingSize": 100,
+      "servingUnit": "g",
+      "calories": 67,
+      "protein": 1,
+      "carbs": 17,
+      "fats": 0
+    },
+    {
+      "name": "Rice Cakes",
+      "servingSize": 1,
+      "servingUnit": "cake",
+      "calories": 35,
+      "protein": 1,
+      "carbs": 7,
+      "fats": 0
+    },
+    {
+      "name": "Honey",
+      "servingSize": 1,
+      "servingUnit": "tbsp",
+      "calories": 64,
+      "protein": 0,
+      "carbs": 17,
+      "fats": 0
+    },
+    {
+      "name": "Dark Chocolate (70%)",
+      "servingSize": 30,
+      "servingUnit": "g",
+      "calories": 170,
+      "protein": 2,
+      "carbs": 13,
+      "fats": 12
+    }
+  ]
+}

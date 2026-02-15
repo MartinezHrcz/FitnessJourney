@@ -9,10 +9,11 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/diet")
+@RequestMapping("/api/diet/log")
 public class CalorieLogController {
 
     private final CalorieLogService calorieLogService;
@@ -21,7 +22,14 @@ public class CalorieLogController {
         this.calorieLogService = calorieLogService;
     }
 
-    @GetMapping("/log/{date}")
+    @GetMapping("/history")
+    public ResponseEntity<List<CalorieLogDTO>> getHistoryLog(Authentication authentication)
+    {
+        UUID currentUserId = UUID.fromString(authentication.getName());
+        return ResponseEntity.ok(calorieLogService.getHistoryLogs(currentUserId));
+    }
+
+    @GetMapping("/{date}")
     public ResponseEntity<CalorieLogDTO> getDailyLog(
             @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
             Authentication authentication)
@@ -30,7 +38,7 @@ public class CalorieLogController {
         return ResponseEntity.ok(calorieLogService.getDailyLog(currentUserId, date));
     }
 
-    @PostMapping("/log/{date}/meal")
+    @PostMapping("/{date}/meal")
     public ResponseEntity<CalorieLogDTO> addMeal(
             @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
             Authentication authentication,
@@ -40,7 +48,7 @@ public class CalorieLogController {
         return ResponseEntity.ok(calorieLogService.addMealToLog(currentUserId, date, mealDto));
     }
 
-    @DeleteMapping("/log/{date}/meal/{mealEntryId}")
+    @DeleteMapping("/{date}/meal/{mealEntryId}")
     public ResponseEntity<CalorieLogDTO> removeMeal(
             @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
             @PathVariable UUID mealEntryId,

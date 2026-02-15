@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -34,6 +35,12 @@ public class CalorieServiceImpl implements CalorieLogService {
         CalorieLog log = calorieLogRepository.findByUserIdAndDate(userId, date)
                 .orElseGet(() -> createEmptyLog(userId, date));
         return calorieLogMapper.toDto(log);
+    }
+
+    @Override
+    public List<CalorieLogDTO> getHistoryLogs(UUID userId) {
+        List<CalorieLog> logs = calorieLogRepository.findAllByUserId(userId);
+        return calorieLogMapper.toDto(logs);
     }
 
     @Override
