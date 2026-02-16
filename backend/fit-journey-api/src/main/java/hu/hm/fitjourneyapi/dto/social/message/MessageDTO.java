@@ -1,9 +1,6 @@
 package hu.hm.fitjourneyapi.dto.social.message;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -12,6 +9,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @Builder
+@NoArgsConstructor
 public class MessageDTO {
     private UUID id;
     private UUID senderId;

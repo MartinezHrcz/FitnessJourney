@@ -128,5 +128,4 @@ public class WorkoutController {
             return ResponseEntity.notFound().build();
         }
     }
-
 }

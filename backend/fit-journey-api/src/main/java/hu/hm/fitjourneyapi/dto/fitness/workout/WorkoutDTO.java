@@ -12,6 +12,7 @@ import java.util.UUID;
 @Getter
 @SuperBuilder
 @NoArgsConstructor
+@Setter
 public class WorkoutDTO extends AbstractWorkoutDTO {
     private UUID id;
     private LocalDate startDate;

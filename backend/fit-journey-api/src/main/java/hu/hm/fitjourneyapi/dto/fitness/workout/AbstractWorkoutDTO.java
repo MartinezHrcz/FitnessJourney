@@ -8,6 +8,7 @@ import java.util.UUID;
 @Getter
 @SuperBuilder
 @NoArgsConstructor
+@Setter
 public abstract class AbstractWorkoutDTO {
     private String name;
     private String description;
