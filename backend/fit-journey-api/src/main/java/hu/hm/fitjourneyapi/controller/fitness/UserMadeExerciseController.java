@@ -51,9 +51,9 @@ public class UserMadeExerciseController {
     }
 
     @PostMapping("/{id}")
-    public ResponseEntity<UserMadeExercisesDTO> createUserTemplate(@PathVariable UUID userId, @RequestBody UserExerciseUpdateDto dto) {
+    public ResponseEntity<UserMadeExercisesDTO> createUserTemplate(@PathVariable UUID id, @RequestBody UserExerciseUpdateDto dto) {
         try {
-            return ResponseEntity.ok(userExerciseService.createUserMadeExercise(userId, dto));
+            return ResponseEntity.ok(userExerciseService.createUserMadeExercise(id, dto));
         } catch (UserNotFound ex) {
             return ResponseEntity.notFound().build();
         }
