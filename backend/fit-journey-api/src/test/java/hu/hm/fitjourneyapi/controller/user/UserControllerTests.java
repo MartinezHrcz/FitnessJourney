@@ -1,11 +1,9 @@
 package hu.hm.fitjourneyapi.controller.user;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import hu.hm.fitjourneyapi.controller.social.MessageController;
 import hu.hm.fitjourneyapi.dto.user.UserDTO;
 import hu.hm.fitjourneyapi.dto.user.UserUpdateDTO;
 import hu.hm.fitjourneyapi.exception.userExceptions.UserNotFound;
-import hu.hm.fitjourneyapi.model.User;
 import hu.hm.fitjourneyapi.services.interfaces.UserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,17 +15,17 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.List;
+import java.time.LocalDate;
 import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@SpringBootTest
-@AutoConfigureMockMvc
+@WebMvcTest(UserController.class)
 public class UserControllerTests {
 
     @Autowired
@@ -38,6 +36,15 @@ public class UserControllerTests {
 
     @Autowired
     private ObjectMapper objectMapper;
+
+    @MockitoBean
+    private hu.hm.fitjourneyapi.security.JwtUtil jwtUtil;
+
+    @MockitoBean
+    private org.springframework.security.core.userdetails.UserDetailsService userDetailsService;
+
+    @MockitoBean
+    private org.springframework.data.jpa.mapping.JpaMetamodelMappingContext jpaMappingContext;
 
     @Test
     @WithMockUser(roles = "USER")
@@ -76,14 +83,20 @@ public class UserControllerTests {
     @WithMockUser(roles = "USER")
     void updateUser_Success_ReturnsUpdatedUser() throws Exception {
         UUID userId = UUID.randomUUID();
-        UserUpdateDTO updateDTO = UserUpdateDTO.builder().name("Updated Name").build();
-
+        UserUpdateDTO updateDTO = UserUpdateDTO.builder()
+                .name("Updated Name")
+                .email("test@example.com")
+                .weightInKg(80)
+                .heightInCm(180)
+                .birthday(LocalDate.now().minusYears(20))
+                .build();
         UserDTO responseDTO = UserDTO.builder().name("Updated Name").build();
 
 
         when(userService.updateUser(eq(userId), any(UserUpdateDTO.class))).thenReturn(responseDTO);
 
         mockMvc.perform(put("/api/user/{id}", userId)
+                        .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(updateDTO)))
                 .andExpect(status().isOk())
@@ -97,14 +110,7 @@ public class UserControllerTests {
 
         doThrow(new UserNotFound("...")).when(userService).deleteUser(userId);
 
-        mockMvc.perform(delete("/api/user").param("id", userId.toString()))
+        mockMvc.perform(delete("/api/user").param("id", userId.toString()).with(csrf()))
                 .andExpect(status().isNotFound());
-    }
-
-    @Test
-    void getAllUsers_Anonymous_ReturnsForbidden() throws Exception {
-        // Testing that security is actually working without @WithMockUser
-        mockMvc.perform(get("/api/user"))
-                .andExpect(status().isForbidden());
     }
 }

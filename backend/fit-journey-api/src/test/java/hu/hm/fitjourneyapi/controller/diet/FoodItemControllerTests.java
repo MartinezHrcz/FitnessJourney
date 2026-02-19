@@ -18,10 +18,11 @@ import java.util.UUID;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(FoodItemController.class)
+@WebMvcTest(controllers = FoodItemController.class)
 public class FoodItemControllerTests {
 
     @Autowired
@@ -32,6 +33,15 @@ public class FoodItemControllerTests {
 
     @Autowired
     private ObjectMapper objectMapper;
+
+    @MockitoBean
+    private hu.hm.fitjourneyapi.security.JwtUtil jwtUtil;
+
+    @MockitoBean
+    private org.springframework.security.core.userdetails.UserDetailsService userDetailsService;
+
+    @MockitoBean
+    private org.springframework.data.jpa.mapping.JpaMetamodelMappingContext jpaMappingContext;
 
     private static final String MOCK_USER_ID = "99371d57-e1f7-4f17-8d30-e6406daad176";
 
@@ -57,7 +67,7 @@ public class FoodItemControllerTests {
         UUID foodId = UUID.randomUUID();
 
         mockMvc.perform(delete("/api/food-items/id")
-                        .param("id", foodId.toString()))
+                        .param("id", foodId.toString()).with(csrf()))
                 .andExpect(status().isOk());
     }
 
@@ -70,6 +80,7 @@ public class FoodItemControllerTests {
                 .DeleteFoodItem(eq(foodId), eq(UUID.fromString(MOCK_USER_ID)));
 
         mockMvc.perform(delete("/api/food-items/id")
+                        .with(csrf())
                         .param("id", foodId.toString()))
                 .andExpect(status().isBadRequest());
     }

@@ -1,11 +1,13 @@
 package hu.hm.fitjourneyapi.controller.social;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import hu.hm.fitjourneyapi.controller.fitness.WorkoutController;
 import hu.hm.fitjourneyapi.dto.social.comment.CommentCreateDTO;
 import hu.hm.fitjourneyapi.dto.social.comment.CommentDTO;
 import hu.hm.fitjourneyapi.services.interfaces.social.CommentService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
@@ -23,7 +25,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
-@WebMvcTest(controllers = CommentController.class)
+@AutoConfigureMockMvc
 public class CommentControllerTests {
 
     @Autowired
