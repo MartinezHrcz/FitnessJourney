@@ -20,12 +20,15 @@ import hu.hm.fitjourneyapi.repository.fitness.UserMadeTemplateRepository;
 import hu.hm.fitjourneyapi.repository.fitness.WorkoutRepository;
 import hu.hm.fitjourneyapi.services.interfaces.fitness.WorkoutService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.core.task.AsyncTaskExecutor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 @Slf4j
 @Service
@@ -37,14 +40,24 @@ public class WorkoutServiceImpl implements WorkoutService {
     private final DefaultExercisesRepository defaultExerciseRepository;
     private final UserMadeTemplateRepository userTemplateRepository;
     private final WorkoutMapper workoutMapper;
+    private final AsyncTaskExecutor taskExecutor;
 
-    public WorkoutServiceImpl(UserRepository userRepository, WorkoutRepository workoutRepository, ExerciseRepository exerciseRepository, DefaultExercisesRepository defaultExerciseRepository, UserMadeTemplateRepository userTemplateRepository, WorkoutMapper workoutMapper) {
+    public WorkoutServiceImpl(
+            UserRepository userRepository,
+            WorkoutRepository workoutRepository,
+            ExerciseRepository exerciseRepository,
+            DefaultExercisesRepository defaultExerciseRepository,
+            UserMadeTemplateRepository userTemplateRepository,
+            WorkoutMapper workoutMapper,
+            @Qualifier("applicationTaskExecutor") AsyncTaskExecutor taskExecutor)
+    {
         this.userRepository = userRepository;
         this.workoutRepository = workoutRepository;
         this.exerciseRepository = exerciseRepository;
         this.defaultExerciseRepository = defaultExerciseRepository;
         this.userTemplateRepository = userTemplateRepository;
         this.workoutMapper = workoutMapper;
+        this.taskExecutor = taskExecutor;
     }
 
     @Transactional
@@ -130,19 +143,22 @@ public class WorkoutServiceImpl implements WorkoutService {
 
     @Override
     public WorkoutDTO addDefaultExerciseToWorkout(UUID workoutId, UUID templateId) {
-        Workout workout = workoutRepository.findById(workoutId).orElseThrow(
-                () -> {
+        var workoutFuture = CompletableFuture.supplyAsync(() ->
+                workoutRepository.findById(workoutId).orElseThrow( () -> {
                     log.warn("Workout with id {} not found", workoutId);
                     return new WorkoutNotFound("Workout not found with id " + workoutId);
-                }
-        );
+                }), taskExecutor);
 
-        DefaultExercise template = defaultExerciseRepository.findById(templateId).orElseThrow(
-                () -> {
+        var templateFuture = CompletableFuture.supplyAsync(() ->
+                defaultExerciseRepository.findById(templateId).orElseThrow(() -> {
                     log.warn("Exercise with id {} not found", templateId);
                     return new ExerciseNotFound("Exercise not found with id " + templateId);
-                }
-        );
+                }), taskExecutor);
+
+        CompletableFuture.allOf(workoutFuture, templateFuture).join();
+
+        Workout workout = workoutFuture.join();
+        DefaultExercise template = templateFuture.join();
 
         Exercise exercise = Exercise.builder()
                 .name(template.getName())
@@ -157,6 +173,7 @@ public class WorkoutServiceImpl implements WorkoutService {
         log.info("Add exercise to workout {} with id {}", workout.getName(), workout.getId());
 
         return workoutMapper.toDTO(workout);
+
     }
 
     @Override
@@ -176,7 +193,6 @@ public class WorkoutServiceImpl implements WorkoutService {
                 .weightType(template.getWeightType())
                 .workout(workout).build();
 
-        exercise = exerciseRepository.save(exercise);
         workout.getExercises().add(exercise);
         workout = workoutRepository.save(workout);
         log.info("Add exercise to workout {} with id {}", workout.getName(), workout.getId());
