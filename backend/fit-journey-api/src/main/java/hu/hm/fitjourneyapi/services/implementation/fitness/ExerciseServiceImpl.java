@@ -141,23 +141,13 @@ public class ExerciseServiceImpl implements ExerciseService {
                 () -> new SetNotFound("Set not found by id")
         );
 
-        if (set instanceof StrengthSet && abstractSetDTO instanceof StrengthSetDTO) {
-            int weight = ((StrengthSetDTO) abstractSetDTO).getWeight();
-            int reps = ((StrengthSetDTO) abstractSetDTO).getReps();
-            ((StrengthSet) set).setWeight(weight);
-            ((StrengthSet) set).setReps(reps);
-        } else if (set instanceof CardioSet && abstractSetDTO instanceof CardioSetDTO) {
-            int duration = ((CardioSetDTO) abstractSetDTO).getDurationInSeconds();
-            double distance = ((CardioSetDTO) abstractSetDTO).getDistanceInKilometers();
-            ((CardioSet) set).setDurationInSeconds(duration);
-            ((CardioSet) set).setDistanceInKm(distance);
-        } else if (set instanceof FlexibilitySet && abstractSetDTO instanceof FlexibilitySetDTO) {
-            int reps = ((FlexibilitySetDTO) abstractSetDTO).getReps();
-            ((FlexibilitySet) set).setReps(reps);
+        if (!set.getExercise().getId().equals(id)) {
+            throw new IllegalStateException("Set does not belong to the specified exercise");
         }
 
-        exercise = exerciseRepository.save(exercise);
-        setRepository.save(set);
+        setMapper.updateEntity(abstractSetDTO, set);
+
+        log.info("Updated set {} in exercise {}", setId, id);
 
         return exerciseMapper.toExerciseDTO(exercise);
     }

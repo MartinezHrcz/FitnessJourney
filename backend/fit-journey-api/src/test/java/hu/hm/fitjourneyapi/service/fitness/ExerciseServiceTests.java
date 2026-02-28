@@ -6,6 +6,7 @@ import hu.hm.fitjourneyapi.dto.fitness.set.StrengthSetDTO;
 import hu.hm.fitjourneyapi.exception.fitness.ExerciseNotFound;
 import hu.hm.fitjourneyapi.mapper.fitness.ExerciseMapper;
 import hu.hm.fitjourneyapi.mapper.fitness.SetMapper;
+import hu.hm.fitjourneyapi.mapper.fitness.set.SetMapperInternal;
 import hu.hm.fitjourneyapi.model.User;
 import hu.hm.fitjourneyapi.model.fitness.Exercise;
 import hu.hm.fitjourneyapi.model.fitness.StrengthSet;
@@ -17,9 +18,11 @@ import hu.hm.fitjourneyapi.repository.fitness.WorkoutRepository;
 import hu.hm.fitjourneyapi.services.implementation.fitness.ExerciseServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mapstruct.factory.Mappers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,8 +33,12 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-@SpringBootTest
+@ExtendWith(MockitoExtension.class)
 public class ExerciseServiceTests {
+
+    private final SetMapperInternal internal = Mappers.getMapper(SetMapperInternal.class);
+
+    private final SetMapper setMapper = new SetMapper(internal);
 
     @Mock
     private ExerciseRepository exerciseRepository;
@@ -43,10 +50,7 @@ public class ExerciseServiceTests {
     private SetRepository setRepository;
     @Mock
     private ExerciseMapper exerciseMapper;
-    @Mock
-    private SetMapper setMapper;
 
-    @InjectMocks
     private ExerciseServiceImpl exerciseService;
 
     private Exercise exercise;
@@ -55,6 +59,15 @@ public class ExerciseServiceTests {
 
     @BeforeEach
     void setUp() {
+        exerciseService = new ExerciseServiceImpl(
+                exerciseRepository,
+                workoutRepository,
+                exerciseMapper,
+                setMapper,
+                userRepository,
+                setRepository
+        );
+
         exerciseId = UUID.randomUUID();
         exercise = new Exercise();
         exercise.setId(exerciseId);
@@ -132,37 +145,41 @@ public class ExerciseServiceTests {
     @Test
     void addSetById_Success() {
         StrengthSetDTO setDTO = new StrengthSetDTO();
-        StrengthSet setEntity = new StrengthSet();
+        setDTO.setReps(12);
+        setDTO.setWeight(50);
 
         when(exerciseRepository.findById(exerciseId)).thenReturn(Optional.of(exercise));
-        when(setMapper.toEntity(setDTO, exercise)).thenReturn(setEntity);
         when(exerciseMapper.toExerciseDTO(exercise)).thenReturn(exerciseDTO);
 
         AbstractExerciseDTO result = exerciseService.addSetById(exerciseId, setDTO);
 
         assertNotNull(result);
         verify(exerciseRepository).save(exercise);
-        assertTrue(exercise.getSets().contains(setEntity));
+
+        assertEquals(1, exercise.getSets().size(), "The exercise should have exactly one set");
+        StrengthSet addedSet = (StrengthSet) exercise.getSets().get(0);
+        assertEquals(12, addedSet.getReps());
+        assertEquals(50, addedSet.getWeight());
     }
 
     @Test
     void updateSetById_StrengthSet_Success() {
         long setId = 100L;
-        StrengthSet existingSet = new StrengthSet();
+        StrengthSet existingSet =  StrengthSet.builder().reps(2).weight(30).exercise(exercise).build();
         StrengthSetDTO updateSetDTO = new StrengthSetDTO();
         updateSetDTO.setReps(10);
         updateSetDTO.setWeight(100);
 
+        exercise.getSets().add(existingSet);
+
         when(exerciseRepository.findById(exerciseId)).thenReturn(Optional.of(exercise));
         when(setRepository.findById(setId)).thenReturn(Optional.of(existingSet));
-        when(exerciseRepository.save(exercise)).thenReturn(exercise);
         when(exerciseMapper.toExerciseDTO(exercise)).thenReturn(exerciseDTO);
 
         exerciseService.updateSetById(exerciseId, setId, updateSetDTO);
 
         assertEquals(10, existingSet.getReps());
         assertEquals(100, existingSet.getWeight());
-        verify(setRepository).save(existingSet);
     }
 
     @Test
