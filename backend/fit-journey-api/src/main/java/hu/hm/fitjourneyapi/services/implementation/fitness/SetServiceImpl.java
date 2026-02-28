@@ -9,9 +9,7 @@ import hu.hm.fitjourneyapi.exception.fitness.SetNotFound;
 import hu.hm.fitjourneyapi.exception.fitness.setExceptions.InvalidSetType;
 import hu.hm.fitjourneyapi.mapper.fitness.SetMapper;
 import hu.hm.fitjourneyapi.model.fitness.*;
-import hu.hm.fitjourneyapi.repository.UserRepository;
 import hu.hm.fitjourneyapi.repository.fitness.*;
-import hu.hm.fitjourneyapi.services.interfaces.fitness.ExerciseService;
 import hu.hm.fitjourneyapi.services.interfaces.fitness.SetService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -26,21 +24,14 @@ import java.util.stream.Collectors;
 public class SetServiceImpl implements SetService {
 
     private final SetRepository setRepository;
-    private final StrengthSetRepository strengthSetRepository;
-    private final CardioSetRepository cardioSetRepository;
-    private final FlexibilitySetRepository flexibilitySetRepository;
     private final ExerciseRepository exerciseRepository;
     private final SetMapper setMapper;
 
-    public SetServiceImpl(SetRepository setRepository, StrengthSetRepository strengthSetRepository, CardioSetRepository cardioSetRepository, FlexibilitySetRepository flexibilitySetRepository, ExerciseRepository exerciseRepository, SetMapper setMapper, UserRepository userRepository) {
+    public SetServiceImpl(SetRepository setRepository, ExerciseRepository exerciseRepository, SetMapper setMapper) {
         this.setRepository = setRepository;
-        this.strengthSetRepository = strengthSetRepository;
-        this.cardioSetRepository = cardioSetRepository;
-        this.flexibilitySetRepository = flexibilitySetRepository;
         this.exerciseRepository = exerciseRepository;
         this.setMapper = setMapper;
     }
-
 
     @Transactional(readOnly = true)
     @Override
@@ -80,13 +71,11 @@ public class SetServiceImpl implements SetService {
                 () -> new SetNotFound("Set with id " + id + " not found")
         );
 
-        Set update = setMapper.toEntity(abstractSetDTO, set.getExercise());
-
-        if(!set.getClass().equals(update.getClass())){
-            throw new InvalidSetType("Unsupported set type: " + set.getClass().getName());
+        if (!isTypeCompatible(abstractSetDTO, set)) {
+            throw new InvalidSetType("Mismatch between DTO type and existing Entity type");
         }
 
-        BeanUtils.copyProperties(set,update);
+        setMapper.updateEntity(abstractSetDTO, set);
 
         set = setRepository.save(set);
         log.info("Updated set with id: {}", id);
@@ -102,5 +91,12 @@ public class SetServiceImpl implements SetService {
         );
         log.info("Deleted set with id: {}", set.getId());
         setRepository.delete(set);
+    }
+
+    private boolean isTypeCompatible(AbstractSetDTO dto, Set entity) {
+        if (dto instanceof StrengthSetDTO && entity instanceof StrengthSet) return true;
+        if (dto instanceof CardioSetDTO && entity instanceof CardioSet) return true;
+        if (dto instanceof FlexibilitySetDTO && entity instanceof FlexibilitySet) return true;
+        return false;
     }
 }

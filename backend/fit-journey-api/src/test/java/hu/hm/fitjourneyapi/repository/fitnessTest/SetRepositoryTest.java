@@ -26,18 +26,14 @@ public class SetRepositoryTest {
     @Autowired
     private SetRepository setRepository;
 
-    private User user;
-    private Workout workout;
-    private Exercise exercise;
     private Set set;
 
     @BeforeEach
     void setup() {
-        user = factory.createUser();
-        workout = factory.createWorkout(user);
-        exercise = factory.createExercise(workout, ExerciseTypes.RESISTANCE);
+        User user = factory.createUser();
+        Workout workout = factory.createWorkout(user);
+        Exercise exercise = factory.createExercise(workout, ExerciseTypes.RESISTANCE);
         set = factory.createSet(exercise);
-
     }
 
     @Test

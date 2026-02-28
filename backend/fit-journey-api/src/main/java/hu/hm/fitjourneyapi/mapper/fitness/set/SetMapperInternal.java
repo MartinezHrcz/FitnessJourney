@@ -6,6 +6,7 @@ import hu.hm.fitjourneyapi.dto.fitness.set.StrengthSetDTO;
 import hu.hm.fitjourneyapi.model.fitness.*;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 import org.mapstruct.ReportingPolicy;
 
 import java.util.List;
@@ -36,6 +37,12 @@ public interface SetMapperInternal {
     @Mapping(source="set.id", target = "id")
     @Mapping(source = "exercise.id", target = "exerciseId")
     FlexibilitySetDTO toFlexibilitySetDTO(FlexibilitySet set);
+
+    void updateStrengthSet(StrengthSetDTO dto, @MappingTarget StrengthSet existing);
+
+    void updateCardioSet(CardioSetDTO dto, @MappingTarget CardioSet existing);
+
+    void updateFlexibilitySet(FlexibilitySetDTO dto, @MappingTarget FlexibilitySet existing);
 
     List<StrengthSetDTO> toStrengthSetDTOList(List<StrengthSet> sets);
     List<CardioSetDTO> toCardioSetDTOList(List<CardioSet> sets);
