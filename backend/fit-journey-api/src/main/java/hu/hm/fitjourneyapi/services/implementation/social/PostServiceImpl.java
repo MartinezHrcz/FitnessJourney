@@ -51,7 +51,7 @@ public class PostServiceImpl implements PostService {
         return postMapper.toPostDTO(post, currentUserId);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     @Override
     public List<PostDTO> getPosts(UUID currentUserId) {
         log.debug("Fetching posts");
@@ -60,7 +60,7 @@ public class PostServiceImpl implements PostService {
         return postMapper.toListPostDTO(posts, currentUserId);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     @Override
     public List<PostDTO> getPostsByUserId(UUID id) {
         log.debug("Fetching posts by user id: {}", id);
@@ -108,6 +108,7 @@ public class PostServiceImpl implements PostService {
         return postMapper.toPostDTO(post, currentUserId);
     }
 
+    @Transactional
     @Override
     public PostDTO createPostWithImage(PostCreateDTO postCreateDTO, MultipartFile image, UUID currentUserId) {
         String fileName = null;
@@ -129,6 +130,7 @@ public class PostServiceImpl implements PostService {
         return postMapper.toPostDTO(savedPost, postCreateDTO.getUserId());
     }
 
+    @Transactional
     @Override
     public void likePost(UUID id, UUID userId) {
         Post post = postRepository.findById(id)
@@ -136,12 +138,8 @@ public class PostServiceImpl implements PostService {
 
         Set<UUID> likedByUsers = post.getLikedByUsers();
 
-        if (likedByUsers.contains(userId)) {
+        if (!likedByUsers.add(userId)) {
             likedByUsers.remove(userId);
-            log.debug("User {} unliked post {}", userId, id);
-        } else {
-            likedByUsers.add(userId);
-            log.debug("User {} liked post {}", userId, id);
         }
 
         postRepository.save(post);
