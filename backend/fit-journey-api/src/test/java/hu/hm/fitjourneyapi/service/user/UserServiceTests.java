@@ -11,6 +11,7 @@ import hu.hm.fitjourneyapi.model.User;
 import hu.hm.fitjourneyapi.model.enums.Roles;
 import hu.hm.fitjourneyapi.repository.UserRepository;
 import hu.hm.fitjourneyapi.repository.fitness.WorkoutRepository;
+import hu.hm.fitjourneyapi.repository.social.CommentRepository;
 import hu.hm.fitjourneyapi.repository.social.FriendRepository;
 import hu.hm.fitjourneyapi.repository.social.PostRepository;
 import hu.hm.fitjourneyapi.security.JwtUtil;
@@ -40,11 +41,7 @@ public class UserServiceTests {
     @Mock
     private PasswordEncoder passwordEncoder;
     @Mock
-    private PostRepository postRepository;
-    @Mock
-    private FriendRepository friendRepository;
-    @Mock
-    private WorkoutRepository workoutRepository;
+    private CommentRepository commentRepository;
     @Mock
     private JwtUtil jwtUtil;
 

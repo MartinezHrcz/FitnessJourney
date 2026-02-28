@@ -18,10 +18,12 @@ import hu.hm.fitjourneyapi.exception.userExceptions.UserNotFound;
 import hu.hm.fitjourneyapi.mapper.UserMapper;
 import hu.hm.fitjourneyapi.model.User;
 import hu.hm.fitjourneyapi.model.fitness.Workout;
+import hu.hm.fitjourneyapi.model.social.Comment;
 import hu.hm.fitjourneyapi.model.social.Friend;
 import hu.hm.fitjourneyapi.model.social.Post;
 import hu.hm.fitjourneyapi.repository.UserRepository;
 import hu.hm.fitjourneyapi.repository.fitness.WorkoutRepository;
+import hu.hm.fitjourneyapi.repository.social.CommentRepository;
 import hu.hm.fitjourneyapi.repository.social.FriendRepository;
 import hu.hm.fitjourneyapi.repository.social.PostRepository;
 import hu.hm.fitjourneyapi.security.JwtUtil;
@@ -44,17 +46,26 @@ public class UserServiceImpl implements UserService {
     private final PostRepository postRepository;
     private final FriendRepository friendRepository;
     private final WorkoutRepository workoutRepository;
+    private final CommentRepository commentRepository;
     private final JwtUtil jwtUtil;
 
-    public UserServiceImpl(UserRepository userRepository,
-                           UserMapper userMapper,
-                           PasswordEncoder passwordEncoder, PostRepository postRepository, FriendRepository friendRepository, WorkoutRepository workoutRepository, JwtUtil jwtUtil) {
+    public UserServiceImpl(
+            UserRepository userRepository,
+            UserMapper userMapper,
+            PasswordEncoder passwordEncoder,
+            PostRepository postRepository,
+            FriendRepository friendRepository,
+            WorkoutRepository workoutRepository,
+            CommentRepository commentRepository,
+            JwtUtil jwtUtil)
+    {
         this.userRepository = userRepository;
         this.userMapper = userMapper;
         this.passwordEncoder = passwordEncoder;
         this.postRepository = postRepository;
         this.friendRepository = friendRepository;
         this.workoutRepository = workoutRepository;
+        this.commentRepository = commentRepository;
         this.jwtUtil = jwtUtil;
     }
 
@@ -276,6 +287,9 @@ public class UserServiceImpl implements UserService {
                     log.warn("User not found with id: {}", id);
                     return new UserNotFound("User not found with id: " + id);}
         );
+
+        commentRepository.nullifyUserComments(id);
+
         log.info("Deleted user with id: {} ",id);
         userRepository.delete(user);
     }

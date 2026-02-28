@@ -94,6 +94,8 @@ public class CommentServiceImpl implements CommentService {
                         .user(user)
                         .content(commentDTO.getContent()).build();
 
+        post.addComment(comment);
+
         log.info("Created comment with id {} ", comment.getId());
         return  mapper.toCommentDTO(commentRepository.save(comment));
     }
