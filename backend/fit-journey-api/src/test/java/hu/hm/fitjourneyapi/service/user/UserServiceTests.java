@@ -97,9 +97,10 @@ public class UserServiceTests {
     @Test
     void updatePassword_Success() {
         UserPasswordUpdateDTO passDTO = new UserPasswordUpdateDTO("oldPass", "newPass");
+        String oldPassword = "EncodedPassword123!";
 
         when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
-        when(passwordEncoder.matches(user.getPassword(), passDTO.getPasswordOld())).thenReturn(true);
+        when(passwordEncoder.matches("oldPass", oldPassword)).thenReturn(true);
         when(passwordEncoder.encode("newPass")).thenReturn("encodedNewPass");
         when(userRepository.save(user)).thenReturn(user);
         when(userMapper.toUserDTO(user)).thenReturn(userDTO);

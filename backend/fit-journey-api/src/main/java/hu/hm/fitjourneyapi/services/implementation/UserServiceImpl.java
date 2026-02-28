@@ -100,7 +100,7 @@ public class UserServiceImpl implements UserService {
                     return new UserNotFound("User not found with id:" + id);}
         );
 
-        if (!passwordEncoder.matches(userToUpdate.getPassword(), userPasswordUpdateDTO.getPasswordOld())){
+        if (!passwordEncoder.matches(userPasswordUpdateDTO.getPasswordOld(), userToUpdate.getPassword())){
             log.warn("Password does not match old password");
             throw new IncorrectPassword("Old password doesn't match");
         }
@@ -163,10 +163,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserDTO> getAllUsersByName(String name) {
-        log.debug("Fetching user with name {} ", name);
-        List<User> users = userRepository.findAll().stream().filter(user -> user.getName().contains(name)).toList();
-        log.debug("Fetched user with name {} ", name);
-        return userMapper.toUserDTOList(users);
+        log.debug("Searching users by name: {}", name);
+        return userMapper.toUserDTOList(userRepository.findAllByNameContainingIgnoreCase(name));
     }
 
     @Transactional(readOnly = true)
