@@ -99,55 +99,11 @@ public class ExerciseServiceImpl implements ExerciseService {
     }
 
     @Override
-    public AbstractExerciseDTO createExercise(AbstractExerciseDTO dto) throws NoSuchFieldException {
+    public AbstractExerciseDTO createExercise(AbstractExerciseDTO dto) {
         Exercise result = exerciseMapper.toExercise(dto);
         result = exerciseRepository.save(result);
         return exerciseMapper.toExerciseDTO(result);
     }
-
-    /*
-    @Deprecated
-    @Transactional
-    @Override
-    public ExerciseStrengthSetDTO createExerciseStrengthSet(ExerciseStrengthSetDTO exerciseStrengthSetDTO) {
-        log.debug("Creating exercise strength set");
-        Workout workout = workoutRepository.findById(exerciseStrengthSetDTO.getWorkoutId()).orElseThrow(
-                ()-> new WorkoutNotFound("Workout not found by id")
-        );
-        Exercise exercise = exerciseMapper.toExercise(exerciseStrengthSetDTO, workout);
-        exercise = exerciseRepository.save(exercise);
-        log.info("Created exercise with strength set");
-        return exerciseMapper.toExerciseStrengthSetDTO(exercise);
-    }
-
-    @Deprecated
-    @Transactional
-    @Override
-    public ExerciseFlexibilitySetDTO createExerciseFlexibilitySet(ExerciseFlexibilitySetDTO flexibilitySetDTO) {
-        log.debug("Creating exercise with flexibility set");
-        Workout workout = workoutRepository.findById(flexibilitySetDTO.getWorkoutId()).orElseThrow(
-                ()-> new WorkoutNotFound("Workout not found by id")
-        );
-        Exercise exercise = exerciseMapper.toExercise(flexibilitySetDTO, workout);
-        exercise = exerciseRepository.save(exercise);
-        log.info("Created exercise with flexibility set");
-        return exerciseMapper.toExerciseFlexibilitySetDTO(exercise);
-    }
-
-    @Deprecated
-    @Transactional
-    @Override
-    public ExerciseCardioSetDTO createExerciseCardioSet(ExerciseCardioSetDTO cardioSetDTO) {
-        log.debug("Creating exercise with cardio set");
-        Workout workout = workoutRepository.findById(cardioSetDTO.getWorkoutId()).orElseThrow(
-                ()-> new WorkoutNotFound("Workout not found by id")
-        );
-        Exercise exercise = exerciseMapper.toExercise(cardioSetDTO, workout);
-        exercise = exerciseRepository.save(exercise);
-        log.info("Created exercise with cardio set");
-        return exerciseMapper.toExerciseCardioSetDTO(exercise);
-    }
-     */
 
     @Override
     public AbstractExerciseDTO updateExercise(UUID id, ExerciseUpdateDTO dto) {
