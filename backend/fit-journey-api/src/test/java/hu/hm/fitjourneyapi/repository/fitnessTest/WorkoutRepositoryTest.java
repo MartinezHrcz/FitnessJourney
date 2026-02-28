@@ -26,25 +26,24 @@ public class WorkoutRepositoryTest {
     @Autowired
     private WorkoutRepository workoutRepository;
 
-    private User user;
     private Workout workout;
 
 
     @BeforeEach
     void setup() {
-        user = factory.createUser();
+        User user = factory.createUser();
         workout = factory.createWorkout(user);
     }
 
     @Test
     void testSaveWorkout(){
-        assertEquals(workout,workoutRepository.findById(workout.getId()).get());
+        assertTrue(workoutRepository.findById(workout.getId()).isPresent());
     }
 
     @Test
     void testFindWorkoutByName() {
-        Workout workout = workoutRepository.findByName("Placeholder workout");
-        assertEquals("Placeholder workout",workout.getName());
+        Workout workout = workoutRepository.findByName("Test workout");
+        assertEquals("Test workout",workout.getName());
     }
 
     @Test

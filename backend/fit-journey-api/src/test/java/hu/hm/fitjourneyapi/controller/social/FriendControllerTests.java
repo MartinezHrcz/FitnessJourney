@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import hu.hm.fitjourneyapi.dto.social.friend.FriendCreateDTO;
 import hu.hm.fitjourneyapi.dto.social.friend.FriendDTO;
 import hu.hm.fitjourneyapi.model.enums.FriendStatus;
+import hu.hm.fitjourneyapi.security.JwtUtil;
 import hu.hm.fitjourneyapi.services.interfaces.social.FriendService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,8 +24,8 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@SpringBootTest
-@AutoConfigureMockMvc
+@WebMvcTest(FriendController.class)
+@AutoConfigureMockMvc(addFilters = false)
 public class FriendControllerTests {
 
     @Autowired
@@ -32,6 +33,9 @@ public class FriendControllerTests {
 
     @MockitoBean
     private FriendService friendService;
+
+    @MockitoBean
+    private JwtUtil jwtUtil;
 
     @Autowired
     private ObjectMapper objectMapper;

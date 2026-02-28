@@ -3,6 +3,8 @@ package hu.hm.fitjourneyapi.repository.testutil;
 import hu.hm.fitjourneyapi.exception.fitness.setExceptions.InvalidSetType;
 import hu.hm.fitjourneyapi.model.User;
 import hu.hm.fitjourneyapi.model.enums.ExerciseTypes;
+import hu.hm.fitjourneyapi.model.enums.WeightType;
+import hu.hm.fitjourneyapi.model.enums.WorkoutStatus;
 import hu.hm.fitjourneyapi.model.fitness.*;
 import hu.hm.fitjourneyapi.repository.UserRepository;
 import hu.hm.fitjourneyapi.repository.fitness.ExerciseRepository;
@@ -12,6 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.UUID;
 
 @Component
 public class TestFitnessDataFactory {
@@ -33,6 +38,7 @@ public class TestFitnessDataFactory {
                 .email("Placeholder@email.com")
                 .birthday(LocalDate.of(2000, 1,1))
                 .password("PlaceholderPassword")
+                .creation_date(LocalDateTime.now())
                 .weightInKg(100)
                 .heightInCm(180)
                 .build();
@@ -46,9 +52,15 @@ public class TestFitnessDataFactory {
         }
 
         Workout workout = Workout.builder()
+                .name("Test workout")
+                .description("test")
+                .startDate(LocalDate.now())
+                .endDate(LocalDate.now().plusDays(1))
+                .status(WorkoutStatus.FINISHED)
                 .user(user)
-                .name("Placeholder workout")
+                .exercises(new ArrayList<>())
                 .build();
+
         workoutRepository.save(workout);
         return workout;
     }
@@ -61,7 +73,10 @@ public class TestFitnessDataFactory {
                 .name("Placeholder excercise")
                 .description("Placeholder desc")
                 .workout(workout)
-                .type(type).build();
+                .type(type)
+                .weightType(WeightType.FREE_WEIGHT)
+                .sets(new ArrayList<>())
+                .build();
         exerciseRepository.save(excercise);
         return excercise;
     }
@@ -70,7 +85,7 @@ public class TestFitnessDataFactory {
         if(setRepository == null){
             throw new RuntimeException("setRepository is null");
         }
-        Set set = null;
+        Set set;
         switch (excercise.getType()){
             case RESISTANCE, NOT_GIVEN, BODY_WEIGHT -> set =  StrengthSet.builder().reps(10).weight(100).build();
             case CARDIO -> set =  CardioSet.builder().durationInSeconds(100).distanceInKm(0.5).build();

@@ -3,11 +3,12 @@ package hu.hm.fitjourneyapi.controller.diet;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import hu.hm.fitjourneyapi.dto.diet.CalorieLogDTO;
 import hu.hm.fitjourneyapi.dto.diet.MealEntryCreateDTO;
+import hu.hm.fitjourneyapi.security.JwtUtil;
 import hu.hm.fitjourneyapi.services.interfaces.diet.CalorieLogService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -24,7 +25,7 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@SpringBootTest
+@WebMvcTest(CalorieLogController.class)
 @AutoConfigureMockMvc
 public class CalorieLogControllerTests {
 
@@ -33,6 +34,9 @@ public class CalorieLogControllerTests {
 
     @MockitoBean
     private CalorieLogService calorieLogService;
+
+    @MockitoBean
+    private JwtUtil jwtUtil;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -87,7 +91,7 @@ public class CalorieLogControllerTests {
         when(calorieLogService.removeMealFromLog(any(UUID.class), eq(mealId), any(LocalDate.class)))
                 .thenReturn(new CalorieLogDTO());
 
-        mockMvc.perform(delete("/api/diet/log/{date}/meal/{mealEntryId}", testDate, mealId))
+        mockMvc.perform(delete("/api/diet/log/{date}/meal/{mealEntryId}", testDate, mealId).with(csrf()))
                 .andExpect(status().isOk());
     }
 }

@@ -2,9 +2,11 @@ package hu.hm.fitjourneyapi.controller.fitness;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import hu.hm.fitjourneyapi.controller.social.MessageController;
+import hu.hm.fitjourneyapi.controller.user.UserController;
 import hu.hm.fitjourneyapi.dto.fitness.exerciseTemplates.UserExerciseUpdateDto;
 import hu.hm.fitjourneyapi.dto.fitness.exerciseTemplates.UserMadeExercisesDTO;
 import hu.hm.fitjourneyapi.exception.fitness.ExerciseNotFound;
+import hu.hm.fitjourneyapi.security.JwtUtil;
 import hu.hm.fitjourneyapi.services.interfaces.fitness.UserExerciseService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,8 +27,8 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@SpringBootTest
-@AutoConfigureMockMvc
+@WebMvcTest(UserMadeExerciseController.class)
+@AutoConfigureMockMvc(addFilters = false)
 public class UserMadeExerciseControllerTests {
 
     @Autowired
@@ -34,6 +36,9 @@ public class UserMadeExerciseControllerTests {
 
     @MockitoBean
     private UserExerciseService userExerciseService;
+
+    @MockitoBean
+    private JwtUtil jwtUtil;
 
     @Autowired
     private ObjectMapper objectMapper;

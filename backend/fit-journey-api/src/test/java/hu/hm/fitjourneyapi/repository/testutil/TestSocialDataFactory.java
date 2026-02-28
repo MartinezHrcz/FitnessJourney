@@ -2,6 +2,7 @@ package hu.hm.fitjourneyapi.repository.testutil;
 
 import hu.hm.fitjourneyapi.model.User;
 import hu.hm.fitjourneyapi.model.enums.FriendStatus;
+import hu.hm.fitjourneyapi.model.enums.Roles;
 import hu.hm.fitjourneyapi.model.social.Friend;
 import hu.hm.fitjourneyapi.model.social.Message;
 import hu.hm.fitjourneyapi.model.social.Post;
@@ -13,6 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashSet;
 
 @Component
 public class TestSocialDataFactory {
@@ -33,6 +37,11 @@ public class TestSocialDataFactory {
                 .password("PlaceholderPassword")
                 .weightInKg(100)
                 .heightInCm(180)
+                .last_modified_date(LocalDateTime.now())
+                .role(Roles.USER)
+                .creation_date(LocalDateTime.now())
+                .workouts(new ArrayList<>())
+                .posts(new ArrayList<>())
                 .build();
         userRepository.save(user);
         return user;
@@ -42,7 +51,12 @@ public class TestSocialDataFactory {
         Post post = Post.builder()
                 .title("Placeholder Post")
                 .content("This is a placeholder post")
-                .user(user).build();
+                .user(user)
+                .imageUrl(null)
+                .likedByUsers(new HashSet<>())
+                .comments(new ArrayList<>())
+                .sentTime(LocalDateTime.now())
+                .build();
         user.getPosts().add(post);
         userRepository.save(user);
         postRepository.save(post);

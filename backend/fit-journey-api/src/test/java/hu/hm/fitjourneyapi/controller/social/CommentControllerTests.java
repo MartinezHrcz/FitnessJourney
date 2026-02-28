@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import hu.hm.fitjourneyapi.controller.fitness.WorkoutController;
 import hu.hm.fitjourneyapi.dto.social.comment.CommentCreateDTO;
 import hu.hm.fitjourneyapi.dto.social.comment.CommentDTO;
+import hu.hm.fitjourneyapi.security.JwtUtil;
 import hu.hm.fitjourneyapi.services.interfaces.social.CommentService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,8 +25,8 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@SpringBootTest
-@AutoConfigureMockMvc
+@WebMvcTest(CommentController.class)
+@AutoConfigureMockMvc(addFilters = false)
 public class CommentControllerTests {
 
     @Autowired
@@ -33,6 +34,9 @@ public class CommentControllerTests {
 
     @MockitoBean
     private CommentService commentService;
+
+    @MockitoBean
+    private JwtUtil jwtUtil;
 
     @Autowired
     private ObjectMapper objectMapper;

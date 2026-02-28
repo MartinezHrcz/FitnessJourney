@@ -2,12 +2,12 @@ package hu.hm.fitjourneyapi.controller.diet;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import hu.hm.fitjourneyapi.dto.diet.FoodItemDTO;
+import hu.hm.fitjourneyapi.security.JwtUtil;
 import hu.hm.fitjourneyapi.services.interfaces.diet.FoodItemService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
@@ -22,7 +22,8 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(controllers = FoodItemController.class)
+@WebMvcTest(FoodItemController.class)
+@AutoConfigureMockMvc
 public class FoodItemControllerTests {
 
     @Autowired
@@ -35,7 +36,7 @@ public class FoodItemControllerTests {
     private ObjectMapper objectMapper;
 
     @MockitoBean
-    private hu.hm.fitjourneyapi.security.JwtUtil jwtUtil;
+    private JwtUtil jwtUtil;
 
     @MockitoBean
     private org.springframework.security.core.userdetails.UserDetailsService userDetailsService;

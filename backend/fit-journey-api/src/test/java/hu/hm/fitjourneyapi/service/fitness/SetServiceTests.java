@@ -127,8 +127,8 @@ public class SetServiceTests {
 
         CardioSet mappedCardioSet = new CardioSet();
 
-        when(setRepository.findById(setId)).thenReturn(Optional.of(existingStrengthSet));
-        when(setMapper.toEntity(any(), any())).thenReturn(mappedCardioSet);
+        when(setRepository.findById(setId)).thenReturn(Optional.of(mappedCardioSet));
+        when(setMapper.toDto(any(), any())).thenReturn(new StrengthSetDTO());
 
         assertThrows(InvalidSetType.class, () -> setService.updateSet(setId, strengthSetDTO));
     }

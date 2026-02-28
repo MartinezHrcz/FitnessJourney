@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import hu.hm.fitjourneyapi.dto.social.message.CreateMessageDTO;
 import hu.hm.fitjourneyapi.dto.social.message.MessageDTO;
 import hu.hm.fitjourneyapi.dto.social.message.UpdateMessageDTO;
+import hu.hm.fitjourneyapi.security.JwtUtil;
 import hu.hm.fitjourneyapi.services.interfaces.social.MessageService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,8 +25,8 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@SpringBootTest
-@AutoConfigureMockMvc
+@WebMvcTest(MessageController.class)
+@AutoConfigureMockMvc(addFilters = false)
 public class MessageControllerTests {
 
     @Autowired
@@ -33,6 +34,9 @@ public class MessageControllerTests {
 
     @MockitoBean
     private MessageService messageService;
+
+    @MockitoBean
+    private JwtUtil jwtUtil;
 
     @Autowired
     private ObjectMapper objectMapper;
