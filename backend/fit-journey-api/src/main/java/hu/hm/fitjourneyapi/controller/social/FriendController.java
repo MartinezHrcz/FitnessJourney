@@ -5,6 +5,7 @@ import hu.hm.fitjourneyapi.dto.social.friend.FriendDTO;
 import hu.hm.fitjourneyapi.model.enums.FriendStatus;
 import hu.hm.fitjourneyapi.services.interfaces.social.FriendService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -56,9 +57,10 @@ public class FriendController {
     }
 
     @PutMapping("/{id}/accept")
-    public ResponseEntity acceptFriend(@PathVariable UUID id) {
+    public ResponseEntity acceptFriend(@PathVariable UUID id, Authentication  authentication) {
+        UUID currentUserId = UUID.fromString(authentication.getName());
         try {
-            FriendService.updateFriend(id, FriendStatus.ACCEPTED);
+            FriendService.updateFriend(id, FriendStatus.ACCEPTED, currentUserId);
             return ResponseEntity.ok().build();
         }
         catch (Exception e) {

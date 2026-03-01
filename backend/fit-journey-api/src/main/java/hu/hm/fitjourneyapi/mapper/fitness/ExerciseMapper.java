@@ -82,8 +82,6 @@ public interface ExerciseMapper {
                 ).collect(Collectors.toList())).build();
     }
 
-    //Generic mapper test
-    //refactoring
     default AbstractExerciseDTO toExerciseDTO(Exercise exercise) {
         if (exercise == null) return null;
 

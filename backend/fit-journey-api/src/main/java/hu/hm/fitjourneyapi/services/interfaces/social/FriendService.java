@@ -14,7 +14,7 @@ public interface FriendService {
 
     List<FriendDTO> getFriendsByUserId(UUID id);
 
-    FriendDTO updateFriend(UUID id, FriendStatus status);
+    FriendDTO updateFriend(UUID id, FriendStatus status, UUID currentUserId) throws IllegalAccessException;
 
     FriendDTO createFriend(FriendCreateDTO friendDTO);
 

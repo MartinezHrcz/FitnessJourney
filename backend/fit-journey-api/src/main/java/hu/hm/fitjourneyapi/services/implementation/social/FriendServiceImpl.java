@@ -62,37 +62,41 @@ public class FriendServiceImpl implements FriendService {
     }
 
     @Override
-    public FriendDTO updateFriend(UUID id, FriendStatus status) {
+    public FriendDTO updateFriend(UUID id, FriendStatus status, UUID currentUserId) throws IllegalAccessException {
         log.debug("Attempting to update friend with id {} ", id);
-        Friend friend = friendRepository.findById(id).orElseThrow(
+        Friend friendship = friendRepository.findById(id).orElseThrow(
                 ()->{
                     log.warn("Friend with id {} not found", id);
                     return new FriendNotFoundException("Friend with id " + id + " not found");
                 }
         );
-        friend.setStatus(status);
-        friend = friendRepository.save(friend);
-        return friendMapper.toFriendDTO(friend);
+
+        if (status == FriendStatus.ACCEPTED && !friendship.getFriend().getId().equals(currentUserId)) {
+            throw new IllegalAccessException("Only the recipient can accept a friend request");
+        }
+
+        friendship.setStatus(status);
+        return friendMapper.toFriendDTO(friendRepository.save(friendship));
     }
 
     @Override
     public FriendDTO createFriend(FriendCreateDTO friendDTO) {
-        boolean usersExist = userRepository.existsById(friendDTO.getUserId()) &&
-                userRepository.existsById(friendDTO.getFriendId());
+        UUID senderId = friendDTO.getUserId();
+        UUID recipientId = friendDTO.getFriendId();
 
-        if (!usersExist) {
-            throw new IllegalArgumentException("Users don't exist");
+        if (senderId.equals(recipientId)) {
+            throw new IllegalArgumentException("You cannot add yourself as a friend");
         }
 
-        boolean exists = friendRepository.existsByFriend_IdAndUser_Id(friendDTO.getUserId(), friendDTO.getFriendId()) ||
-                friendRepository.existsByFriend_IdAndUser_Id(friendDTO.getFriendId(), friendDTO.getUserId());
-
-        if (exists) {
+        if (friendRepository.existsByFriend_IdAndUser_Id(senderId, recipientId) ||
+                friendRepository.existsByFriend_IdAndUser_Id(recipientId, senderId)) {
             throw new IllegalStateException("Relationship already exists");
         }
 
-        User sender = userRepository.findById(friendDTO.getUserId()).orElseThrow(() -> new UserNotFound("Sender not found"));
-        User recipient = userRepository.findById(friendDTO.getFriendId()).orElseThrow(() -> new UserNotFound("Recipient not found"));
+        User sender = userRepository.findById(senderId)
+                .orElseThrow(() -> new UserNotFound("Sender not found: " + senderId));
+        User recipient = userRepository.findById(recipientId)
+                .orElseThrow(() -> new UserNotFound("Recipient not found: " + recipientId));
 
         Friend friendship = Friend.builder()
                 .user(sender)
@@ -102,7 +106,8 @@ public class FriendServiceImpl implements FriendService {
                 .build();
 
         friendship = friendRepository.save(friendship);
-        return friendMapper.toFriendDTO(friendship,sender.getId());
+        log.info("Friend request created from {} to {}", senderId, recipientId);
+        return friendMapper.toFriendDTO(friendship, senderId);
     }
 
     @Override

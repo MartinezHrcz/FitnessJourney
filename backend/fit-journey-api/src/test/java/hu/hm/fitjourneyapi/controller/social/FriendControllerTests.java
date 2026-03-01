@@ -21,11 +21,12 @@ import java.util.UUID;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(FriendController.class)
-@AutoConfigureMockMvc(addFilters = false)
+@AutoConfigureMockMvc
 public class FriendControllerTests {
 
     @Autowired
@@ -39,6 +40,8 @@ public class FriendControllerTests {
 
     @Autowired
     private ObjectMapper objectMapper;
+
+    private final String MOCK_USER_ID = "99371d57-e1f7-4f17-8d30-e6406daad176";
 
     @Test
     @WithMockUser
@@ -72,21 +75,21 @@ public class FriendControllerTests {
 
         when(friendService.createFriend(any(FriendCreateDTO.class))).thenReturn(responseDTO);
 
-        mockMvc.perform(post("/api/friend")
+        mockMvc.perform(post("/api/friend").with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(createDTO)))
                 .andExpect(status().isOk());
     }
 
     @Test
-    @WithMockUser
+    @WithMockUser(username = MOCK_USER_ID)
     void acceptFriend_Success_Returns200() throws Exception {
         UUID friendRequestId = UUID.randomUUID();
 
-        mockMvc.perform(put("/api/friend/{id}/accept", friendRequestId))
+        mockMvc.perform(put("/api/friend/{id}/accept", friendRequestId).with(csrf()))
                 .andExpect(status().isOk());
 
-        verify(friendService, times(1)).updateFriend(friendRequestId, FriendStatus.ACCEPTED);
+        verify(friendService, times(1)).updateFriend(friendRequestId, FriendStatus.ACCEPTED, UUID.fromString(MOCK_USER_ID));
     }
 
     @Test
@@ -94,7 +97,7 @@ public class FriendControllerTests {
     void deleteFriend_Success_Returns204() throws Exception {
         UUID friendRequestId = UUID.randomUUID();
 
-        mockMvc.perform(delete("/api/friend/{id}", friendRequestId))
+        mockMvc.perform(delete("/api/friend/{id}", friendRequestId).with(csrf()))
                 .andExpect(status().isNoContent());
 
         verify(friendService).deleteFriend(friendRequestId);
@@ -106,7 +109,7 @@ public class FriendControllerTests {
         UUID friendRequestId = UUID.randomUUID();
         doThrow(new RuntimeException("DB Error")).when(friendService).deleteFriend(friendRequestId);
 
-        mockMvc.perform(delete("/api/friend/{id}", friendRequestId))
+        mockMvc.perform(delete("/api/friend/{id}", friendRequestId).with(csrf()))
                 .andExpect(status().isBadRequest());
     }
 }

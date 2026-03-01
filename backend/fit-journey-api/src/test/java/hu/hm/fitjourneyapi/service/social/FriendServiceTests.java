@@ -85,12 +85,12 @@ public class FriendServiceTests {
     }
 
     @Test
-    void updateFriend_Success() {
+    void updateFriend_Success() throws IllegalAccessException {
         when(friendRepository.findById(relationship.getId())).thenReturn(Optional.of(relationship));
         when(friendRepository.save(any(Friend.class))).thenReturn(relationship);
         when(friendMapper.toFriendDTO(any(Friend.class))).thenReturn(relationshipDTO);
 
-        FriendDTO result = friendService.updateFriend(relationship.getId(), FriendStatus.ACCEPTED);
+        FriendDTO result = friendService.updateFriend(relationship.getId(), FriendStatus.ACCEPTED, relationship.getFriend().getId());
 
         assertNotNull(result);
         verify(friendRepository).save(relationship);
