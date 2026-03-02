@@ -34,6 +34,7 @@ public class Workout {
 
     private LocalDate endDate;
 
+    @Enumerated(EnumType.STRING)
     private WorkoutStatus status;
 
     @ToString.Exclude
@@ -44,16 +45,6 @@ public class Workout {
     @Builder.Default
     @OneToMany(mappedBy = "workout", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Exercise> exercises = new ArrayList<>();
-
-    public void AddExercise(Exercise exercise) {
-        this.exercises.add(exercise);
-        exercise.setWorkout(this);
-    }
-
-    public void RemoveExercise(Exercise exercise) {
-        this.exercises.remove(exercise);
-        exercise.setWorkout(null);
-    }
 
     @PrePersist
     public void generateId() {

@@ -7,17 +7,13 @@ import hu.hm.fitjourneyapi.exception.fitness.ExerciseNotFound;
 import hu.hm.fitjourneyapi.exception.fitness.WorkoutNotFound;
 import hu.hm.fitjourneyapi.exception.userExceptions.UserNotFound;
 import hu.hm.fitjourneyapi.mapper.fitness.WorkoutMapper;
+import hu.hm.fitjourneyapi.mapper.fitness.WorkoutPlanMapper;
 import hu.hm.fitjourneyapi.model.User;
+import hu.hm.fitjourneyapi.model.enums.ExerciseTypes;
 import hu.hm.fitjourneyapi.model.enums.WorkoutStatus;
-import hu.hm.fitjourneyapi.model.fitness.DefaultExercise;
-import hu.hm.fitjourneyapi.model.fitness.Exercise;
-import hu.hm.fitjourneyapi.model.fitness.UserMadeTemplates;
-import hu.hm.fitjourneyapi.model.fitness.Workout;
+import hu.hm.fitjourneyapi.model.fitness.*;
 import hu.hm.fitjourneyapi.repository.UserRepository;
-import hu.hm.fitjourneyapi.repository.fitness.DefaultExercisesRepository;
-import hu.hm.fitjourneyapi.repository.fitness.ExerciseRepository;
-import hu.hm.fitjourneyapi.repository.fitness.UserMadeTemplateRepository;
-import hu.hm.fitjourneyapi.repository.fitness.WorkoutRepository;
+import hu.hm.fitjourneyapi.repository.fitness.*;
 import hu.hm.fitjourneyapi.services.interfaces.fitness.WorkoutService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -26,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -39,7 +36,9 @@ public class WorkoutServiceImpl implements WorkoutService {
     private final ExerciseRepository exerciseRepository;
     private final DefaultExercisesRepository defaultExerciseRepository;
     private final UserMadeTemplateRepository userTemplateRepository;
+    private final WorkoutPlanRepository workoutPlanRepository;
     private final WorkoutMapper workoutMapper;
+    private final WorkoutPlanMapper workoutPlanMapper;
     private final AsyncTaskExecutor taskExecutor;
 
     public WorkoutServiceImpl(
@@ -47,8 +46,8 @@ public class WorkoutServiceImpl implements WorkoutService {
             WorkoutRepository workoutRepository,
             ExerciseRepository exerciseRepository,
             DefaultExercisesRepository defaultExerciseRepository,
-            UserMadeTemplateRepository userTemplateRepository,
-            WorkoutMapper workoutMapper,
+            UserMadeTemplateRepository userTemplateRepository, WorkoutPlanRepository workoutPlanRepository,
+            WorkoutMapper workoutMapper, WorkoutPlanMapper workoutPlanMapper,
             @Qualifier("applicationTaskExecutor") AsyncTaskExecutor taskExecutor)
     {
         this.userRepository = userRepository;
@@ -56,7 +55,9 @@ public class WorkoutServiceImpl implements WorkoutService {
         this.exerciseRepository = exerciseRepository;
         this.defaultExerciseRepository = defaultExerciseRepository;
         this.userTemplateRepository = userTemplateRepository;
+        this.workoutPlanRepository = workoutPlanRepository;
         this.workoutMapper = workoutMapper;
+        this.workoutPlanMapper = workoutPlanMapper;
         this.taskExecutor = taskExecutor;
     }
 
@@ -289,5 +290,15 @@ public class WorkoutServiceImpl implements WorkoutService {
         );
         workoutRepository.delete(workout);
         log.info("Deleted workout {}", id);
+    }
+
+    private Set createDefaultSetForType(ExerciseTypes type) {
+        return switch (type) {
+            case RESISTANCE, BODY_WEIGHT -> new StrengthSet();
+            case CARDIO -> new CardioSet();
+            case FLEXIBILITY -> new FlexibilitySet();
+            case NOT_GIVEN -> new StrengthSet();
+            default -> throw new IllegalArgumentException("Unsupported exercise type: " + type);
+        };
     }
 }
