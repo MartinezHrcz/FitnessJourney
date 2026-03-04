@@ -46,8 +46,8 @@ public class WorkoutPlanController {
         return ResponseEntity.ok(workoutPlanService.getPlanByName(name));
     }
 
-    @GetMapping("/available/{userId}")
-    public ResponseEntity<List<WorkoutPlanDTO>> getAvailablePlans(Authentication authentication, @PathVariable UUID userId) {
+    @GetMapping("/available")
+    public ResponseEntity<List<WorkoutPlanDTO>> getAvailablePlans(Authentication authentication) {
         UUID currentUserId = UUID.fromString(authentication.getName());
         return ResponseEntity.ok(workoutPlanService.getAvailablePlans(currentUserId));
     }

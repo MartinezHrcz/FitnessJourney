@@ -34,9 +34,10 @@ public class WorkoutPlanInitializer {
     @PostConstruct
     @Transactional
     public void init() {
-        if (planRepository.count() > 0) return;
-
-        log.info("Starting High-Performance Workout Plan initialization...");
+        if (planRepository.count() > 0)
+        {
+            return;
+        }
 
         try (InputStream is = getClass().getClassLoader().getResourceAsStream("defaultWorkoutPlans.json")) {
             if (is == null) return;

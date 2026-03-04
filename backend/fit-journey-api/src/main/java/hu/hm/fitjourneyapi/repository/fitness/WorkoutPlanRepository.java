@@ -12,5 +12,5 @@ public interface WorkoutPlanRepository extends JpaRepository<WorkoutPlan, UUID> 
 
     List<WorkoutPlan> findAllByCreator_IdOrCreatorIsNull(UUID creatorId);
 
-    List<WorkoutPlan> findWorkoutPlansByCreator_IdOrCreator_IDIsNull(UUID creatorId);
+    List<WorkoutPlan> findWorkoutPlansByCreator_IdOrCreator_IdIsNull(UUID creatorId);
 }

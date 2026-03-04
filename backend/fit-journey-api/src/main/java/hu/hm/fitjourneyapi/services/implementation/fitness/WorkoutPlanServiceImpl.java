@@ -89,7 +89,7 @@ public class WorkoutPlanServiceImpl implements WorkoutPlanService {
     @Override
     @Transactional(readOnly = true)
     public List<WorkoutPlanDTO> getAvailablePlans(UUID userId) {
-        List<WorkoutPlan> plans = planRepository.findWorkoutPlansByCreator_IdOrCreator_IDIsNull(userId);
+        List<WorkoutPlan> plans = planRepository.findWorkoutPlansByCreator_IdOrCreator_IdIsNull(userId);
         return planMapper.toDTOList(plans);
     }
 
