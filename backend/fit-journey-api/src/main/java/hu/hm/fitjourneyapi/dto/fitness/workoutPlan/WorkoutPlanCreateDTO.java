@@ -18,9 +18,6 @@ public class WorkoutPlanCreateDTO {
     @Size(max = 200)
     private String description;
 
-    @NotNull
-    private UUID userId;
-
     @NotEmpty
     private List<PlanExerciseRequestDTO> exercises;
 }

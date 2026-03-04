@@ -8,7 +8,7 @@ import java.util.UUID;
 
 public interface WorkoutPlanService {
 
-    WorkoutPlanDTO createPlan(WorkoutPlanCreateDTO dto);
+    WorkoutPlanDTO createPlan(WorkoutPlanCreateDTO dto, UUID userId);
 
     WorkoutPlanDTO getPlanById(UUID planId);
 

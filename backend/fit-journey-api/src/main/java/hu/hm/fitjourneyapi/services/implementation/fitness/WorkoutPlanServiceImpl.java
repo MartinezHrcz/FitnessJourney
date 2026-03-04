@@ -41,10 +41,10 @@ public class WorkoutPlanServiceImpl implements WorkoutPlanService {
 
     @Override
     @Transactional
-    public WorkoutPlanDTO createPlan(WorkoutPlanCreateDTO dto) {
+    public WorkoutPlanDTO createPlan(WorkoutPlanCreateDTO dto, UUID userId) {
         log.debug("Creating workout plan: {}", dto.getName());
-        User user = userRepository.findById(dto.getUserId())
-                .orElseThrow(() -> new UserNotFound("User not found: " + dto.getUserId()));
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFound("User not found: " + userId));
 
         WorkoutPlan plan = WorkoutPlan.builder()
                 .name(dto.getName())

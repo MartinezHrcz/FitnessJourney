@@ -9,6 +9,7 @@ import hu.hm.fitjourneyapi.services.interfaces.fitness.WorkoutPlanService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,9 +23,10 @@ public class WorkoutPlanController {
     private final WorkoutPlanService workoutPlanService;
 
     @PostMapping
-    public ResponseEntity<WorkoutPlanDTO> createPlan(@RequestBody WorkoutPlanCreateDTO dto) {
+    public ResponseEntity<WorkoutPlanDTO> createPlan(@RequestBody WorkoutPlanCreateDTO dto, Authentication authentication) {
+        UUID currentUserId = UUID.fromString(authentication.getName());
         try {
-            return new ResponseEntity<>(workoutPlanService.createPlan(dto), HttpStatus.CREATED);
+            return new ResponseEntity<>(workoutPlanService.createPlan(dto, currentUserId), HttpStatus.CREATED);
         } catch (UserNotFound ex) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
@@ -45,14 +47,16 @@ public class WorkoutPlanController {
     }
 
     @GetMapping("/available/{userId}")
-    public ResponseEntity<List<WorkoutPlanDTO>> getAvailablePlans(@PathVariable UUID userId) {
-        return ResponseEntity.ok(workoutPlanService.getAvailablePlans(userId));
+    public ResponseEntity<List<WorkoutPlanDTO>> getAvailablePlans(Authentication authentication, @PathVariable UUID userId) {
+        UUID currentUserId = UUID.fromString(authentication.getName());
+        return ResponseEntity.ok(workoutPlanService.getAvailablePlans(currentUserId));
     }
 
     @DeleteMapping("/{id}/user/{userId}")
-    public ResponseEntity<Void> deletePlan(@PathVariable UUID id, @PathVariable UUID userId) {
+    public ResponseEntity<Void> deletePlan(@PathVariable UUID id, Authentication authentication) {
+        UUID currentUserId = UUID.fromString(authentication.getName());
         try {
-            workoutPlanService.deletePlan(id, userId);
+            workoutPlanService.deletePlan(id, currentUserId);
             return ResponseEntity.noContent().build();
         } catch (WorkoutNotFound ex) {
             return ResponseEntity.notFound().build();
@@ -62,9 +66,10 @@ public class WorkoutPlanController {
     }
 
     @PostMapping("/{planId}/start/{userId}")
-    public ResponseEntity<UUID> startWorkoutFromPlan(@PathVariable UUID planId, @PathVariable UUID userId) {
+    public ResponseEntity<UUID> startWorkoutFromPlan(@PathVariable UUID planId, Authentication authentication) {
+        UUID currentUserId = UUID.fromString(authentication.getName());
         try {
-            return ResponseEntity.ok(workoutPlanService.startWorkoutFromPlan(planId, userId));
+            return ResponseEntity.ok(workoutPlanService.startWorkoutFromPlan(planId, currentUserId));
         } catch (WorkoutNotFound | UserNotFound ex) {
             return ResponseEntity.notFound().build();
         }
