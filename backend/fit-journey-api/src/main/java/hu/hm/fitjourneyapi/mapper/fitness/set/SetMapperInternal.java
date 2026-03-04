@@ -38,10 +38,16 @@ public interface SetMapperInternal {
     @Mapping(source = "exercise.id", target = "exerciseId")
     FlexibilitySetDTO toFlexibilitySetDTO(FlexibilitySet set);
 
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "exercise", ignore = true)
     void updateStrengthSet(StrengthSetDTO dto, @MappingTarget StrengthSet existing);
 
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "exercise", ignore = true)
     void updateCardioSet(CardioSetDTO dto, @MappingTarget CardioSet existing);
 
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "exercise", ignore = true)
     void updateFlexibilitySet(FlexibilitySetDTO dto, @MappingTarget FlexibilitySet existing);
 
     List<StrengthSetDTO> toStrengthSetDTOList(List<StrengthSet> sets);

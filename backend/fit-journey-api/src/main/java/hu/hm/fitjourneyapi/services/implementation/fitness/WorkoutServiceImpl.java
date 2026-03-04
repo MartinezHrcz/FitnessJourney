@@ -143,41 +143,39 @@ public class WorkoutServiceImpl implements WorkoutService {
     }
 
     @Override
+    @Transactional
     public WorkoutDTO addDefaultExerciseToWorkout(UUID workoutId, UUID templateId) {
-        var workoutFuture = CompletableFuture.supplyAsync(() ->
-                workoutRepository.findById(workoutId).orElseThrow( () -> {
+        Workout workout = workoutRepository.findById(workoutId)
+                .orElseThrow(() -> {
                     log.warn("Workout with id {} not found", workoutId);
                     return new WorkoutNotFound("Workout not found with id " + workoutId);
-                }), taskExecutor);
+                });
 
-        var templateFuture = CompletableFuture.supplyAsync(() ->
-                defaultExerciseRepository.findById(templateId).orElseThrow(() -> {
+        DefaultExercise template = defaultExerciseRepository.findById(templateId)
+                .orElseThrow(() -> {
                     log.warn("Exercise with id {} not found", templateId);
                     return new ExerciseNotFound("Exercise not found with id " + templateId);
-                }), taskExecutor);
-
-        CompletableFuture.allOf(workoutFuture, templateFuture).join();
-
-        Workout workout = workoutFuture.join();
-        DefaultExercise template = templateFuture.join();
+                });
 
         Exercise exercise = Exercise.builder()
                 .name(template.getName())
                 .description(template.getDescription())
                 .type(template.getType())
                 .weightType(template.getWeightType())
-                .workout(workout).build();
+                .workout(workout)
+                .build();
 
         exercise = exerciseRepository.save(exercise);
         workout.getExercises().add(exercise);
-        workout = workoutRepository.save(workout);
-        log.info("Add exercise to workout {} with id {}", workout.getName(), workout.getId());
+
+        log.info("Added exercise {} to workout {}", template.getName(), workout.getName());
 
         return workoutMapper.toDTO(workout);
 
     }
 
     @Override
+    @Transactional
     public WorkoutDTO addUserExerciseToWorkout(UUID workoutId, UUID templateId) {
         Workout workout = workoutRepository.findById(workoutId).orElseThrow(
                 () -> new WorkoutNotFound("Workout not found with id: " + workoutId)
@@ -201,6 +199,7 @@ public class WorkoutServiceImpl implements WorkoutService {
     }
 
     @Override
+    @Transactional
     public WorkoutDTO addExerciseToWorkout(UUID workoutId, UUID exerciseId) {
         Workout workout = workoutRepository.findById(workoutId).orElseThrow(
                 () -> {
@@ -223,6 +222,7 @@ public class WorkoutServiceImpl implements WorkoutService {
     }
 
     @Override
+    @Transactional
     public WorkoutDTO removeExerciseFromWorkout(UUID workoutId, UUID exerciseId) {
         Workout workout = workoutRepository.findById(workoutId).orElseThrow(
                 () -> {
@@ -247,6 +247,7 @@ public class WorkoutServiceImpl implements WorkoutService {
     }
 
     @Override
+    @Transactional
     public WorkoutDTO finishWorkout(UUID workoutId) {
         Workout workout = workoutRepository.findById(workoutId).orElseThrow(
                 () -> {
@@ -263,6 +264,7 @@ public class WorkoutServiceImpl implements WorkoutService {
     }
 
     @Override
+    @Transactional
     public WorkoutDTO cancelWorkout(UUID workoutId) {
         Workout workout = workoutRepository.findById(workoutId).orElseThrow(
                 () -> {
