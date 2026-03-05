@@ -54,7 +54,7 @@ public class TestFitnessDataFactory {
         Workout workout = Workout.builder()
                 .name("Test workout")
                 .description("test")
-                .startDate(LocalDate.now())
+                .startDate(LocalDateTime.now())
                 .endDate(LocalDate.now().plusDays(1))
                 .status(WorkoutStatus.FINISHED)
                 .user(user)

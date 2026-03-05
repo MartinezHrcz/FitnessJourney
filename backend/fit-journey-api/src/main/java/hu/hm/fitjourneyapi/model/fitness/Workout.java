@@ -8,6 +8,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -30,7 +31,7 @@ public class Workout {
 
     @CreatedDate
     @Column(nullable = false, updatable = false)
-    private LocalDate startDate;
+    private LocalDateTime startDate;
 
     private LocalDate endDate;
 

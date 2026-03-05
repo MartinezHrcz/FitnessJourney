@@ -98,6 +98,7 @@ public class ExerciseServiceImpl implements ExerciseService {
         return exerciseMapper.toExerciseDTO(exercise);
     }
 
+    @Transactional
     @Override
     public AbstractExerciseDTO createExercise(AbstractExerciseDTO dto) {
         Exercise result = exerciseMapper.toExercise(dto);
@@ -105,6 +106,7 @@ public class ExerciseServiceImpl implements ExerciseService {
         return exerciseMapper.toExerciseDTO(result);
     }
 
+    @Transactional
     @Override
     public AbstractExerciseDTO updateExercise(UUID id, ExerciseUpdateDTO dto) {
         log.debug("Updating exercise by id {}", id);
@@ -117,6 +119,7 @@ public class ExerciseServiceImpl implements ExerciseService {
         return exerciseMapper.toExerciseDTO(exercise);
     }
 
+    @Transactional
     @Override
     public AbstractExerciseDTO addSetById(UUID id, AbstractSetDTO abstractSetDTO) {
         log.debug("Adding set to exercise by id {}", id);
@@ -130,6 +133,7 @@ public class ExerciseServiceImpl implements ExerciseService {
         return exerciseMapper.toExerciseDTO(exercise);
     }
 
+    @Transactional
     @Override
     public AbstractExerciseDTO updateSetById(UUID id, long setId, AbstractSetDTO abstractSetDTO) {
 
@@ -147,11 +151,14 @@ public class ExerciseServiceImpl implements ExerciseService {
 
         setMapper.updateEntity(abstractSetDTO, set);
 
+        setRepository.save(set);
+
         log.info("Updated set {} in exercise {}", setId, id);
 
         return exerciseMapper.toExerciseDTO(exercise);
     }
 
+    @Transactional
     @Override
     public AbstractExerciseDTO removeSetById(UUID id, long setid) {
         log.debug("Removing set from exercise by id {}", id);

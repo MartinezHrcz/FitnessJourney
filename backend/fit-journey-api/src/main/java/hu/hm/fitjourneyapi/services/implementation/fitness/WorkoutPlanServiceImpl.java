@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -120,7 +121,7 @@ public class WorkoutPlanServiceImpl implements WorkoutPlanService {
                 .description(plan.getDescription())
                 .user(user)
                 .status(WorkoutStatus.ONGOING)
-                .startDate(LocalDate.now())
+                .startDate(LocalDateTime.now())
                 .build();
 
         for (PlanExercise planEx : plan.getExercises()) {
@@ -150,6 +151,7 @@ public class WorkoutPlanServiceImpl implements WorkoutPlanService {
     }
 
     private TemplateInfo findTemplateInfo(UUID id) {
+        log.info("Attempting to find template with ID: {}", id);
         return defaultRepo.findById(id)
                 .map(e -> new TemplateInfo(e.getName(), e.getType()))
                 .orElseGet(() -> userTemplateRepo.findById(id)

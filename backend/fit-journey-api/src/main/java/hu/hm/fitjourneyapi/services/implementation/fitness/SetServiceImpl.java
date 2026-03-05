@@ -72,12 +72,6 @@ public class SetServiceImpl implements SetService {
                 () -> new SetNotFound("Set with id " + id + " not found")
         );
 
-        if (abstractSetDTO instanceof StrengthSetDTO sDto && set instanceof StrengthSet sEntity) {
-            System.out.println("DEBUG: Updating Strength Set. DTO reps: " + sDto.getReps());
-            sEntity.setReps(sDto.getReps());
-            sEntity.setWeight(sDto.getWeight());
-        }
-
         if (!isTypeCompatible(abstractSetDTO, set)) {
             throw new InvalidSetType("Mismatch between DTO type and existing Entity type");
         }
