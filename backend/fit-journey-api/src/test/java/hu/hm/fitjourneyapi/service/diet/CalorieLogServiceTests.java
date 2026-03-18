@@ -84,7 +84,7 @@ public class CalorieLogServiceTests {
 
         assertNotNull(result);
         assertEquals(1, calorieLog.getEntries().size());
-        assertEquals(250.0, calorieLog.getEntries().getFirst().getAmount());
+        assertEquals(250.0, calorieLog.getEntries().getFirst().getQuantity());
         verify(calorieLogRepository).save(calorieLog);
     }
 

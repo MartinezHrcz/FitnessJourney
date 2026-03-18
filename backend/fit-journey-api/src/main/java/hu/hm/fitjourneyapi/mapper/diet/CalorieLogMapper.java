@@ -20,26 +20,26 @@ public interface CalorieLogMapper {
 
     default int calculateTotalCals(CalorieLog entity) {
         return entity.getEntries().stream()
-                .mapToInt(e -> (int)(e.getFoodItem().getCalories() * e.getAmount()))
+                .mapToInt(e -> (int)(e.getFoodItem().getCalories() * e.getQuantity()))
                 .sum();
     }
 
     default int calculateTotalProtein(CalorieLog entity) {
         return entity.getEntries().stream()
-                .mapToInt(e -> (int)(e.getFoodItem().getProtein() * e.getAmount()))
+                .mapToInt(e -> (int)(e.getFoodItem().getProtein() * e.getQuantity()))
                 .sum();
     }
 
     default int calculateTotalCarbs(CalorieLog entity) {
         return entity.getEntries().stream()
-                .mapToInt(e -> (int)(e.getFoodItem().getCarbs() * e.getAmount()))
+                .mapToInt(e -> (int)(e.getFoodItem().getCarbs() * e.getQuantity()))
                 .sum();
     }
 
 
     default int calculateTotalFats(CalorieLog entity) {
         return entity.getEntries().stream()
-                .mapToInt(e -> (int)(e.getFoodItem().getFats() * e.getAmount()))
+                .mapToInt(e -> (int)(e.getFoodItem().getFats() * e.getQuantity()))
                 .sum();
     }
 }

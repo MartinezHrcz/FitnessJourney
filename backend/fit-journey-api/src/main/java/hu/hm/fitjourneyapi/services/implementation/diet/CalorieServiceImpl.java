@@ -55,7 +55,7 @@ public class CalorieServiceImpl implements CalorieLogService {
         MealEntry mealEntry = MealEntry.builder()
                 .foodItem(foodItem)
                 .calorieLog(log)
-                .amount(mealDto.getQuantity())
+                .quantity(mealDto.getQuantity())
                 .build();
 
         if (log.getEntries() == null) {

@@ -18,7 +18,6 @@ import hu.hm.fitjourneyapi.exception.userExceptions.UserNotFound;
 import hu.hm.fitjourneyapi.mapper.UserMapper;
 import hu.hm.fitjourneyapi.model.User;
 import hu.hm.fitjourneyapi.model.fitness.Workout;
-import hu.hm.fitjourneyapi.model.social.Comment;
 import hu.hm.fitjourneyapi.model.social.Friend;
 import hu.hm.fitjourneyapi.model.social.Post;
 import hu.hm.fitjourneyapi.repository.UserRepository;

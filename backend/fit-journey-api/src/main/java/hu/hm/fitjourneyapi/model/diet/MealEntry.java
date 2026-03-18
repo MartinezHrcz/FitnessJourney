@@ -26,9 +26,9 @@ public class MealEntry {
     @JoinColumn(name = "fooditem_id")
     private FoodItem foodItem;
 
-    private double amount;
+    private double quantity;
 
     public int getCalculatedCalories() {
-        return (int) (foodItem.getCalories() * amount);
+        return (int) (foodItem.getCalories() * quantity);
     }
 }
