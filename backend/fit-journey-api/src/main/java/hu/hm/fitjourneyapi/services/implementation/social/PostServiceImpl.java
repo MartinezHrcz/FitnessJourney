@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -62,6 +63,8 @@ public class PostServiceImpl implements PostService {
     public List<PostDTO> getPosts(UUID currentUserId) {
         log.debug("Fetching posts");
         List<Post> posts = postRepository.findAll();
+        posts.sort(Comparator.comparing(Post::getSentTime,
+                Comparator.nullsLast(Comparator.naturalOrder())).reversed());
         log.info("Fetched posts");
         return postMapper.toListPostDTO(posts, currentUserId);
     }
@@ -76,6 +79,8 @@ public class PostServiceImpl implements PostService {
                 .map(f -> f.getUser().getId().equals(currentUserId) ? f.getFriend().getId() : f.getUser().getId())
                 .collect(Collectors.toList());
         List<Post> posts = postRepository.findPostsByUserIdIn(friendIds);
+        posts.sort(Comparator.comparing(Post::getSentTime,
+            Comparator.nullsLast(Comparator.naturalOrder())).reversed());
         log.info("Fetched {} friends posts for user: {}", posts.size(), currentUserId);
         return postMapper.toListPostDTO(posts, currentUserId);
     }
