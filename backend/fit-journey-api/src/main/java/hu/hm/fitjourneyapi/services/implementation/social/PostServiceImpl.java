@@ -7,7 +7,10 @@ import hu.hm.fitjourneyapi.exception.social.post.PostNotFoundException;
 import hu.hm.fitjourneyapi.mapper.social.PostMapper;
 import hu.hm.fitjourneyapi.model.User;
 import hu.hm.fitjourneyapi.model.social.Post;
+import hu.hm.fitjourneyapi.model.enums.FriendStatus;
+import hu.hm.fitjourneyapi.model.social.Friend;
 import hu.hm.fitjourneyapi.repository.UserRepository;
+import hu.hm.fitjourneyapi.repository.social.FriendRepository;
 import hu.hm.fitjourneyapi.repository.social.PostRepository;
 import hu.hm.fitjourneyapi.services.interfaces.common.FileShareService;
 import hu.hm.fitjourneyapi.services.interfaces.social.PostService;
@@ -19,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -28,13 +32,15 @@ public class PostServiceImpl implements PostService {
     private final PostMapper postMapper;
     private final UserRepository userRepository;
     private final FileShareService fileShareService;
+    private final FriendRepository friendRepository;
     private final String uploadDir = "uploads/";
 
-    public PostServiceImpl(PostRepository postRepository, PostMapper postMapper, UserRepository userRepository, FileShareService fileShareService) {
+    public PostServiceImpl(PostRepository postRepository, PostMapper postMapper, UserRepository userRepository, FileShareService fileShareService, FriendRepository friendRepository) {
         this.postRepository = postRepository;
         this.postMapper = postMapper;
         this.userRepository = userRepository;
         this.fileShareService = fileShareService;
+        this.friendRepository = friendRepository;
     }
 
     @Transactional
@@ -57,6 +63,20 @@ public class PostServiceImpl implements PostService {
         log.debug("Fetching posts");
         List<Post> posts = postRepository.findAll();
         log.info("Fetched posts");
+        return postMapper.toListPostDTO(posts, currentUserId);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<PostDTO> getFriendsPosts(UUID currentUserId) {
+        log.debug("Fetching friends posts for user: {}", currentUserId);
+        List<Friend> friendships = friendRepository.findFriendsByUser_IdOrFriend_Id(currentUserId, currentUserId);
+        List<UUID> friendIds = friendships.stream()
+                .filter(f -> f.getStatus() == FriendStatus.ACCEPTED)
+                .map(f -> f.getUser().getId().equals(currentUserId) ? f.getFriend().getId() : f.getUser().getId())
+                .collect(Collectors.toList());
+        List<Post> posts = postRepository.findPostsByUserIdIn(friendIds);
+        log.info("Fetched {} friends posts for user: {}", posts.size(), currentUserId);
         return postMapper.toListPostDTO(posts, currentUserId);
     }
 

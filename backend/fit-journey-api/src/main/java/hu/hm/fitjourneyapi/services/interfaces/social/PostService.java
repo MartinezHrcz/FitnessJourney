@@ -16,6 +16,8 @@ public interface PostService {
 
     List<PostDTO> getPostsByUserId(UUID id);
 
+    List<PostDTO> getFriendsPosts(UUID currentUserId);
+
     PostDTO updatePost(UUID id,PostUpdateDTO postUpdateDTO, UUID currentUserId);
 
     PostDTO createPost(PostCreateDTO postCreateDTOm, UUID currentUserId);

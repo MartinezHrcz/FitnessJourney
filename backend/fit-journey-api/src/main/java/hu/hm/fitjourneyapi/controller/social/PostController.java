@@ -38,6 +38,12 @@ public class PostController {
         }
     }
 
+    @GetMapping("/friends")
+    public ResponseEntity<List<PostDTO>> getFriendsPosts(Authentication authentication) {
+        UUID currentUserId = UUID.fromString(authentication.getName());
+        return ResponseEntity.ok(postService.getFriendsPosts(currentUserId));
+    }
+
     @GetMapping("/user/{id}")
     public ResponseEntity<List<PostDTO>> getByUserId(Authentication authentication) {
         UUID currentUserId = UUID.fromString(authentication.getName());
