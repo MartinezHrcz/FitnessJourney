@@ -39,6 +39,8 @@ public class User {
     private float weightInKg;
     private float heightInCm;
 
+    private float preferredCalories;
+
     @Builder.Default
     @Enumerated(EnumType.STRING)
     private Roles role = Roles.USER;

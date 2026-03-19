@@ -1,5 +1,6 @@
 package hu.hm.fitjourneyapi.dto.user;
 
+import io.micrometer.common.lang.Nullable;
 import jakarta.validation.constraints.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
@@ -28,4 +29,6 @@ public abstract class AbstractUserDTO {
     @Positive(message = "Height must be positive")
     @Max(value= 300, message = "Height must be below 300cm")
     private float heightInCm;
+
+    private Float preferredCalories;
 }
