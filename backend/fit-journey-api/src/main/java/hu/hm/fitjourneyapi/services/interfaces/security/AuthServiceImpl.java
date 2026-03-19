@@ -2,6 +2,7 @@ package hu.hm.fitjourneyapi.services.interfaces.security;
 
 import hu.hm.fitjourneyapi.dto.user.AuthRequest;
 import hu.hm.fitjourneyapi.dto.user.AuthResponse;
+import hu.hm.fitjourneyapi.dto.user.RefreshTokenRequest;
 import hu.hm.fitjourneyapi.dto.user.UserCreateDTO;
 import hu.hm.fitjourneyapi.dto.user.UserDTO;
 import hu.hm.fitjourneyapi.security.JwtUtil;
@@ -31,7 +32,8 @@ public class AuthServiceImpl implements AuthService {
     public AuthResponse register(UserCreateDTO request) {
         UserDTO user = userService.createUser(request);
         String token = jwtUtil.generateToken(user.getId(),user.getName(), List.of(user.getRole().name()));
-        return new AuthResponse(user,token);
+        String refreshToken = jwtUtil.generateRefreshToken(user.getId(), user.getName(), List.of(user.getRole().name()));
+        return new AuthResponse(user, token, refreshToken);
     }
 
     @Override
@@ -45,7 +47,23 @@ public class AuthServiceImpl implements AuthService {
         UserDTO user = userService.getUserByName(request.getUsername());
 
         String token = jwtUtil.generateToken(user.getId(),user.getName(), List.of(user.getRole().name()));
+        String refreshToken = jwtUtil.generateRefreshToken(user.getId(), user.getName(), List.of(user.getRole().name()));
         log.info("logged in user {} ", request.getUsername());
-        return new AuthResponse(user,token);
+        return new AuthResponse(user, token, refreshToken);
+    }
+
+    @Override
+    public AuthResponse refresh(RefreshTokenRequest request) {
+        String refreshToken = request.getRefreshToken();
+        String userId = jwtUtil.extractUserId(refreshToken);
+
+        if (!jwtUtil.validateRefreshToken(refreshToken, userId)) {
+            throw new IllegalArgumentException("Invalid refresh token");
+        }
+
+        UserDTO user = userService.getUserById(java.util.UUID.fromString(userId));
+        String newAccessToken = jwtUtil.generateToken(user.getId(), user.getName(), List.of(user.getRole().name()));
+        String newRefreshToken = jwtUtil.generateRefreshToken(user.getId(), user.getName(), List.of(user.getRole().name()));
+        return new AuthResponse(user, newAccessToken, newRefreshToken);
     }
 }

@@ -2,6 +2,7 @@ package hu.hm.fitjourneyapi.controller.auth;
 
 import hu.hm.fitjourneyapi.dto.user.AuthRequest;
 import hu.hm.fitjourneyapi.dto.user.AuthResponse;
+import hu.hm.fitjourneyapi.dto.user.RefreshTokenRequest;
 import hu.hm.fitjourneyapi.dto.user.UserCreateDTO;
 import hu.hm.fitjourneyapi.services.interfaces.security.AuthService;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,7 +26,11 @@ public class AuthController {
 
     @PostMapping("/login")
     public AuthResponse login(@RequestBody AuthRequest authRequest) {
-        System.out.println("Hey");
         return authService.login(authRequest);
+    }
+
+    @PostMapping("/refresh")
+    public AuthResponse refresh(@RequestBody RefreshTokenRequest refreshTokenRequest) {
+        return authService.refresh(refreshTokenRequest);
     }
 }

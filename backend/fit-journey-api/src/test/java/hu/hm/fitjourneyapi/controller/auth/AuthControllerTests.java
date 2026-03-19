@@ -1,9 +1,9 @@
 package hu.hm.fitjourneyapi.controller.auth;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import hu.hm.fitjourneyapi.controller.social.MessageController;
 import hu.hm.fitjourneyapi.dto.user.AuthRequest;
 import hu.hm.fitjourneyapi.dto.user.AuthResponse;
+import hu.hm.fitjourneyapi.dto.user.RefreshTokenRequest;
 import hu.hm.fitjourneyapi.dto.user.UserCreateDTO;
 import hu.hm.fitjourneyapi.dto.user.UserDTO;
 import hu.hm.fitjourneyapi.security.JwtUtil;
@@ -12,7 +12,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
@@ -42,7 +41,7 @@ public class AuthControllerTests {
     void register_ShouldReturnAuthResponse() throws Exception {
         UserCreateDTO createDTO = UserCreateDTO.builder().email("test@example.com").password("password").build();
 
-        AuthResponse mockResponse = new AuthResponse(new UserDTO(), "mock-jwt-token");
+        AuthResponse mockResponse = new AuthResponse(new UserDTO(), "mock-jwt-token", "mock-refresh-token");
 
         when(authService.register(any(UserCreateDTO.class))).thenReturn(mockResponse);
 
@@ -58,7 +57,7 @@ public class AuthControllerTests {
         AuthRequest authRequest = new AuthRequest();
         authRequest.setUsername("test");
         authRequest.setPassword("password");
-        AuthResponse mockResponse = new AuthResponse(new UserDTO(), "mock-jwt-token");
+        AuthResponse mockResponse = new AuthResponse(new UserDTO(), "mock-jwt-token", "mock-refresh-token");
 
         when(authService.login(any(AuthRequest.class))).thenReturn(mockResponse);
 
@@ -67,5 +66,21 @@ public class AuthControllerTests {
                         .content(objectMapper.writeValueAsString(authRequest)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.token").value("mock-jwt-token"));
+    }
+
+    @Test
+    void refresh_ShouldReturnAuthResponse() throws Exception {
+        RefreshTokenRequest refreshTokenRequest = new RefreshTokenRequest();
+        refreshTokenRequest.setRefreshToken("mock-refresh-token");
+        AuthResponse mockResponse = new AuthResponse(new UserDTO(), "mock-jwt-token", "mock-refresh-token-2");
+
+        when(authService.refresh(any(RefreshTokenRequest.class))).thenReturn(mockResponse);
+
+        mockMvc.perform(post("/api/auth/refresh")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(refreshTokenRequest)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.token").value("mock-jwt-token"))
+                .andExpect(jsonPath("$.refreshToken").value("mock-refresh-token-2"));
     }
 }

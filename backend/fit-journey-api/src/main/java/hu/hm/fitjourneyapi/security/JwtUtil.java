@@ -3,6 +3,7 @@ package hu.hm.fitjourneyapi.security;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.JwtException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -20,19 +21,40 @@ public class JwtUtil {
     @Value("${JWT_SECRET_KEY}")
     private String SECRET_KEY;
 
-    private final long EXPIRATION_TIME = 1000 * 60 * 60 * 4;
+    @Value("${jwt.access-expiration-ms:14400000}")
+    private long accessExpirationMs;
+
+    @Value("${jwt.refresh-expiration-ms:604800000}")
+    private long refreshExpirationMs;
 
     private Key getSigningKey() {
         return  new SecretKeySpec(SECRET_KEY.getBytes(), "HmacSHA256");
     }
 
     public String generateToken(UUID userID, String username, List<String> roles) {
+        return generateAccessToken(userID, username, roles);
+    }
+
+    public String generateAccessToken(UUID userID, String username, List<String> roles) {
         return Jwts.builder()
                 .setSubject(userID.toString())
                 .claim("username", username)
                 .claim("roles",roles)
+                .claim("type", "access")
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
+                .setExpiration(new Date(System.currentTimeMillis() + accessExpirationMs))
+                .signWith(getSigningKey(), SignatureAlgorithm.HS256)
+                .compact();
+    }
+
+    public String generateRefreshToken(UUID userID, String username, List<String> roles) {
+        return Jwts.builder()
+                .setSubject(userID.toString())
+                .claim("username", username)
+                .claim("roles",roles)
+                .claim("type", "refresh")
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + refreshExpirationMs))
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
@@ -63,13 +85,32 @@ public class JwtUtil {
         return extractClaim(token, Claims::getExpiration);
     }
 
+    public String extractTokenType(String token) {
+        return extractClaim(token, claims -> claims.get("type", String.class));
+    }
+
     public boolean isTokenExpired(String token) {
         return extractExpiration(token).before(new Date());
     }
 
     public boolean validateToken(String token, String idFromContext) {
-        final String idFromToken = extractUserId(token);
-        return (idFromToken.equals(idFromContext) && !isTokenExpired(token));
+        try {
+            final String idFromToken = extractUserId(token);
+            final String tokenType = extractTokenType(token);
+            return (idFromToken.equals(idFromContext) && "access".equals(tokenType) && !isTokenExpired(token));
+        } catch (JwtException | IllegalArgumentException e) {
+            return false;
+        }
+    }
+
+    public boolean validateRefreshToken(String token, String idFromContext) {
+        try {
+            final String idFromToken = extractUserId(token);
+            final String tokenType = extractTokenType(token);
+            return (idFromToken.equals(idFromContext) && "refresh".equals(tokenType) && !isTokenExpired(token));
+        } catch (JwtException | IllegalArgumentException e) {
+            return false;
+        }
     }
 
 }
