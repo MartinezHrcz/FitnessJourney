@@ -6,7 +6,6 @@ import lombok.experimental.SuperBuilder;
 
 import java.util.UUID;
 
-
 @Getter
 @Setter
 @SuperBuilder
