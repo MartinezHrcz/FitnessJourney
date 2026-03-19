@@ -1,6 +1,5 @@
 package hu.hm.fitjourneyapi.dto.user;
 
-import io.micrometer.common.lang.Nullable;
 import jakarta.validation.constraints.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
