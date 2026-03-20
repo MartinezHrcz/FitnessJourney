@@ -29,5 +29,7 @@ public abstract class AbstractUserDTO {
     @Max(value= 300, message = "Height must be below 300cm")
     private float heightInCm;
 
+    private String profilePictureUrl;
+
     private Float preferredCalories;
 }

@@ -4,9 +4,12 @@ import hu.hm.fitjourneyapi.dto.user.*;
 import hu.hm.fitjourneyapi.exception.userExceptions.UserNotFound;
 import hu.hm.fitjourneyapi.services.interfaces.UserService;
 import jakarta.validation.Valid;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -60,6 +63,20 @@ public class UserController {
             return ResponseEntity.ok(result);
         } catch (UserNotFound e) {
             return ResponseEntity.notFound().build();
+        }
+    }
+
+    @PostMapping(value = "/profile-picture", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<UserDTO> updateProfilePicture(
+            @RequestPart("image") MultipartFile image,
+            Authentication authentication) {
+        try {
+            UUID currentUserId = UUID.fromString(authentication.getName());
+            return ResponseEntity.ok(userService.updateProfilePicture(currentUserId, image));
+        } catch (UserNotFound e) {
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
         }
     }
 

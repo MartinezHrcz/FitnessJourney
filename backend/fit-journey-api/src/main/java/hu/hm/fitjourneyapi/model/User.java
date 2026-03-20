@@ -38,6 +38,7 @@ public class User {
     private String password;
     private float weightInKg;
     private float heightInCm;
+    private String profilePictureUrl;
 
     private float preferredCalories;
 

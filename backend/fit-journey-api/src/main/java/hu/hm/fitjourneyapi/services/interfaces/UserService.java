@@ -10,6 +10,7 @@ import hu.hm.fitjourneyapi.dto.user.UserUpdateDTO;
 import hu.hm.fitjourneyapi.dto.user.fitness.UserWithWorkoutsDTO;
 import hu.hm.fitjourneyapi.dto.user.social.UserWithFriendsDTO;
 import hu.hm.fitjourneyapi.dto.user.social.UserWithPostsDTO;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.UUID;
@@ -21,6 +22,8 @@ public interface UserService {
     UserDTO updateUser(UUID id,UserUpdateDTO userUpdateDTO);
 
     UserDTO updatePassword(UUID id,UserPasswordUpdateDTO userPasswordUpdateDTO);
+
+    UserDTO updateProfilePicture(UUID id, MultipartFile profilePicture);
 
     UserDTO getUserById(UUID id);
 

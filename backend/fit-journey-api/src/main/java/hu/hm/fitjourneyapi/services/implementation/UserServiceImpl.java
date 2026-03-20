@@ -26,11 +26,13 @@ import hu.hm.fitjourneyapi.repository.social.CommentRepository;
 import hu.hm.fitjourneyapi.repository.social.FriendRepository;
 import hu.hm.fitjourneyapi.repository.social.PostRepository;
 import hu.hm.fitjourneyapi.security.JwtUtil;
+import hu.hm.fitjourneyapi.services.interfaces.common.FileShareService;
 import hu.hm.fitjourneyapi.services.interfaces.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.UUID;
@@ -47,6 +49,7 @@ public class UserServiceImpl implements UserService {
     private final WorkoutRepository workoutRepository;
     private final CommentRepository commentRepository;
     private final JwtUtil jwtUtil;
+    private final FileShareService fileShareService;
 
     public UserServiceImpl(
             UserRepository userRepository,
@@ -56,7 +59,8 @@ public class UserServiceImpl implements UserService {
             FriendRepository friendRepository,
             WorkoutRepository workoutRepository,
             CommentRepository commentRepository,
-            JwtUtil jwtUtil)
+            JwtUtil jwtUtil,
+            FileShareService fileShareService)
     {
         this.userRepository = userRepository;
         this.userMapper = userMapper;
@@ -66,6 +70,7 @@ public class UserServiceImpl implements UserService {
         this.workoutRepository = workoutRepository;
         this.commentRepository = commentRepository;
         this.jwtUtil = jwtUtil;
+        this.fileShareService = fileShareService;
     }
 
     @Transactional
@@ -121,6 +126,38 @@ public class UserServiceImpl implements UserService {
         UserDTO userDTO = userMapper.toUserDTO(userToUpdate);
         userDTO.setToken(jwtUtil.generateToken(userToUpdate.getId(), userToUpdate.getName(), List.of(userToUpdate.getRole().name())));
         return userDTO;
+    }
+
+    @Transactional
+    @Override
+    public UserDTO updateProfilePicture(UUID id, MultipartFile profilePicture) {
+        log.debug("Attempting to update profile picture for user id {}", id);
+        User userToUpdate = userRepository.findById(id).orElseThrow(
+                () -> {
+                    log.warn("User not found with id: {}", id);
+                    return new UserNotFound("User not found with id:" + id);
+                }
+        );
+
+        if (profilePicture == null || profilePicture.isEmpty()) {
+            throw new IllegalArgumentException("Profile picture is required");
+        }
+
+        String previousPictureUrl = userToUpdate.getProfilePictureUrl();
+        String fileName = fileShareService.store(profilePicture);
+        userToUpdate.setProfilePictureUrl("/uploads/" + fileName);
+
+        userToUpdate = userRepository.save(userToUpdate);
+
+        if (previousPictureUrl != null && previousPictureUrl.startsWith("/uploads/")) {
+            String oldFileName = previousPictureUrl.replace("/uploads/", "");
+            if (fileShareService.exists(oldFileName)) {
+                fileShareService.delete(oldFileName);
+            }
+        }
+
+        log.info("Updated profile picture for user id {}", id);
+        return userMapper.toUserDTO(userToUpdate);
     }
 
     @Transactional(readOnly = true)
