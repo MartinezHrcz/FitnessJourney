@@ -110,7 +110,7 @@ public class UserServiceImpl implements UserService {
         userToUpdate.setWeightInKg(userUpdateDTO.getWeightInKg());
         userToUpdate = userRepository.save(userToUpdate);
         UserDTO userDTO = userMapper.toUserDTO(userToUpdate);
-        userDTO.setToken(jwtUtil.generateToken(userToUpdate.getId(),userToUpdate.getName(), List.of(userToUpdate.getRole().name())));
+        userDTO.setToken(jwtUtil.generateToken(userToUpdate.getId(),userToUpdate.getName()));
         log.info("Updated user with id: " + id);
         return userDTO;
     }
@@ -134,7 +134,7 @@ public class UserServiceImpl implements UserService {
         userToUpdate = userRepository.save(userToUpdate);
         log.info("Updated password for user with id: " + userToUpdate.getId());
         UserDTO userDTO = userMapper.toUserDTO(userToUpdate);
-        userDTO.setToken(jwtUtil.generateToken(userToUpdate.getId(), userToUpdate.getName(), List.of(userToUpdate.getRole().name())));
+        userDTO.setToken(jwtUtil.generateToken(userToUpdate.getId(), userToUpdate.getName()));
         return userDTO;
     }
 

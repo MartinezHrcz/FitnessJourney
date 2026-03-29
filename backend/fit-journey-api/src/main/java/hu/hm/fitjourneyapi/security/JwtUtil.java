@@ -31,15 +31,14 @@ public class JwtUtil {
         return  new SecretKeySpec(SECRET_KEY.getBytes(), "HmacSHA256");
     }
 
-    public String generateToken(UUID userID, String username, List<String> roles) {
-        return generateAccessToken(userID, username, roles);
+    public String generateToken(UUID userID, String username) {
+        return generateAccessToken(userID, username);
     }
 
-    public String generateAccessToken(UUID userID, String username, List<String> roles) {
+    public String generateAccessToken(UUID userID, String username) {
         return Jwts.builder()
                 .setSubject(userID.toString())
                 .claim("username", username)
-                .claim("roles",roles)
                 .claim("type", "access")
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + accessExpirationMs))
@@ -47,11 +46,10 @@ public class JwtUtil {
                 .compact();
     }
 
-    public String generateRefreshToken(UUID userID, String username, List<String> roles) {
+    public String generateRefreshToken(UUID userID, String username) {
         return Jwts.builder()
                 .setSubject(userID.toString())
                 .claim("username", username)
-                .claim("roles",roles)
                 .claim("type", "refresh")
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + refreshExpirationMs))
@@ -70,11 +68,6 @@ public class JwtUtil {
     private  <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
         final Claims claims = extractAllClaims(token);
         return claimsResolver.apply(claims);
-    }
-
-    public List<String> extractRoles(String token){
-        log.info(extractClaim(token, claims-> claims.get("roles", List.class)).toString());
-        return extractClaim(token, claims-> claims.get("roles", List.class));
     }
 
     public String extractUserId(String token) {

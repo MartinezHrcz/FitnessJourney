@@ -12,8 +12,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 @Service
 @Slf4j
 public class AuthServiceImpl implements AuthService {
@@ -31,8 +29,8 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public AuthResponse register(UserCreateDTO request) {
         UserDTO user = userService.createUser(request);
-        String token = jwtUtil.generateToken(user.getId(),user.getName(), List.of(user.getRole().name()));
-        String refreshToken = jwtUtil.generateRefreshToken(user.getId(), user.getName(), List.of(user.getRole().name()));
+        String token = jwtUtil.generateToken(user.getId(),user.getName());
+        String refreshToken = jwtUtil.generateRefreshToken(user.getId(), user.getName());
         return new AuthResponse(user, token, refreshToken);
     }
 
@@ -46,8 +44,8 @@ public class AuthServiceImpl implements AuthService {
 
         UserDTO user = userService.getUserByName(request.getUsername());
 
-        String token = jwtUtil.generateToken(user.getId(),user.getName(), List.of(user.getRole().name()));
-        String refreshToken = jwtUtil.generateRefreshToken(user.getId(), user.getName(), List.of(user.getRole().name()));
+        String token = jwtUtil.generateToken(user.getId(),user.getName());
+        String refreshToken = jwtUtil.generateRefreshToken(user.getId(), user.getName());
         log.info("logged in user {} ", request.getUsername());
         return new AuthResponse(user, token, refreshToken);
     }
@@ -62,8 +60,8 @@ public class AuthServiceImpl implements AuthService {
         }
 
         UserDTO user = userService.getUserById(java.util.UUID.fromString(userId));
-        String newAccessToken = jwtUtil.generateToken(user.getId(), user.getName(), List.of(user.getRole().name()));
-        String newRefreshToken = jwtUtil.generateRefreshToken(user.getId(), user.getName(), List.of(user.getRole().name()));
+        String newAccessToken = jwtUtil.generateToken(user.getId(), user.getName());
+        String newRefreshToken = jwtUtil.generateRefreshToken(user.getId(), user.getName());
         return new AuthResponse(user, newAccessToken, newRefreshToken);
     }
 }
