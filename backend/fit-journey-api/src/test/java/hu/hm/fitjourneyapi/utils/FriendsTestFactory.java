@@ -3,10 +3,7 @@ package hu.hm.fitjourneyapi.utils;
 import hu.hm.fitjourneyapi.dto.social.friend.FriendDTO;
 import hu.hm.fitjourneyapi.model.User;
 import hu.hm.fitjourneyapi.model.enums.FriendStatus;
-import hu.hm.fitjourneyapi.model.enums.Roles;
 import hu.hm.fitjourneyapi.model.social.Friend;
-import org.h2.engine.Role;
-import org.springframework.util.SerializationUtils;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -32,7 +29,6 @@ public class FriendsTestFactory {
                 .name("Friend Name")
                 .email("friend@gmail.com")
                 .birthday(LocalDate.of(1991, 1,1))
-                .role(Roles.USER)
                 .heightInCm(180)
                 .weightInKg(100)
                 .build();

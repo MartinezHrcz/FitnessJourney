@@ -1,8 +1,6 @@
 package hu.hm.fitjourneyapi.repository.testutil;
 
 import hu.hm.fitjourneyapi.model.User;
-import hu.hm.fitjourneyapi.model.enums.FriendStatus;
-import hu.hm.fitjourneyapi.model.enums.Roles;
 import hu.hm.fitjourneyapi.model.social.Friend;
 import hu.hm.fitjourneyapi.model.social.Message;
 import hu.hm.fitjourneyapi.model.social.Post;
@@ -38,7 +36,6 @@ public class TestSocialDataFactory {
                 .weightInKg(100)
                 .heightInCm(180)
                 .last_modified_date(LocalDateTime.now())
-                .role(Roles.USER)
                 .creation_date(LocalDateTime.now())
                 .workouts(new ArrayList<>())
                 .posts(new ArrayList<>())

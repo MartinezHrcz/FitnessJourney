@@ -108,6 +108,7 @@ public class UserServiceImpl implements UserService {
         userToUpdate.setBirthday(userUpdateDTO.getBirthday());
         userToUpdate.setHeightInCm(userUpdateDTO.getHeightInCm());
         userToUpdate.setWeightInKg(userUpdateDTO.getWeightInKg());
+        userToUpdate.setPreferredCalories(userUpdateDTO.getPreferredCalories());
         userToUpdate = userRepository.save(userToUpdate);
         UserDTO userDTO = userMapper.toUserDTO(userToUpdate);
         userDTO.setToken(jwtUtil.generateToken(userToUpdate.getId(),userToUpdate.getName()));
@@ -172,7 +173,7 @@ public class UserServiceImpl implements UserService {
         );
 
         if (user.getProfilePictureData() == null || user.getProfilePictureData().length == 0) {
-            throw new IllegalArgumentException("Profile picture not found");
+            return null;
         }
 
         String contentType = user.getProfilePictureContentType() != null

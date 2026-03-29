@@ -1,8 +1,6 @@
 package hu.hm.fitjourneyapi.model;
 
-import hu.hm.fitjourneyapi.model.enums.Roles;
 import hu.hm.fitjourneyapi.model.fitness.Workout;
-import hu.hm.fitjourneyapi.model.social.Friend;
 import hu.hm.fitjourneyapi.model.social.Post;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -45,10 +43,6 @@ public class User {
     private String profilePictureContentType;
 
     private float preferredCalories;
-
-    @Builder.Default
-    @Enumerated(EnumType.STRING)
-    private Roles role = Roles.USER;
 
     @CreatedDate
     @Column(nullable = false, updatable = false)

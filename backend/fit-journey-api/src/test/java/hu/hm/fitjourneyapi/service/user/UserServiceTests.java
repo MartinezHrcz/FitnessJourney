@@ -8,12 +8,8 @@ import hu.hm.fitjourneyapi.dto.user.UserUpdateDTO;
 import hu.hm.fitjourneyapi.exception.userExceptions.IncorrectPassword;
 import hu.hm.fitjourneyapi.mapper.UserMapper;
 import hu.hm.fitjourneyapi.model.User;
-import hu.hm.fitjourneyapi.model.enums.Roles;
 import hu.hm.fitjourneyapi.repository.UserRepository;
-import hu.hm.fitjourneyapi.repository.fitness.WorkoutRepository;
 import hu.hm.fitjourneyapi.repository.social.CommentRepository;
-import hu.hm.fitjourneyapi.repository.social.FriendRepository;
-import hu.hm.fitjourneyapi.repository.social.PostRepository;
 import hu.hm.fitjourneyapi.security.JwtUtil;
 import hu.hm.fitjourneyapi.services.implementation.UserServiceImpl;
 import hu.hm.fitjourneyapi.utils.UserTestFactory;
@@ -56,7 +52,6 @@ public class UserServiceTests {
     void setup() {
         user = UserTestFactory.getUser();
         user.setId(UUID.randomUUID());
-        user.setRole(Roles.USER);
 
         userDTO = UserTestFactory.getUserDTO();
         userCreateDTO = UserTestFactory.getUserCreateDTO();
@@ -82,7 +77,7 @@ public class UserServiceTests {
         when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
         when(userRepository.save(any(User.class))).thenReturn(user);
         when(userMapper.toUserDTO(user)).thenReturn(userDTO);
-        when(jwtUtil.generateToken(any(), any(), any())).thenReturn("mock-token");
+        when(jwtUtil.generateToken(any(), any())).thenReturn("mock-token");
 
         UserDTO result = userService.updateUser(user.getId(), updateDTO);
 
@@ -101,7 +96,7 @@ public class UserServiceTests {
         when(passwordEncoder.encode("newPass")).thenReturn("encodedNewPass");
         when(userRepository.save(user)).thenReturn(user);
         when(userMapper.toUserDTO(user)).thenReturn(userDTO);
-        when(jwtUtil.generateToken(any(), any(), any())).thenReturn("new-token");
+        when(jwtUtil.generateToken(any(), any())).thenReturn("new-token");
 
         UserDTO result = userService.updatePassword(user.getId(), passDTO);
 

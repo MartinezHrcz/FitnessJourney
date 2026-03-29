@@ -6,7 +6,6 @@ import hu.hm.fitjourneyapi.dto.user.fitness.UserWithWorkoutsDTO;
 import hu.hm.fitjourneyapi.dto.user.social.UserWithFriendsDTO;
 import hu.hm.fitjourneyapi.dto.user.social.UserWithPostsDTO;
 import hu.hm.fitjourneyapi.model.User;
-import hu.hm.fitjourneyapi.model.enums.Roles;
 import hu.hm.fitjourneyapi.model.fitness.Workout;
 import hu.hm.fitjourneyapi.model.social.Friend;
 import hu.hm.fitjourneyapi.model.social.Post;
@@ -37,7 +36,6 @@ public class UserTestFactory {
                 .heightInCm(180)
                 .weightInKg(100)
                 .birthday(LocalDate.of(1990, 1, 1))
-                .role(Roles.USER)
                 .build();
         return dto;
     }
@@ -53,7 +51,6 @@ public class UserTestFactory {
                     .weightInKg(100)
                     .birthday(LocalDate.of(1990, 1, 1))
                     .password("EncodedPassword123!")
-                    .role(Roles.USER)
                     .build();
             users.add(user);
         }
@@ -70,7 +67,6 @@ public class UserTestFactory {
                 .weightInKg(100)
                 .password("EncodedPassword123!")
                 .birthday(LocalDate.of(1990, 1, 1))
-                .role(Roles.USER)
                 .build();
         List<Workout> workouts = new ArrayList<>();
         List<Friend> friends = new ArrayList<>();

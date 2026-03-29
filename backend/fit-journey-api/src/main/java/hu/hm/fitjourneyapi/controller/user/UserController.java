@@ -17,7 +17,6 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/user")
-@PreAuthorize("hasAnyRole('USER', 'ADMIN')")
 public class UserController {
     private final UserService userService;
 
@@ -84,11 +83,14 @@ public class UserController {
     public ResponseEntity<byte[]> getProfilePicture(@PathVariable UUID id) {
         try {
             UserProfilePictureDTO profilePicture = userService.getProfilePicture(id);
+            if (profilePicture == null) {
+                return ResponseEntity.noContent().build();
+            }
             MediaType mediaType = MediaType.parseMediaType(profilePicture.contentType());
             return ResponseEntity.ok()
                     .contentType(mediaType)
                     .body(profilePicture.data());
-        } catch (UserNotFound | IllegalArgumentException e) {
+        } catch (UserNotFound e) {
             return ResponseEntity.notFound().build();
         }
     }
