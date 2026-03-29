@@ -6,6 +6,7 @@ import hu.hm.fitjourneyapi.dto.social.post.PostDTO;
 import hu.hm.fitjourneyapi.dto.user.UserCreateDTO;
 import hu.hm.fitjourneyapi.dto.user.UserDTO;
 import hu.hm.fitjourneyapi.dto.user.UserPasswordUpdateDTO;
+import hu.hm.fitjourneyapi.dto.user.UserProfilePictureDTO;
 import hu.hm.fitjourneyapi.dto.user.UserUpdateDTO;
 import hu.hm.fitjourneyapi.dto.user.fitness.UserWithWorkoutsDTO;
 import hu.hm.fitjourneyapi.dto.user.social.UserWithFriendsDTO;
@@ -24,6 +25,8 @@ public interface UserService {
     UserDTO updatePassword(UUID id,UserPasswordUpdateDTO userPasswordUpdateDTO);
 
     UserDTO updateProfilePicture(UUID id, MultipartFile profilePicture);
+
+    UserProfilePictureDTO getProfilePicture(UUID id);
 
     UserDTO getUserById(UUID id);
 

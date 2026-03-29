@@ -6,6 +6,7 @@ import hu.hm.fitjourneyapi.dto.social.post.PostDTO;
 import hu.hm.fitjourneyapi.dto.user.UserCreateDTO;
 import hu.hm.fitjourneyapi.dto.user.UserDTO;
 import hu.hm.fitjourneyapi.dto.user.UserPasswordUpdateDTO;
+import hu.hm.fitjourneyapi.dto.user.UserProfilePictureDTO;
 import hu.hm.fitjourneyapi.dto.user.UserUpdateDTO;
 import hu.hm.fitjourneyapi.dto.user.fitness.UserWithWorkoutsDTO;
 import hu.hm.fitjourneyapi.dto.user.social.UserWithFriendsDTO;
@@ -26,7 +27,6 @@ import hu.hm.fitjourneyapi.repository.social.CommentRepository;
 import hu.hm.fitjourneyapi.repository.social.FriendRepository;
 import hu.hm.fitjourneyapi.repository.social.PostRepository;
 import hu.hm.fitjourneyapi.security.JwtUtil;
-import hu.hm.fitjourneyapi.services.interfaces.common.FileShareService;
 import hu.hm.fitjourneyapi.services.interfaces.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -34,12 +34,25 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.imageio.IIOImage;
+import javax.imageio.ImageIO;
+import javax.imageio.ImageWriteParam;
+import javax.imageio.ImageWriter;
+import javax.imageio.stream.ImageOutputStream;
+import java.awt.AlphaComposite;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 
 @Slf4j
 @Service
 public class UserServiceImpl implements UserService {
+    private static final int MAX_PROFILE_PICTURE_DIMENSION = 512;
+    private static final float JPEG_COMPRESSION_QUALITY = 0.82f;
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;
@@ -49,7 +62,6 @@ public class UserServiceImpl implements UserService {
     private final WorkoutRepository workoutRepository;
     private final CommentRepository commentRepository;
     private final JwtUtil jwtUtil;
-    private final FileShareService fileShareService;
 
     public UserServiceImpl(
             UserRepository userRepository,
@@ -59,8 +71,7 @@ public class UserServiceImpl implements UserService {
             FriendRepository friendRepository,
             WorkoutRepository workoutRepository,
             CommentRepository commentRepository,
-            JwtUtil jwtUtil,
-            FileShareService fileShareService)
+            JwtUtil jwtUtil)
     {
         this.userRepository = userRepository;
         this.userMapper = userMapper;
@@ -70,7 +81,6 @@ public class UserServiceImpl implements UserService {
         this.workoutRepository = workoutRepository;
         this.commentRepository = commentRepository;
         this.jwtUtil = jwtUtil;
-        this.fileShareService = fileShareService;
     }
 
     @Transactional
@@ -143,21 +153,108 @@ public class UserServiceImpl implements UserService {
             throw new IllegalArgumentException("Profile picture is required");
         }
 
-        String previousPictureUrl = userToUpdate.getProfilePictureUrl();
-        String fileName = fileShareService.store(profilePicture);
-        userToUpdate.setProfilePictureUrl("/uploads/" + fileName);
+        ProcessedProfilePicture processedProfilePicture = processProfilePicture(profilePicture);
+        userToUpdate.setProfilePictureData(processedProfilePicture.data());
+        userToUpdate.setProfilePictureContentType(processedProfilePicture.contentType());
+        userToUpdate.setProfilePictureUrl("/api/user/" + id + "/profile-picture");
 
         userToUpdate = userRepository.save(userToUpdate);
 
-        if (previousPictureUrl != null && previousPictureUrl.startsWith("/uploads/")) {
-            String oldFileName = previousPictureUrl.replace("/uploads/", "");
-            if (fileShareService.exists(oldFileName)) {
-                fileShareService.delete(oldFileName);
-            }
-        }
-
         log.info("Updated profile picture for user id {}", id);
         return userMapper.toUserDTO(userToUpdate);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public UserProfilePictureDTO getProfilePicture(UUID id) {
+        User user = userRepository.findById(id).orElseThrow(
+                () -> new UserNotFound("User not found with id:" + id)
+        );
+
+        if (user.getProfilePictureData() == null || user.getProfilePictureData().length == 0) {
+            throw new IllegalArgumentException("Profile picture not found");
+        }
+
+        String contentType = user.getProfilePictureContentType() != null
+                ? user.getProfilePictureContentType()
+                : "image/jpeg";
+
+        return new UserProfilePictureDTO(user.getProfilePictureData(), contentType);
+    }
+
+    private ProcessedProfilePicture processProfilePicture(MultipartFile profilePicture) {
+        try {
+            BufferedImage sourceImage = ImageIO.read(profilePicture.getInputStream());
+            if (sourceImage == null) {
+                throw new IllegalArgumentException("Uploaded file is not a supported image");
+            }
+
+            BufferedImage resizedImage = resizeImage(sourceImage, MAX_PROFILE_PICTURE_DIMENSION);
+            boolean hasAlpha = resizedImage.getColorModel().hasAlpha();
+
+            if (hasAlpha) {
+                return new ProcessedProfilePicture(writePng(resizedImage), "image/png");
+            }
+            return new ProcessedProfilePicture(writeJpeg(resizedImage), "image/jpeg");
+        } catch (IOException e) {
+            throw new RuntimeException("Could not process profile picture", e);
+        }
+    }
+
+    private BufferedImage resizeImage(BufferedImage sourceImage, int maxDimension) {
+        int originalWidth = sourceImage.getWidth();
+        int originalHeight = sourceImage.getHeight();
+
+        double scale = Math.min(
+                1.0,
+                Math.min(
+                        (double) maxDimension / originalWidth,
+                        (double) maxDimension / originalHeight
+                )
+        );
+
+        int targetWidth = Math.max(1, (int) Math.round(originalWidth * scale));
+        int targetHeight = Math.max(1, (int) Math.round(originalHeight * scale));
+        int targetType = sourceImage.getColorModel().hasAlpha()
+                ? BufferedImage.TYPE_INT_ARGB
+                : BufferedImage.TYPE_INT_RGB;
+
+        BufferedImage resizedImage = new BufferedImage(targetWidth, targetHeight, targetType);
+        Graphics2D graphics = resizedImage.createGraphics();
+        graphics.setComposite(AlphaComposite.Src);
+        graphics.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+        graphics.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+        graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        graphics.drawImage(sourceImage, 0, 0, targetWidth, targetHeight, null);
+        graphics.dispose();
+
+        return resizedImage;
+    }
+
+    private byte[] writePng(BufferedImage image) throws IOException {
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        ImageIO.write(image, "png", output);
+        return output.toByteArray();
+    }
+
+    private byte[] writeJpeg(BufferedImage image) throws IOException {
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        ImageWriter writer = ImageIO.getImageWritersByFormatName("jpeg").next();
+        ImageWriteParam writeParam = writer.getDefaultWriteParam();
+        writeParam.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
+        writeParam.setCompressionQuality(JPEG_COMPRESSION_QUALITY);
+
+        try (ImageOutputStream imageOutputStream = ImageIO.createImageOutputStream(output)) {
+            writer.setOutput(imageOutputStream);
+            writer.write(null, new IIOImage(image, null, null), writeParam);
+        } finally {
+            writer.dispose();
+        }
+
+        return output.toByteArray();
+    }
+
+    private record ProcessedProfilePicture(byte[] data, String contentType) {
     }
 
     @Transactional(readOnly = true)

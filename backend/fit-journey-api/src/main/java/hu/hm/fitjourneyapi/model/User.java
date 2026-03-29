@@ -39,6 +39,10 @@ public class User {
     private float weightInKg;
     private float heightInCm;
     private String profilePictureUrl;
+    @Lob
+    @Basic(fetch = FetchType.LAZY)
+    private byte[] profilePictureData;
+    private String profilePictureContentType;
 
     private float preferredCalories;
 

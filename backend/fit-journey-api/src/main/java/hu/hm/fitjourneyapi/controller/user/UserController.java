@@ -80,6 +80,19 @@ public class UserController {
         }
     }
 
+    @GetMapping("/{id}/profile-picture")
+    public ResponseEntity<byte[]> getProfilePicture(@PathVariable UUID id) {
+        try {
+            UserProfilePictureDTO profilePicture = userService.getProfilePicture(id);
+            MediaType mediaType = MediaType.parseMediaType(profilePicture.contentType());
+            return ResponseEntity.ok()
+                    .contentType(mediaType)
+                    .body(profilePicture.data());
+        } catch (UserNotFound | IllegalArgumentException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
     @PostMapping
     public ResponseEntity<UserDTO> createUser(@RequestBody @Valid UserCreateDTO dto) {
         try {
