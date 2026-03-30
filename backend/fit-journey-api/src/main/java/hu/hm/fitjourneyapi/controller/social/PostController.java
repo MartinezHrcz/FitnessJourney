@@ -28,6 +28,11 @@ public class PostController {
         return ResponseEntity.ok(postService.getPosts(UUID.fromString(authentication.getName())));
     }
 
+    @GetMapping("/feed")
+    public ResponseEntity<List<PostDTO>> getFeed(Authentication authentication) {
+        return ResponseEntity.ok(postService.getFeedPosts(UUID.fromString(authentication.getName())));
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<PostDTO> getById(@PathVariable UUID id, Authentication authentication) {
         UUID currentUserId = UUID.fromString(authentication.getName());

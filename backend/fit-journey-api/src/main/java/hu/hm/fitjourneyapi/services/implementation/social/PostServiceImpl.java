@@ -3,9 +3,11 @@ package hu.hm.fitjourneyapi.services.implementation.social;
 import hu.hm.fitjourneyapi.dto.social.post.PostCreateDTO;
 import hu.hm.fitjourneyapi.dto.social.post.PostDTO;
 import hu.hm.fitjourneyapi.dto.social.post.PostUpdateDTO;
+import hu.hm.fitjourneyapi.exception.common.UnauthorizedException;
 import hu.hm.fitjourneyapi.exception.social.post.PostNotFoundException;
 import hu.hm.fitjourneyapi.mapper.social.PostMapper;
 import hu.hm.fitjourneyapi.model.User;
+import hu.hm.fitjourneyapi.model.enums.PostVisibility;
 import hu.hm.fitjourneyapi.model.social.Post;
 import hu.hm.fitjourneyapi.model.enums.FriendStatus;
 import hu.hm.fitjourneyapi.model.social.Friend;
@@ -23,6 +25,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.Objects;
+import java.util.ArrayList;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -54,6 +58,9 @@ public class PostServiceImpl implements PostService {
             return new PostNotFoundException("Post not found with id: " + id);
         }
         );
+        if (!canUserViewPost(post, currentUserId)) {
+            throw new UnauthorizedException("You are not allowed to view this post");
+        }
         log.info("Fetched post with id: {} ",id);
         return postMapper.toPostDTO(post, currentUserId);
     }
@@ -62,10 +69,23 @@ public class PostServiceImpl implements PostService {
     @Override
     public List<PostDTO> getPosts(UUID currentUserId) {
         log.debug("Fetching posts");
-        List<Post> posts = postRepository.findAll();
+        List<Post> posts = new ArrayList<>(postRepository.findAll());
         posts.sort(Comparator.comparing(Post::getSentTime,
                 Comparator.nullsLast(Comparator.naturalOrder())).reversed());
         log.info("Fetched posts");
+        return postMapper.toListPostDTO(posts, currentUserId);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<PostDTO> getFeedPosts(UUID currentUserId) {
+        log.debug("Fetching feed posts for user: {}", currentUserId);
+        List<Post> posts = postRepository.findAll().stream()
+                .filter(post -> canUserViewPost(post, currentUserId))
+            .collect(Collectors.toCollection(ArrayList::new));
+        posts.sort(Comparator.comparing(Post::getSentTime,
+                Comparator.nullsLast(Comparator.naturalOrder())).reversed());
+        log.info("Fetched {} feed posts for user: {}", posts.size(), currentUserId);
         return postMapper.toListPostDTO(posts, currentUserId);
     }
 
@@ -78,7 +98,9 @@ public class PostServiceImpl implements PostService {
                 .filter(f -> f.getStatus() == FriendStatus.ACCEPTED)
                 .map(f -> f.getUser().getId().equals(currentUserId) ? f.getFriend().getId() : f.getUser().getId())
                 .collect(Collectors.toList());
-        List<Post> posts = postRepository.findPostsByUserIdIn(friendIds);
+        List<Post> posts = postRepository.findPostsByUserIdIn(friendIds).stream()
+            .filter(post -> canUserViewPost(post, currentUserId))
+            .collect(Collectors.toCollection(ArrayList::new));
         posts.sort(Comparator.comparing(Post::getSentTime,
             Comparator.nullsLast(Comparator.naturalOrder())).reversed());
         log.info("Fetched {} friends posts for user: {}", posts.size(), currentUserId);
@@ -89,7 +111,9 @@ public class PostServiceImpl implements PostService {
     @Override
     public List<PostDTO> getPostsByUserId(UUID id) {
         log.debug("Fetching posts by user id: {}", id);
-        List<Post> posts = postRepository.findPostsByUserId(id);
+        List<Post> posts = new ArrayList<>(postRepository.findPostsByUserId(id));
+        posts.sort(Comparator.comparing(Post::getSentTime,
+                Comparator.nullsLast(Comparator.naturalOrder())).reversed());
         log.info("Fetched posts by user id: {} ",id);
         return postMapper.toListPostDTO(posts, id);
     }
@@ -106,6 +130,9 @@ public class PostServiceImpl implements PostService {
         );
         post.setTitle(postUpdateDTO.getTitle());
         post.setContent(postUpdateDTO.getContent());
+        if (postUpdateDTO.getVisibility() != null) {
+            post.setVisibility(postUpdateDTO.getVisibility());
+        }
 
         log.info("Updated post with id: {} ",id);
         post = postRepository.save(post);
@@ -126,6 +153,7 @@ public class PostServiceImpl implements PostService {
                 .user(user)
                 .title(postCreateDTO.getTitle())
                 .content(postCreateDTO.getContent())
+            .visibility(resolveVisibility(postCreateDTO.getVisibility()))
                 .build();
         log.info("Created post with id: {} ",postCreateDTO.getUserId());
         post = postRepository.save(post);
@@ -149,6 +177,7 @@ public class PostServiceImpl implements PostService {
                 .content(postCreateDTO.getContent())
                 .user(user)
                 .imageUrl(fileName)
+            .visibility(resolveVisibility(postCreateDTO.getVisibility()))
                 .build();
 
         Post savedPost = postRepository.save(post);
@@ -182,5 +211,36 @@ public class PostServiceImpl implements PostService {
         );
         log.info("Deleted post with id: {} ",id);
         postRepository.delete(post);
+    }
+
+    private PostVisibility resolveVisibility(PostVisibility visibility) {
+        return visibility != null ? visibility : PostVisibility.GLOBAL;
+    }
+
+    private boolean canUserViewPost(Post post, UUID viewerId) {
+        if (post == null || post.getUser() == null || post.getUser().getId() == null || viewerId == null) {
+            return false;
+        }
+        if (Objects.equals(post.getUser().getId(), viewerId)) {
+            return true;
+        }
+
+        PostVisibility visibility = resolveVisibility(post.getVisibility());
+        if (visibility == PostVisibility.GLOBAL) {
+            return true;
+        }
+
+        return areAcceptedFriends(post.getUser().getId(), viewerId);
+    }
+
+    private boolean areAcceptedFriends(UUID firstUserId, UUID secondUserId) {
+        return friendRepository.findFriendsByUser_IdOrFriend_Id(firstUserId, firstUserId).stream()
+                .filter(friend -> friend.getStatus() == FriendStatus.ACCEPTED)
+                .anyMatch(friend -> {
+                    UUID requesterId = friend.getUser().getId();
+                    UUID recipientId = friend.getFriend().getId();
+                    return (Objects.equals(requesterId, firstUserId) && Objects.equals(recipientId, secondUserId))
+                            || (Objects.equals(requesterId, secondUserId) && Objects.equals(recipientId, firstUserId));
+                });
     }
 }

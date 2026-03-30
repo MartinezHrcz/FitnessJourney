@@ -14,6 +14,8 @@ public interface PostService {
 
     List<PostDTO> getPosts(UUID currentUserId);
 
+    List<PostDTO> getFeedPosts(UUID currentUserId);
+
     List<PostDTO> getPostsByUserId(UUID id);
 
     List<PostDTO> getFriendsPosts(UUID currentUserId);

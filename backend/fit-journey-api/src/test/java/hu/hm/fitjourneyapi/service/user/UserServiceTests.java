@@ -72,7 +72,40 @@ public class UserServiceTests {
 
     @Test
     void updateUser_Success() {
-        UserUpdateDTO updateDTO = UserUpdateDTO.builder().name("New Name").email("new@email.com").birthday(LocalDate.now()).weightInKg(80).heightInCm(180).build();
+        UserUpdateDTO updateDTO = UserUpdateDTO.builder().name("  New Name  ").email("  new@email.com  ").birthday(LocalDate.now()).weightInKg(80f).heightInCm(180f).build();
+
+        when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
+        when(userRepository.findUserByName("New Name")).thenReturn(Optional.empty());
+        when(userRepository.findUserByEmail("new@email.com")).thenReturn(Optional.empty());
+        when(userRepository.save(any(User.class))).thenReturn(user);
+        when(userMapper.toUserDTO(user)).thenReturn(userDTO);
+        when(jwtUtil.generateToken(any(), any())).thenReturn("mock-token");
+
+        UserDTO result = userService.updateUser(user.getId(), updateDTO);
+
+        assertNotNull(result);
+        assertEquals("mock-token", result.getToken());
+        assertEquals("New Name", user.getName());
+        assertEquals("new@email.com", user.getEmail());
+        verify(userRepository).save(user);
+    }
+
+    @Test
+    void updateUser_NullOptionalFields_SkipsThoseUpdates() {
+        String originalName = user.getName();
+        String originalEmail = user.getEmail();
+        float originalWeight = user.getWeightInKg();
+        float originalHeight = user.getHeightInCm();
+        LocalDate originalBirthday = user.getBirthday();
+
+        UserUpdateDTO updateDTO = UserUpdateDTO.builder()
+                .name(null)
+                .email(null)
+                .birthday(null)
+                .weightInKg(null)
+                .heightInCm(null)
+                .preferredCalories(null)
+                .build();
 
         when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
         when(userRepository.save(any(User.class))).thenReturn(user);
@@ -82,8 +115,71 @@ public class UserServiceTests {
         UserDTO result = userService.updateUser(user.getId(), updateDTO);
 
         assertNotNull(result);
-        assertEquals("mock-token", result.getToken());
+        assertEquals(originalName, user.getName());
+        assertEquals(originalEmail, user.getEmail());
+        assertEquals(originalWeight, user.getWeightInKg());
+        assertEquals(originalHeight, user.getHeightInCm());
+        assertEquals(originalBirthday, user.getBirthday());
         verify(userRepository).save(user);
+    }
+
+    @Test
+    void updateUser_ExistingName_ThrowsException() {
+        UUID otherUserId = UUID.randomUUID();
+        User otherUser = new User();
+        otherUser.setId(otherUserId);
+
+        UserUpdateDTO updateDTO = UserUpdateDTO.builder()
+                .name("TakenName")
+                .email("new@email.com")
+                .birthday(LocalDate.now())
+                .weightInKg(80f)
+                .heightInCm(180f)
+                .build();
+
+        when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
+        when(userRepository.findUserByName("TakenName")).thenReturn(Optional.of(otherUser));
+
+        assertThrows(IllegalStateException.class, () -> userService.updateUser(user.getId(), updateDTO));
+        verify(userRepository, never()).save(any(User.class));
+    }
+
+    @Test
+    void updateUser_ExistingEmail_ThrowsException() {
+        UUID otherUserId = UUID.randomUUID();
+        User otherUser = new User();
+        otherUser.setId(otherUserId);
+
+        UserUpdateDTO updateDTO = UserUpdateDTO.builder()
+                .name("New Name")
+                .email("taken@email.com")
+                .birthday(LocalDate.now())
+                .weightInKg(80f)
+                .heightInCm(180f)
+                .build();
+
+        when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
+        when(userRepository.findUserByName("New Name")).thenReturn(Optional.empty());
+        when(userRepository.findUserByEmail("taken@email.com")).thenReturn(Optional.of(otherUser));
+
+        assertThrows(IllegalStateException.class, () -> userService.updateUser(user.getId(), updateDTO));
+        verify(userRepository, never()).save(any(User.class));
+    }
+
+    @Test
+    void updateUser_BlankName_ThrowsException() {
+        UserUpdateDTO updateDTO = UserUpdateDTO.builder()
+                .name("   ")
+                .email("valid@email.com")
+                .birthday(LocalDate.now())
+                .weightInKg(80f)
+                .heightInCm(180f)
+                .build();
+
+        when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
+
+        assertThrows(IllegalArgumentException.class, () -> userService.updateUser(user.getId(), updateDTO));
+        verify(userRepository, never()).save(any(User.class));
     }
 
     @Test

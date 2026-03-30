@@ -3,11 +3,16 @@ package hu.hm.fitjourneyapi.service.social;
 import hu.hm.fitjourneyapi.dto.social.post.PostCreateDTO;
 import hu.hm.fitjourneyapi.dto.social.post.PostDTO;
 import hu.hm.fitjourneyapi.dto.social.post.PostUpdateDTO;
+import hu.hm.fitjourneyapi.exception.common.UnauthorizedException;
 import hu.hm.fitjourneyapi.exception.social.post.PostNotFoundException;
 import hu.hm.fitjourneyapi.mapper.social.PostMapper;
 import hu.hm.fitjourneyapi.model.User;
+import hu.hm.fitjourneyapi.model.enums.FriendStatus;
+import hu.hm.fitjourneyapi.model.enums.PostVisibility;
+import hu.hm.fitjourneyapi.model.social.Friend;
 import hu.hm.fitjourneyapi.model.social.Post;
 import hu.hm.fitjourneyapi.repository.UserRepository;
+import hu.hm.fitjourneyapi.repository.social.FriendRepository;
 import hu.hm.fitjourneyapi.repository.social.PostRepository;
 import hu.hm.fitjourneyapi.services.implementation.social.PostServiceImpl;
 import hu.hm.fitjourneyapi.services.interfaces.common.FileShareService;
@@ -25,8 +30,10 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.ArrayList;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest
@@ -39,6 +46,8 @@ public class PostServiceTests {
     private UserRepository userRepository;
     @Mock
     private FileShareService fileShareService;
+    @Mock
+    private FriendRepository friendRepository;
 
     @InjectMocks
     private PostServiceImpl postService;
@@ -47,10 +56,12 @@ public class PostServiceTests {
     private Post post;
     private PostDTO postDTO;
     private UUID currentUserId;
+    private UUID anotherUserId;
 
     @BeforeEach
     void setUp() {
         currentUserId = UUID.randomUUID();
+        anotherUserId = UUID.randomUUID();
         user = UserTestFactory.getUser();
         user.setId(currentUserId);
 
@@ -95,7 +106,11 @@ public class PostServiceTests {
 
     @Test
     void updatePost_Success() {
-        PostUpdateDTO updateDTO = PostUpdateDTO.builder().title("Updated Title").content("Updated content").build();
+        PostUpdateDTO updateDTO = PostUpdateDTO.builder()
+            .title("Updated Title")
+            .content("Updated content")
+            .visibility(PostVisibility.FRIENDS_ONLY)
+            .build();
 
         when(postRepository.findById(post.getId())).thenReturn(Optional.of(post));
         when(postRepository.save(any(Post.class))).thenReturn(post);
@@ -109,8 +124,95 @@ public class PostServiceTests {
         PostDTO result = postService.updatePost(post.getId(), updateDTO, currentUserId);
 
         assertEquals("Updated Title", result.getTitle());
+        assertEquals(PostVisibility.FRIENDS_ONLY, post.getVisibility());
         verify(postRepository).save(post);
     }
+
+    @Test
+    void getFeedPosts_FiltersFriendsOnlyForNonFriend() {
+        User owner = UserTestFactory.getUser();
+        owner.setId(anotherUserId);
+
+        Post globalPost = PostsTestFactory.getPost(owner);
+        globalPost.setVisibility(PostVisibility.GLOBAL);
+        Post friendsOnlyPost = PostsTestFactory.getPost(owner);
+        friendsOnlyPost.setVisibility(PostVisibility.FRIENDS_ONLY);
+
+        when(postRepository.findAll()).thenReturn(List.of(globalPost, friendsOnlyPost));
+        when(postMapper.toListPostDTO(anyList(), eq(currentUserId))).thenReturn(List.of(postDTO));
+        when(friendRepository.findFriendsByUser_IdOrFriend_Id(eq(anotherUserId), eq(anotherUserId)))
+            .thenReturn(new ArrayList<>());
+
+        List<PostDTO> result = postService.getFeedPosts(currentUserId);
+
+        assertEquals(1, result.size());
+        verify(postMapper).toListPostDTO(argThat(posts -> posts.size() == 1
+            && posts.get(0).getVisibility() == PostVisibility.GLOBAL), eq(currentUserId));
+    }
+
+    @Test
+    void getPosts_ReturnsAllPostsWithoutVisibilityFilter() {
+        User owner = UserTestFactory.getUser();
+        owner.setId(anotherUserId);
+
+        Post globalPost = PostsTestFactory.getPost(owner);
+        globalPost.setVisibility(PostVisibility.GLOBAL);
+        Post friendsOnlyPost = PostsTestFactory.getPost(owner);
+        friendsOnlyPost.setVisibility(PostVisibility.FRIENDS_ONLY);
+
+        PostDTO firstDto = new PostDTO();
+        PostDTO secondDto = new PostDTO();
+
+        when(postRepository.findAll()).thenReturn(List.of(globalPost, friendsOnlyPost));
+        when(postMapper.toListPostDTO(anyList(), eq(currentUserId))).thenReturn(List.of(firstDto, secondDto));
+
+        List<PostDTO> result = postService.getPosts(currentUserId);
+
+        assertEquals(2, result.size());
+        verify(postMapper).toListPostDTO(argThat(posts -> posts.size() == 2), eq(currentUserId));
+        verify(friendRepository, never()).findFriendsByUser_IdOrFriend_Id(any(), any());
+    }
+
+        @Test
+        void getPostById_FriendsOnlyWithoutFriendship_ThrowsUnauthorized() {
+        User owner = UserTestFactory.getUser();
+        owner.setId(anotherUserId);
+
+        Post friendsOnlyPost = PostsTestFactory.getPost(owner);
+        friendsOnlyPost.setVisibility(PostVisibility.FRIENDS_ONLY);
+
+        when(postRepository.findById(friendsOnlyPost.getId())).thenReturn(Optional.of(friendsOnlyPost));
+        when(friendRepository.findFriendsByUser_IdOrFriend_Id(eq(anotherUserId), eq(anotherUserId)))
+            .thenReturn(new ArrayList<>());
+
+        assertThrows(UnauthorizedException.class,
+            () -> postService.getPostById(friendsOnlyPost.getId(), currentUserId));
+        }
+
+        @Test
+        void getPostById_FriendsOnlyWithAcceptedFriendship_ReturnsPost() {
+        User owner = UserTestFactory.getUser();
+        owner.setId(anotherUserId);
+
+        Post friendsOnlyPost = PostsTestFactory.getPost(owner);
+        friendsOnlyPost.setVisibility(PostVisibility.FRIENDS_ONLY);
+
+        Friend acceptedFriendship = Friend.builder()
+            .user(owner)
+            .friend(user)
+            .status(FriendStatus.ACCEPTED)
+            .build();
+
+        when(postRepository.findById(friendsOnlyPost.getId())).thenReturn(Optional.of(friendsOnlyPost));
+        when(friendRepository.findFriendsByUser_IdOrFriend_Id(eq(anotherUserId), eq(anotherUserId)))
+            .thenReturn(List.of(acceptedFriendship));
+        when(postMapper.toPostDTO(friendsOnlyPost, currentUserId)).thenReturn(postDTO);
+
+        PostDTO result = postService.getPostById(friendsOnlyPost.getId(), currentUserId);
+
+        assertNotNull(result);
+        verify(postMapper).toPostDTO(friendsOnlyPost, currentUserId);
+        }
 
     @Test
     void likePost_ToggleBehavior() {

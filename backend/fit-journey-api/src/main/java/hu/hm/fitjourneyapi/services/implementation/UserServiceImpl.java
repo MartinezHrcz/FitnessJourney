@@ -46,6 +46,8 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 
 @Slf4j
@@ -97,23 +99,82 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @Override
     public UserDTO updateUser(UUID id,UserUpdateDTO userUpdateDTO) {
+        if (userUpdateDTO == null) {
+            throw new IllegalArgumentException("User update payload is required");
+        }
         log.debug("Attempting to update user with id {} email {}", id, userUpdateDTO.getName());
+
         User userToUpdate = userRepository.findById(id).orElseThrow(
                 () ->{
                     log.warn("User not found with id: {}", id);
                     return new UserNotFound("User not found with id: "+ id);}
         );
-        userToUpdate.setName(userUpdateDTO.getName());
-        userToUpdate.setEmail(userUpdateDTO.getEmail());
-        userToUpdate.setBirthday(userUpdateDTO.getBirthday());
-        userToUpdate.setHeightInCm(userUpdateDTO.getHeightInCm());
-        userToUpdate.setWeightInKg(userUpdateDTO.getWeightInKg());
-        userToUpdate.setPreferredCalories(userUpdateDTO.getPreferredCalories());
+
+        String normalizedName = normalize(userUpdateDTO.getName());
+        String normalizedEmail = normalize(userUpdateDTO.getEmail());
+
+        if (normalizedName != null) {
+            if (normalizedName.isBlank()) {
+                throw new IllegalArgumentException("Name cannot be blank");
+            }
+            ensureNameNotTakenByAnotherUser(id, normalizedName);
+            userToUpdate.setName(normalizedName);
+        }
+
+        if (normalizedEmail != null) {
+            if (normalizedEmail.isBlank()) {
+                throw new IllegalArgumentException("Email cannot be blank");
+            }
+            ensureEmailNotTakenByAnotherUser(id, normalizedEmail);
+            userToUpdate.setEmail(normalizedEmail);
+        }
+
+        if (userUpdateDTO.getBirthday() != null) {
+            userToUpdate.setBirthday(userUpdateDTO.getBirthday());
+        }
+        if (userUpdateDTO.getHeightInCm() != null) {
+            userToUpdate.setHeightInCm(userUpdateDTO.getHeightInCm());
+        }
+        if (userUpdateDTO.getWeightInKg() != null) {
+            userToUpdate.setWeightInKg(userUpdateDTO.getWeightInKg());
+        }
+        if (userUpdateDTO.getPreferredCalories() != null) {
+            userToUpdate.setPreferredCalories(userUpdateDTO.getPreferredCalories());
+        }
+        if (userUpdateDTO.getProfilePictureUrl() != null) {
+            userToUpdate.setProfilePictureUrl(normalize(userUpdateDTO.getProfilePictureUrl()));
+        }
         userToUpdate = userRepository.save(userToUpdate);
         UserDTO userDTO = userMapper.toUserDTO(userToUpdate);
         userDTO.setToken(jwtUtil.generateToken(userToUpdate.getId(),userToUpdate.getName()));
         log.info("Updated user with id: " + id);
         return userDTO;
+    }
+
+    private void ensureNameNotTakenByAnotherUser(UUID currentUserId, String name) {
+        Optional<User> existingByName = Optional.ofNullable(userRepository.findUserByName(name))
+                .orElse(Optional.empty());
+
+        existingByName
+                .filter(existing -> !Objects.equals(existing.getId(), currentUserId))
+                .ifPresent(existing -> {
+                    throw new IllegalStateException("Username is already taken");
+                });
+    }
+
+    private void ensureEmailNotTakenByAnotherUser(UUID currentUserId, String email) {
+        Optional<User> existingByEmail = Optional.ofNullable(userRepository.findUserByEmail(email))
+                .orElse(Optional.empty());
+
+        existingByEmail
+                .filter(existing -> !Objects.equals(existing.getId(), currentUserId))
+                .ifPresent(existing -> {
+                    throw new IllegalStateException("Email is already in use");
+                });
+    }
+
+    private String normalize(String value) {
+        return value == null ? null : value.trim();
     }
 
     @Transactional

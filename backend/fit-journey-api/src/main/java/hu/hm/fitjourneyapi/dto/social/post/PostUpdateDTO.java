@@ -1,5 +1,6 @@
 package hu.hm.fitjourneyapi.dto.social.post;
 
+import hu.hm.fitjourneyapi.model.enums.PostVisibility;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -15,4 +16,5 @@ public class PostUpdateDTO {
     private String title;
     private String content;
     private UUID userId;
+    private PostVisibility visibility;
 }
