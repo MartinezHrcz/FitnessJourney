@@ -1,6 +1,7 @@
 package hu.hm.fitjourneyapi.dto.social.post;
 
 import hu.hm.fitjourneyapi.dto.social.comment.CommentDTO;
+import hu.hm.fitjourneyapi.model.enums.PostVisibility;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -19,6 +20,7 @@ public class PostDTO {
     private UUID userId;
     private String userName;
     private String imageUrl;
+    private PostVisibility visibility;
     private LocalDateTime sentTime;
 
     private long likeCount;

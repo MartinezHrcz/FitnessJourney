@@ -18,9 +18,12 @@ import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import java.util.List;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -39,6 +42,23 @@ public class PostControllerTests {
 
     @Test
     @WithMockUser(username = MOCK_USER_ID)
+        void getAll_Success_ReturnsPosts() throws Exception {
+                PostDTO postDTO = new PostDTO();
+                postDTO.setContent("All post");
+
+                when(postService.getPosts(eq(UUID.fromString(MOCK_USER_ID))))
+                                .thenReturn(List.of(postDTO));
+
+                mockMvc.perform(get("/api/post"))
+                                .andExpect(status().isOk())
+                                .andExpect(jsonPath("$[0].content").value("All post"));
+
+                verify(postService).getPosts(eq(UUID.fromString(MOCK_USER_ID)));
+                verify(postService, never()).getFeedPosts(any());
+        }
+
+        @Test
+        @WithMockUser(username = MOCK_USER_ID)
     void getById_Success_ReturnsPost() throws Exception {
         UUID postId = UUID.randomUUID();
         PostDTO postDTO = new PostDTO();
@@ -87,6 +107,35 @@ public class PostControllerTests {
 
         mockMvc.perform(post("/api/post/{id}/like", postId))
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    @WithMockUser(username = MOCK_USER_ID)
+    void getByUserId_Success_ReturnsPosts() throws Exception {
+        UUID targetUserId = UUID.randomUUID();
+        PostDTO postDTO = new PostDTO();
+        postDTO.setContent("Visible post");
+
+        when(postService.getPostsByUserId(eq(UUID.fromString(MOCK_USER_ID))))
+                .thenReturn(List.of(postDTO));
+
+        mockMvc.perform(get("/api/post/user/{id}", targetUserId))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].content").value("Visible post"));
+    }
+
+    @Test
+    @WithMockUser(username = MOCK_USER_ID)
+    void getFeed_Success_ReturnsPosts() throws Exception {
+        PostDTO postDTO = new PostDTO();
+        postDTO.setContent("Feed post");
+
+        when(postService.getFeedPosts(eq(UUID.fromString(MOCK_USER_ID))))
+                .thenReturn(List.of(postDTO));
+
+        mockMvc.perform(get("/api/post/feed"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].content").value("Feed post"));
     }
 
     @Test

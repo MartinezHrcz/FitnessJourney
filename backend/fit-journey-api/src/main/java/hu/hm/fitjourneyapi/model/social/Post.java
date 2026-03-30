@@ -1,6 +1,7 @@
 package hu.hm.fitjourneyapi.model.social;
 
 import hu.hm.fitjourneyapi.model.User;
+import hu.hm.fitjourneyapi.model.enums.PostVisibility;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
@@ -27,6 +28,11 @@ public class Post {
     private String title;
     private String content;
     private String imageUrl;
+
+    @Builder.Default
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private PostVisibility visibility = PostVisibility.GLOBAL;
 
     @ElementCollection
     @CollectionTable(name = "post_likes", joinColumns = @JoinColumn(name = "id"))

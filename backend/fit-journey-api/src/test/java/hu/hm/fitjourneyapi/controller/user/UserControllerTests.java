@@ -86,8 +86,8 @@ public class UserControllerTests {
         UserUpdateDTO updateDTO = UserUpdateDTO.builder()
                 .name("Updated Name")
                 .email("test@example.com")
-                .weightInKg(80)
-                .heightInCm(180)
+                .weightInKg((float)80)
+                .heightInCm((float)180)
                 .birthday(LocalDate.now().minusYears(20))
                 .build();
         UserDTO responseDTO = UserDTO.builder().name("Updated Name").build();
