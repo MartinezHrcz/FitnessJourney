@@ -21,7 +21,16 @@ public class FileController {
 
     @GetMapping("/{filename}")
     public ResponseEntity<Resource> getFile(@PathVariable String filename) {
-        Resource file = fileShareService.loadAsResource(filename);
+        if (filename == null || filename.isBlank() || !fileShareService.exists(filename)) {
+            return ResponseEntity.noContent().build();
+        }
+
+        Resource file;
+        try {
+            file = fileShareService.loadAsResource(filename);
+        } catch (RuntimeException ex) {
+            return ResponseEntity.noContent().build();
+        }
 
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.IMAGE_PNG_VALUE)
