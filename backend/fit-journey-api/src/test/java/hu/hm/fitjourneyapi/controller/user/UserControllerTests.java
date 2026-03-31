@@ -2,6 +2,7 @@ package hu.hm.fitjourneyapi.controller.user;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import hu.hm.fitjourneyapi.dto.user.UserDTO;
+import hu.hm.fitjourneyapi.dto.user.UserProfilePictureDTO;
 import hu.hm.fitjourneyapi.dto.user.UserUpdateDTO;
 import hu.hm.fitjourneyapi.exception.userExceptions.UserNotFound;
 import hu.hm.fitjourneyapi.services.interfaces.UserService;
@@ -112,5 +113,46 @@ public class UserControllerTests {
 
         mockMvc.perform(delete("/api/user").param("id", userId.toString()).with(csrf()))
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @WithMockUser(username = "11111111-1111-1111-1111-111111111111", roles = "USER")
+    void getProfilePictureByUserId_Success_ReturnsImageBytes() throws Exception {
+        UUID userId = UUID.randomUUID();
+        byte[] imageData = "img".getBytes();
+        UserProfilePictureDTO profilePictureDTO = new UserProfilePictureDTO(imageData, "image/png");
+
+        when(userService.getProfilePicture(userId)).thenReturn(profilePictureDTO);
+
+        mockMvc.perform(get("/api/user/profile-picture/{id}", userId))
+                .andExpect(status().isOk())
+                .andExpect(content().bytes(imageData))
+                .andExpect(content().contentType("image/png"));
+    }
+
+    @Test
+    @WithMockUser(username = "11111111-1111-1111-1111-111111111111", roles = "USER")
+    void getProfilePictureByUserId_MissingPicture_ReturnsNoContent() throws Exception {
+        UUID userId = UUID.randomUUID();
+
+        when(userService.getProfilePicture(userId)).thenReturn(null);
+
+        mockMvc.perform(get("/api/user/profile-picture/{id}", userId))
+                .andExpect(status().isNoContent());
+    }
+
+    @Test
+    @WithMockUser(username = "11111111-1111-1111-1111-111111111111", roles = "USER")
+    void getCurrentUserProfilePicture_Success_ReturnsImageBytes() throws Exception {
+        UUID currentUserId = UUID.fromString("11111111-1111-1111-1111-111111111111");
+        byte[] imageData = "me-img".getBytes();
+        UserProfilePictureDTO profilePictureDTO = new UserProfilePictureDTO(imageData, "image/jpeg");
+
+        when(userService.getProfilePicture(currentUserId)).thenReturn(profilePictureDTO);
+
+        mockMvc.perform(get("/api/user/profile-picture/me"))
+                .andExpect(status().isOk())
+                .andExpect(content().bytes(imageData))
+                .andExpect(content().contentType("image/jpeg"));
     }
 }

@@ -82,14 +82,26 @@ public class UserController {
     @GetMapping("/{id}/profile-picture")
     public ResponseEntity<byte[]> getProfilePicture(@PathVariable UUID id) {
         try {
-            UserProfilePictureDTO profilePicture = userService.getProfilePicture(id);
-            if (profilePicture == null) {
-                return ResponseEntity.noContent().build();
-            }
-            MediaType mediaType = MediaType.parseMediaType(profilePicture.contentType());
-            return ResponseEntity.ok()
-                    .contentType(mediaType)
-                    .body(profilePicture.data());
+            return buildProfilePictureResponse(userService.getProfilePicture(id));
+        } catch (UserNotFound e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @GetMapping("/profile-picture/{id}")
+    public ResponseEntity<byte[]> getProfilePictureByUserId(@PathVariable UUID id) {
+        try {
+            return buildProfilePictureResponse(userService.getProfilePicture(id));
+        } catch (UserNotFound e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @GetMapping("/profile-picture/me")
+    public ResponseEntity<byte[]> getCurrentUserProfilePicture(Authentication authentication) {
+        try {
+            UUID currentUserId = UUID.fromString(authentication.getName());
+            return buildProfilePictureResponse(userService.getProfilePicture(currentUserId));
         } catch (UserNotFound e) {
             return ResponseEntity.notFound().build();
         }
@@ -115,5 +127,15 @@ public class UserController {
         } catch (UserNotFound e) {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    private ResponseEntity<byte[]> buildProfilePictureResponse(UserProfilePictureDTO profilePicture) {
+        if (profilePicture == null) {
+            return ResponseEntity.noContent().build();
+        }
+        MediaType mediaType = MediaType.parseMediaType(profilePicture.contentType());
+        return ResponseEntity.ok()
+                .contentType(mediaType)
+                .body(profilePicture.data());
     }
 }
