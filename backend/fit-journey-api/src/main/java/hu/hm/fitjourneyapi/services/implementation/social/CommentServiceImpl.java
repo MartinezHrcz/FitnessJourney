@@ -12,6 +12,7 @@ import hu.hm.fitjourneyapi.repository.social.PostRepository;
 import hu.hm.fitjourneyapi.services.interfaces.social.CommentService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -19,6 +20,7 @@ import java.util.UUID;
 
 @Service
 @Slf4j
+@Transactional(readOnly = true)
 public class CommentServiceImpl implements CommentService {
 
     private final CommentRepository commentRepository;
@@ -73,6 +75,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    @Transactional
     public CommentDTO createComment(CommentCreateDTO commentDTO, UUID postId, UUID userId) {
         log.debug("Creating new comment for post {}", postId);
         Post post = postRepository.findById(postId).orElseThrow(
@@ -101,6 +104,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    @Transactional
     public CommentDTO updateComment(UUID id, String content) {
         Comment comment = commentRepository.findById(id).orElseThrow(
                 () -> {
@@ -117,6 +121,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    @Transactional
     public void deleteComment(UUID id) {
         log.debug("Deleting comment with id {}", id);
         commentRepository.deleteById(id);
