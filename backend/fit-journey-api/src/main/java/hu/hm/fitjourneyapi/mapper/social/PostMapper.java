@@ -13,6 +13,7 @@ public interface PostMapper {
 
     @Mapping(source = "post.user.id", target = "userId")
     @Mapping(source = "post.user.name", target = "userName")
+    @Mapping(source = "post.user.profilePictureUrl", target = "userProfilePictureUrl")
     @Mapping(target = "likeCount", expression = "java(post.getLikedByUsers() != null ? post.getLikedByUsers().size() : 0)")
     @Mapping(target = "commentCount", expression = "java(post.getComments() != null ? post.getComments().size() : 0)")
     @Mapping(target = "likedByCurrentUser", expression = "java(checkIfLiked(post, currentUserId))")
