@@ -2,6 +2,8 @@ version: '2.34.0-desktop.1'
 services:
   db:
     image: postgres:17
+    env_file:
+      - .env
     environment:
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
@@ -11,10 +13,14 @@ services:
   api:
     build: .
     ports:
-      - "9090:9090"
+      - "8080:8080"
+    env_file:
+      - .env
     environment:
       DB_URL: jdbc:postgresql://db:5432/${DB}
       DB_USER: ${DB_USER}
       DB_PASSWORD: ${DB_PASSWORD}
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY}
+      FRONTEND_URL: ${FRONTEND_URL}
     depends_on:
       - db
