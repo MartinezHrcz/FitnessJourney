@@ -3,9 +3,9 @@ services:
   db:
     image: postgres:17
     environment:
-      DB_USER: ${DB_USER}
-      DB_PASSWORD: ${DB_PASSWORD}
-      POSTGRES-DB: ${DB}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB}
     ports:
       - "5432:5432"
   api:
@@ -13,8 +13,8 @@ services:
     ports:
       - "9090:9090"
     environment:
-      DB_URL: ${DB_URL}
+      DB_URL: jdbc:postgresql://db:5432/${DB}
       DB_USER: ${DB_USER}
-      DB_PASS: ${DB_PASSWORD}
+      DB_PASSWORD: ${DB_PASSWORD}
     depends_on:
       - db
