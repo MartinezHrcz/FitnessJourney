@@ -74,6 +74,22 @@ public class UserControllerTests {
     }
 
     @Test
+    void usernameAvailable_ReturnsAvailabilityWithoutAuthentication() throws Exception {
+        when(userService.isUsernameAvailable("herczegmartinez")).thenReturn(true);
+
+        mockMvc.perform(get("/api/user/username-available").param("username", "herczegmartinez"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.username").value("herczegmartinez"))
+                .andExpect(jsonPath("$.available").value(true));
+    }
+
+    @Test
+    void usernameAvailable_BlankUsername_ReturnsBadRequest() throws Exception {
+        mockMvc.perform(get("/api/user/username-available").param("username", "   "))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
     @WithMockUser(roles = "USER")
     void getUser_NoParams_ReturnsBadRequest() throws Exception {
         mockMvc.perform(get("/api/user/search"))

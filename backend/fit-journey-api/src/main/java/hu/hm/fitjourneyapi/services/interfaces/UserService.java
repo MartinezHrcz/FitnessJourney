@@ -38,6 +38,8 @@ public interface UserService {
 
     List<UserDTO> getAllUsersByName(String name);
 
+    boolean isUsernameAvailable(String name);
+
     UserWithWorkoutsDTO getUserWithWorkoutsById(UUID id);
 
     UserWithFriendsDTO getUserWithFriendsById(UUID id);

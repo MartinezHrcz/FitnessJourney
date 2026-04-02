@@ -375,6 +375,16 @@ public class UserServiceImpl implements UserService {
 
     @Transactional(readOnly = true)
     @Override
+    public boolean isUsernameAvailable(String name) {
+        String normalizedName = normalize(name);
+        if (normalizedName == null || normalizedName.isBlank()) {
+            throw new IllegalArgumentException("Username cannot be blank");
+        }
+        return userRepository.findUserByName(normalizedName).isEmpty();
+    }
+
+    @Transactional(readOnly = true)
+    @Override
     public UserWithWorkoutsDTO getUserWithWorkoutsById(UUID id) {
         log.debug("Fetching user with id {} ", id);
         User user = userRepository.findUserById(id).orElseThrow(

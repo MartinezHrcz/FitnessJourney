@@ -7,6 +7,7 @@ import hu.hm.fitjourneyapi.dto.user.RefreshTokenRequest;
 import hu.hm.fitjourneyapi.dto.user.UserCreateDTO;
 import hu.hm.fitjourneyapi.dto.user.UserDTO;
 import hu.hm.fitjourneyapi.security.JwtUtil;
+import hu.hm.fitjourneyapi.services.interfaces.UserService;
 import hu.hm.fitjourneyapi.services.interfaces.security.AuthService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +18,9 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -30,6 +33,9 @@ public class AuthControllerTests {
 
     @MockitoBean
     private AuthService authService;
+
+    @MockitoBean
+    private UserService userService;
 
     @MockitoBean
     private JwtUtil jwtUtil;
@@ -82,5 +88,23 @@ public class AuthControllerTests {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.token").value("mock-jwt-token"))
                 .andExpect(jsonPath("$.refreshToken").value("mock-refresh-token-2"));
+    }
+
+    @Test
+    void usernameAvailable_ShouldReturnAvailability() throws Exception {
+        when(userService.isUsernameAvailable(eq("new-user"))).thenReturn(true);
+
+        mockMvc.perform(get("/api/auth/username-available")
+                        .param("username", "new-user"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.username").value("new-user"))
+                .andExpect(jsonPath("$.available").value(true));
+    }
+
+    @Test
+    void usernameAvailable_BlankUsername_ShouldReturnBadRequest() throws Exception {
+        mockMvc.perform(get("/api/auth/username-available")
+                        .param("username", "   "))
+                .andExpect(status().isBadRequest());
     }
 }

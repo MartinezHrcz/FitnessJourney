@@ -29,6 +29,15 @@ public class UserController {
         return ResponseEntity.ok(userService.getAllUsers());
     }
 
+    @GetMapping("/username-available")
+    public ResponseEntity<UsernameAvailabilityResponse> usernameAvailable(@RequestParam String username) {
+        if (username == null || username.trim().isBlank()) {
+            return ResponseEntity.badRequest().build();
+        }
+        boolean available = userService.isUsernameAvailable(username);
+        return ResponseEntity.ok(new UsernameAvailabilityResponse(username.trim(), available));
+    }
+
     @GetMapping("/search")
     public ResponseEntity<?> getUser(
             @RequestParam(required = false) UUID id,
