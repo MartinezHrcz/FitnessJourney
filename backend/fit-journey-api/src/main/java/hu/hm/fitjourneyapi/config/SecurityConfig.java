@@ -42,12 +42,12 @@ public class SecurityConfig {
                         auth -> auth
                                 .requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll()
                                 .requestMatchers(
-                                "/ws-chat/**",
-                                "/api/auth/**",
-                                "/v3/api-docs/**",
-                                "/swagger-ui/**",
-                                "/swagger-ui.html",
-                                "/ws-chat/**").permitAll().anyRequest().authenticated()
+                                        "/ws-chat/**",
+                                        "/api/auth/**",
+                                        "/v3/api-docs/**",
+                                        "/swagger-ui/**",
+                                        "/swagger-ui.html",
+                                        "/ws-chat/**").permitAll().anyRequest().authenticated()
                 ).sessionManagement(session->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 ).authenticationProvider(authenticationProvider())
